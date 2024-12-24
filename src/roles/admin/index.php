@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname'], $_POST['lnam
         $user_id = $pdo->lastInsertId();
 
         // Generate the username and password
-        $username = $user_id . preg_replace("/[^a-zA-Z0-9]/", "", $_POST['fname']); 
+        $username = $user_id . preg_replace("/[^a-zA-Z0-9]/", "", $_POST['fname']);
         $password = $user_id . '_' . preg_replace("/[^a-zA-Z0-9]/", "", $_POST['fname']);
 
         // Hash the password before storing it
@@ -52,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname'], $_POST['lnam
 
         // Return success response
         echo json_encode(["success" => true]);
-
     } catch (PDOException $e) {
         // Return error response if the query fails
         echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
@@ -86,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editUserId'], $_POST[
 
         // Return success response
         echo json_encode(["success" => true]);
-
     } catch (PDOException $e) {
         // Return error response if the query fails
         echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
@@ -110,7 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
         echo json_encode($users);
 
         $pdo = null;
-
     } catch (PDOException $e) {
         error_log("Error: " . $e->getMessage());
 
@@ -132,11 +129,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/css.css">
     <title>SecureFile</title>
-    
+
     <!-- Ionicons -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    
+
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
@@ -185,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                 </li>
 
                 <li class="tab">
-                    <a href="/SECUREFILE/securefile/signout.php">
+                    <a href="signout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -217,10 +214,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                 </div>
             </div>
 
-            <div class="name"> 
+            <div class="name">
                 <h1>Manage Users</h1>
             </div>
-            
+
             <div class="controls">
                 <div class="filters">
                     <select id="action-filter" onchange="applyRoleFilter()">
@@ -260,11 +257,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                     <span class="close" onclick="closeAddUserModal()">&times;</span>
                     <h2>Add New User</h2>
                     <form id="addUserForm" onsubmit="addUser(event)">
-                    <label for="fname">First Name: </label>
-                    <input type="text" id="fname" name="fname" required> <!-- Fix name attribute -->
-                    <label for="lname">Last Name: </label>
-                    <input type="text" id="lname" name="lname" required> <!-- Fix name attribute -->
-                    <label for="email">Email Address:</label>
+                        <label for="fname">First Name: </label>
+                        <input type="text" id="fname" name="fname" required> <!-- Fix name attribute -->
+                        <label for="lname">Last Name: </label>
+                        <input type="text" id="lname" name="lname" required> <!-- Fix name attribute -->
+                        <label for="email">Email Address:</label>
                         <input type="email" id="email" name="email" required>
                         <label for="role">Role:</label>
                         <select id="role" name="role" required>
@@ -287,22 +284,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                     <form id="editUserForm" onsubmit="saveUserChanges(event)">
                         <label for="editUserId">User Id:</label>
                         <input type="text" id="editUserId" readonly> <!-- User ID is readonly, non-editable -->
-                        
+
                         <div class="form-group">
                             <label for="username">First Name:</label>
                             <input type="text" id="username" name="username" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="lastName">Last Name:</label>
                             <input type="text" id="lastName" name="lastName" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="email">Email Address:</label>
                             <input type="email" id="email" name="email" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="role">Role:</label>
                             <select id="role" name="role" required>
@@ -310,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                                 <option value="User">User</option>
                             </select>
                         </div>
-                        
+
                         <div class="modal-buttons">
                             <button type="submit">Save Changes</button> <!-- Save Changes button -->
                             <button type="button" onclick="closeEditModal()">Cancel</button> <!-- Cancel button -->
@@ -410,23 +407,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             const formData = new FormData(document.getElementById('addUserForm'));
 
             fetch('index.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('User added successfully');
-                    fetchUsers(); // Refresh the user list
-                    closeAddUserModal(); // Close the modal
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error("Error adding user:", error);
-                alert("An error occurred while adding the user.");
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('User added successfully');
+                        fetchUsers(); // Refresh the user list
+                        closeAddUserModal(); // Close the modal
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error adding user:", error);
+                    alert("An error occurred while adding the user.");
+                });
         }
 
         function saveUserChanges(event) {
@@ -435,23 +432,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             const formData = new FormData(document.getElementById('editUserForm'));
 
             fetch('index.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('User updated successfully');
-                    fetchUsers(); // Refresh the user list
-                    closeEditModal(); // Close the modal
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error("Error updating user:", error);
-                alert("An error occurred while updating the user.");
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('User updated successfully');
+                        fetchUsers(); // Refresh the user list
+                        closeEditModal(); // Close the modal
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error updating user:", error);
+                    alert("An error occurred while updating the user.");
+                });
         }
 
 
@@ -535,7 +532,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             });
         }
 
-        document.getElementById('main-search').addEventListener('input', function () {
+        document.getElementById('main-search').addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase(); // Get the search term and normalize it to lowercase
             const tableRows = document.querySelectorAll('.user-table tbody tr'); // Select all table rows in the tbody
 
@@ -552,7 +549,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                 }
             });
         });
-
     </script>
 </body>
+
 </html>

@@ -45,11 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Check if the user is an Administrator
                     if ($user['user_role'] === 'Administrator') {
                         // Redirect to the administrator profile page
-                        header("Location: /SECUREFILE/securefile/src/roles/admin/index.php");
+                        header("Location: src/roles/admin");
                         exit();
                     } else {
                         // Redirect to the dashboard or another page for non-admin users
-                        header("Location: /SECUREFILE/securefile/src/roles/client/index.php");
+                        header("Location: src/roles/client");
                         exit();
                     }
                 } else {
