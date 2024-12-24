@@ -4,6 +4,7 @@ require_once 'config/database.php'; // Include your database class
 
 $error = ''; // Initialize the error variable
 $username = ''; // Initialize the username variable
+$password = ''; // Initialize the password variable
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize and retrieve user input
@@ -45,11 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Check if the user is an Administrator
                     if ($user['user_role'] === 'Administrator') {
                         // Redirect to the administrator profile page
-                        header("Location: src/roles/admin");
+                        header("Location: src/roles/admin/");
                         exit();
                     } else {
                         // Redirect to the dashboard or another page for non-admin users
-                        header("Location: src/roles/client");
+                        header("Location: src/roles/client/");
                         exit();
                     }
                 } else {
@@ -105,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="forms">
             <div class="logo-section">
-                <img src="logo.png" alt="Logo" class="logo">
+                <img src="assets\img\logo.png" alt="Logo" class="logo">
                 <div class="securefile-text">
                     <span class="secure">Secure</span><span class="file">File</span>
                 </div>
@@ -118,11 +119,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="input-boxes">
                             <div class="input-box">
                                 <i class="fas fa-envelope"></i>
-                                <input type="text" name="username" text="<?php echo $username; ?>" id="username" placeholder="Enter your username" required>
+                                <input type="text" name="username" value="<?php echo $username; ?>" id="username" placeholder="Enter your username" required>
                             </div>
                             <div class="input-box">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" name="password" id="password" placeholder="Enter your password" required>
+                                <input type="password" name="password" value="<?php echo $password; ?>" id="password" placeholder="Enter your password" required>
                                 <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
                             </div>
 
