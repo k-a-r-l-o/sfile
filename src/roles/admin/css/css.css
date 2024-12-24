@@ -1,0 +1,1356 @@
+/* =========== Google Fonts ============ */
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap");
+
+
+/* =============== Globals ============== */
+* {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --white: #fff;
+  --gray: #f5f5f5;
+  --black1: #222;
+  --black2: #999;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+
+}
+
+.container {
+  position: relative;
+  width: 100%;
+}
+
+/* =============== Navigation ================ */
+.navigation {
+  position: fixed;
+  width: 300px;
+  height: 100%;
+  background: #ededed;
+  border-left: 10px solid var(--blue);
+  transition: 0.5s;
+  overflow: hidden;
+}
+.navigation.active {
+  width: 1000px;
+}
+
+.navigation ul {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column; 
+  height: 100%;
+}
+
+.navigation ul li:last-child {
+  margin-top: auto; 
+}
+
+.navigation ul li {
+  position: relative;
+  width: 100%;
+  list-style: none;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+/* Handle hover and active state */
+.navigation ul li:hover,
+.navigation ul li.active {
+  background-color: var(--white);
+}
+
+.navigation ul li:nth-child(1) {
+  margin-bottom: 40px;
+  pointer-events: none;
+}
+
+.navigation ul li a {
+  position: relative;
+  display: block;
+  width: 100%;
+  display: flex;
+  text-decoration: none;
+  color: black;
+}
+
+.navigation ul li:hover a,
+.navigation ul li.active a {
+  color: var(--blue);
+}
+
+.navigation ul li a .icon {
+  position: relative;
+  display: block;
+  min-width: 60px;
+  height: 60px;
+  line-height: 75px;
+  text-align: center;
+}
+
+.navigation ul li a .icon ion-icon {
+  font-size: 1.50rem;
+  margin-left: 20px;
+}
+
+.navigation ul li a .icon img {
+  height: 15vh;
+  width: 15vh;
+}
+
+.navigation ul li .tab {
+  font-family: Montserrat, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #909090;
+  cursor: pointer;
+  padding-left: 30px;
+  padding-right: 40px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  transition: all 0.5s;
+}
+
+.navigation ul li .tab.active {
+  font-weight: 600;
+  color: #800000;
+  background-color: #FDE3E3;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+/* Manage Logo resizing */
+.navigation ul li a.logo img {
+  height: 16vh;
+  width: auto;
+  transition: height 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+/* Logo size when navigation is active (collapsed) */
+.navigation.active ul li a.logo img {
+  height: 10vh; /* Reduced size when the menu is collapsed */
+  width: auto; /* Maintain aspect ratio */
+  margin: 15px 5px;
+}
+
+.navigation ul li a .title {
+  position: relative;
+  display: block;
+  padding: 0 10px;
+  height: 60px;
+  line-height: 60px;
+  text-align: start;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.navigation.active ul li a .title {
+  display: none; /* Ensure proper handling on small screens */
+}
+
+.navigation ul li a .securefile {
+    position: relative;
+    display: block;
+    padding: 20px 10px;
+    height: 60px;
+    line-height: 15px;
+    text-align: start;
+    white-space: nowrap;
+    font-family: 'Poppins', sans-serif;
+    margin-top: 4vh;
+    margin-left: 10%;
+    margin-right: 20%;
+    font-size: 4vh;
+    font-weight: 900;
+}
+
+.navigation ul li a .securefile .secure {
+    color: black;
+}
+
+.navigation ul li a .securefile .file {
+    color: #050deb;
+}
+
+/* Administrator styling */
+.navigation ul li a.logo .securefile .file .role {
+    color: red;
+    font-size:2vh; /* Smaller font size for Administrator */
+    font-style: italic;
+    margin-left: 30%;
+}
+
+/* ===================== Main ===================== */
+.main {
+  position: absolute;
+  width: calc(100% - 300px);
+  left: 300px;
+  min-height: 100vh;
+  background: var(--white);
+  transition: 0.5s;
+}
+.main.active {
+  width: calc(100% - 80px);
+  left: 80px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.search label {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.search input {
+  border: none;
+  outline: none;
+  width: 300px; /* Smaller width */
+  font-size: 14px;
+}
+
+.search ion-icon {
+  margin-left: 5px;
+  color: #999;
+}
+
+.user img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: #bababa 1px solid;
+}
+
+.toggle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  cursor: pointer;
+  z-index: 100;
+}
+
+/* Ensure the text moves slightly (5px) when toggle is active */
+.navigation.active .logo .securefile {
+  transform: translateX(5px); /* Move text 5px to the right when toggle is active */
+}
+
+/* Ensure the logo image stays in place */
+.navigation.active .logo img {
+  height: 15vh;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 90%; 
+  margin: 0 auto; /* Center align within the parent container */
+}
+
+.filters {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.filters select {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filters select:hover {
+  border-color: #007bff;
+}
+
+/* Table styling */
+.user-table {
+  background-color: white;
+  padding: 5px;
+  border-radius: 20px; /* Rounded corners */
+  overflow: hidden; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%; /* Match width with controls */
+  margin: 25px auto; /* Center align within the parent container */
+}
+
+.user-table table {
+  width: 100%; /* Table spans full width of container */
+  border-collapse: collapse;
+  font-size: 14px; /* Set font size */
+  background-color: white; /* Table background */
+}
+
+.user-table th, .user-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd; /* Horizontal lines only */
+}
+
+.user-table th {
+  background-color: transparent; /* No background color */
+  color: black; /* Neutral text color */
+  font-weight: bold; /* Ensure header stands out */
+}
+
+.user-table td {
+  background-color: white; /* White background for rows */
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.user-table tr:hover td {
+  background-color: #d4edda; /* Light green hover effect */
+}
+
+
+/* Action Icons in Table */
+.action-icon {
+  font-size: 20px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.edit-icon {
+  color: #050deb; /* Blue for edit */
+}
+
+.edit-icon:hover {
+  color: #050deb; /* Darker blue on hover */
+}
+
+.delete-icon {
+  color: #bababa; /* Red for delete */
+}
+
+.delete-icon:hover {
+  color: #c0392b; /* Darker red on hover */
+}
+
+/* General Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.4)
+  ); /* Modern gradient background */
+  backdrop-filter: blur(8px); /* Adds a subtle blur for depth */
+  padding-top:50px;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Updated Modal Content Box */
+.modal-content {
+  background: #ffffff;
+  margin: auto;
+  padding: 25px;
+  border-radius: 16px; /* Softer rounded corners */
+  width: 100%;
+  max-width: 500px; /* Compact width for focus */
+  transform: scale(0.9); /* Initial zoom-out */
+  opacity: 0; /* Hidden at start */
+  transition: transform 0.4s ease, opacity 0.4s ease; /* Pop-up transition */
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); /* Stronger shadow for elevation */
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Modal Show Class */
+.modal.show .modal-content {
+  transform: scale(1); /* Pop-up effect */
+  opacity: 1; /* Fade in */
+}
+
+/* Remove Border from Buttons */
+#editUserForm button, 
+#deleteModal button {
+  border: none; /* Remove border */
+}
+
+/* Optional: Update Button Hover Effects for Cleaner UI */
+#editUserForm button[type="submit"]:hover,
+.confirm-delete:hover,
+.cancel-delete:hover {
+  transform: translateY(-3px); /* Lift effect */
+  opacity: 0.9; /* Slight transparency */
+}
+
+.modal-content p {
+  text-align: center;
+  color: #666; /* Softer text color */
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Modal Show Class */
+.modal.show {
+  display: block;
+  opacity: 1;
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
+}
+
+/* Close Button */
+.close {
+  color: #333;
+  font-size: 28px;
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover {
+  color: #e74c3c;
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.warning-icon {
+  font-size: 64px;
+  color: #ff9800;
+}
+
+/* Modal Title */
+h2 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #222; /* Darker title for emphasis */
+}
+
+/* Form Styling Inside Modals */
+#editUserForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#editUserForm label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+}
+
+#editUserForm input,
+#editUserForm select {
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#editUserForm input:focus,
+#editUserForm select:focus {
+  border-color: #27ae60;
+  box-shadow: 0 0 8px rgba(39, 174, 96, 0.4); /* Highlight effect */
+  outline: none;
+}
+
+#editUserForm button {
+  padding: 10px 10px;
+  font-size: 14px; 
+  cursor: pointer;
+  border-radius: 10px; 
+}
+
+#editUserForm button[type="submit"] {
+  background: #27ae60; 
+  color: white;
+  border: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#editUserForm button[type="submit"]:hover {
+  background: #2ecc71;
+  transform: translateY(-3px); /* Lift effect */
+}
+
+#editUserForm button:hover {
+  background: #e63f3f;
+  color: white;
+  transform: translateY(-3px); /* Lift effect */
+}
+
+/* Modal Buttons (Global styles) */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end; /* Default alignment */
+  gap: 10px; /* Add space between buttons */
+  margin-top: 20px;
+}
+
+/* Center buttons only in the delete modal */
+#deleteModal .modal-buttons {
+  justify-content: center; /* Center the buttons */
+  gap: 20px; /* Add more space between the buttons */
+}
+
+/* Confirm Button */
+.confirm-delete {
+  background: #e74c3c;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.confirm-delete:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Cancel Button */
+.cancel-delete {
+  background: #f4f4f4;
+  color: #555;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.cancel-delete:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+/* Export Buttons */
+.export-buttons {
+  text-align: right;
+  width: 90%; /* Match the table width */
+  margin: 10px auto 0; /* Center align and add space above */
+}
+
+.export-buttons button {
+  padding: 10px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.export-buttons button.csv {
+  background-color: #007bff;
+  color: white;
+}
+
+.export-buttons button.pdf {
+  background-color: #dc3545;
+  color: white;
+}
+
+.export-buttons button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.profile-settings {
+  max-width: 90%;
+  margin: auto;
+}
+
+h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 25px 0;
+}
+
+.form-buttons .btn {
+  padding: 10px 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.save-btn {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.save-btn:hover {
+  background-color: #0056b3;
+}
+
+.cancel-btn {
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.cancel-btn:hover {
+  background-color: #e2e6ea;
+}
+
+.edit-profile-picture {
+  margin-bottom: 30px;
+}
+
+.profile-pic-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#userpic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.change-icon {
+  cursor: pointer;
+  color: #007bff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.change-icon ion-icon {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+#profile-pic-input {
+  display: none;
+}
+
+/* Styling for the Change Password Section */
+/* .change-password {
+  margin-top: 30px;
+} */
+
+.profile-pic-container img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.form-group-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+.form-group {
+  flex: 1;
+}
+.error-message {
+  color: red;
+  font-size: 0.85em;
+  display: none;
+}
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Modal background overlay */
+.modal-settings {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal content container */
+.modal-settings-content {
+  position: relative;
+  background: linear-gradient(135deg, #ffffff, #f4f4f4);
+  border-radius: 12px;
+  padding: 20px 30px;
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.4s ease-in-out;
+  text-align: center;
+}
+
+/* Modal message text */
+#modal-message {
+  font-size: 16px;
+  color: #333;
+  margin: 20px 0;
+  line-height: 1.5;
+}
+
+/* OK button */
+#modal-ok-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+#modal-ok-button:hover {
+  background-color: #45a049;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-60%);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+
+  .navigation.active ul li a .icon {
+    min-width: 50px; /* Adjust icon size if necessary */
+  }
+
+  .navigation.active ul li a.logo img {
+    height: 8vh; /* Reduced size for small screens */
+  }
+
+  .navigation.active {
+    width: 80px; /* Sidebar collapses to show only icons */
+  }
+
+  .navigation ul li:hover a::before,
+  .navigation ul li.active a::before {
+    right: 5px; /* Adjusted position for collapsed sidebar */
+    box-shadow: 20px 20px 0 8px var(--white); /* Smaller shadow for collapsed state */
+  }
+
+  .navigation ul li:hover a::after,
+  .navigation ul li.active a::after {
+    right: 5px; /* Adjusted position for collapsed sidebar */
+    box-shadow: 20px -20px 0 8px var(--white); /* Smaller shadow for collapsed state */
+  }
+
+  .navigation.active ul li:hover a::before,
+  .navigation.active ul li.active a::before {
+    right: 5px; /* Ensure alignment in active collapsed state */
+    box-shadow: 15px 15px 0 6px var(--white);
+  }
+
+  .navigation.active ul li:hover a::after,
+  .navigation.active ul li.active a::after {
+    right: 5px; /* Ensure alignment in active collapsed state */
+    box-shadow: 15px -15px 0 6px var(--white);
+  }
+  
+}
+
+@media (max-width: 768px) {
+  .navigation {
+    width: 70px; /* Ensure sidebar width adapts for smaller screens */
+  }
+
+  .navigation ul li a .title {
+    display: none; /* Hide titles explicitly */
+  }
+
+  .navigation ul li a .icon {
+    min-width: 50px; /* Ensure icons remain visible */
+    font-size: 1.5rem; /* Adjust icon size for clarity */
+  }
+}
+
+/* General mobile sidebar styles */
+@media (max-width: 768px) {
+  .navigation {
+    width: 75px; /* Sidebar width for small screens */
+    overflow: hidden; /* Prevent content overflow */
+    transition: width 0.4s ease; /* Smooth transition for toggling */
+  }
+
+  .navigation.active {
+    width: 90px; /* Slightly larger width when active */
+  }
+
+  .navigation ul {
+    padding: 0;
+  }
+
+  .navigation ul li {
+    position: relative;
+  }
+
+  .navigation ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 0; /* Adjust padding for smaller sidebar */
+    transition: all 0.3s ease;
+  }
+
+  .navigation ul li a .icon {
+    min-width: 55px; /* Ensure icons remain visible */
+    font-size: 1.6rem; /* Adjust icon size for clarity */
+    text-align: center; /* Center the icon */
+  }
+
+  .navigation ul li a .title {
+    display: none; /* Hide titles explicitly */
+  }
+
+  .navigation ul li a.logo img {
+    height: 10vh; /* Adjust logo size for mobile */
+    margin: 0 auto; /* Center the logo */
+  }
+
+  .navigation ul li:hover a .title {
+    display: inline-block; /* Show titles on hover */
+    position: absolute;
+    left: 80px; /* Position title outside the sidebar */
+    white-space: nowrap;
+    background: #f8f8f8; /* Background for better readability */
+    color: #333; /* Text color */
+    padding: 6px 12px;
+    border-radius: 6px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    z-index: 200; /* Ensure titles appear above other content */
+  }
+
+  /* Handle toggle animation */
+  .navigation ul li a:hover .icon {
+    transform: scale(1.2); /* Slightly enlarge icon on hover */
+  }
+}
+
+@media (max-width: 480px) {
+  /* Reduce sidebar width */
+  .navigation {
+    width: 60px;
+    overflow: hidden;
+  }
+
+  .navigation.active {
+    width: 50px; /* Collapsed state for ultra-small screens */
+  }
+
+  /* Adjust logo for small screens */
+  .navigation ul li a.logo img {
+    height: 7vh; /* Smaller logo height */
+    width: auto; /* Maintain aspect ratio */
+    margin: 5px auto; /* Center the logo */
+  }
+
+  /* Ensure icons remain visible and clickable */
+  .navigation ul li a .icon {
+    min-width: 45px; /* Slightly smaller for tiny screens */
+    font-size: 1.2rem; /* Adjust icon size */
+    text-align: center;
+  }
+
+  /* Hide titles on very small screens */
+  .navigation ul li a .title {
+    display: none;
+  }
+
+  /* SecureFile title adjustments */
+  .navigation ul li a .securefile {
+    font-size: 2.5vh; /* Scale down font size */
+    text-align: center;
+    margin: 2vh 0; /* Adjust spacing */
+  }
+
+  /* Adjust other elements for better spacing */
+  .main {
+    width: calc(100% - 60px); /* Adjust main content width */
+    left: 60px;
+  }
+
+  .toggle {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem; /* Smaller toggle icon */
+  }
+}
+
+@media (max-width: 320px) {
+  /* Minimal width adjustments */
+  .navigation {
+    width: 50px;
+  }
+
+  .navigation ul li a.logo img {
+    height: 5vh; /* Even smaller logo */
+    margin: 2px auto;
+  }
+
+  .navigation ul li a .icon {
+    font-size: 1rem; /* Smaller icon size */
+  }
+
+  .main {
+    width: calc(100% - 50px);
+    left: 50px;
+  }
+
+  .toggle {
+    font-size: 1.2rem; /* Smallest toggle icon */
+  }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .container {
+      flex-direction: column;
+  }
+
+  .navigation {
+      width: 100%;
+      height: auto;
+  }
+
+  .main {
+      width: 100%;
+  }
+
+  .user-table {
+      margin-top: 15px;
+  }
+}
+
+.name {
+  display: flex; /* Align items within */
+  justify-content: left; /* Center horizontally */
+  align-items: last baseline; /* Center vertically */
+  padding: 30px; /* Add spacing */
+  margin-left: 20px;
+  font-family: 'Poppins' serif;
+}
+
+.name h1 {
+  font-size: 30px; /* Adjust header size */
+  color: #000; /* Text color for contrast */
+  font-family: 'Arial', sans-serif; /* Clean font */
+  font-weight: bold; /* Make it prominent */
+  margin: 0; /* Remove default margin */
+  text-align: center; /* Center text inside the header */
+}
+
+
+
+/* Styling for the Change Password Label and Button */
+.change-password {
+  display: flex;
+  align-items: center; /* Vertically align the label and button */
+  gap: 10px; /* Space between the label and button */
+}
+
+/* Styling for the Change Password Label */
+.change-password label {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #555; /* Dark color for label text */
+}
+
+/* Styling for the Reset Password Button */
+.reset-password-btn {
+  padding: 8px 15px;
+  background-color: #28a745; /* Green background for the button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+.reset-password-btn:hover {
+  background-color: #218838; /* Darker green when hovered */
+}
+
+/* Responsive Design: Stacking label and button vertically on small screens */
+@media screen and (max-width: 600px) {
+  .change-password {
+      flex-direction: column; /* Stack label and button vertically */
+      align-items: flex-start; /* Align them to the left */
+  }
+}
+
+/* Button Styling */
+.add-user-btn {
+  display: inline-flex;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  align-items: center; /* Align icon and text */
+  background-color: #27ae60;
+  color: white;
+  padding: 10px 25px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.add-user-btn i {
+  margin-right: 10px; /* Space between icon and text */
+}
+
+.add-user-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-3px); /* Lift effect */
+}
+
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: auto;
+  padding-top: 60px;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 500px;
+}
+
+.close {
+  color: #aaa;
+  font-size: 28px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-buttons button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-buttons button:hover {
+  background-color: #45a049;
+}
+
+.modal.show {
+  display: block;
+  animation: fadeIn 0.4s;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Add User Modal Form Styling */
+#addUserModal .modal-content {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fff;
+  position: relative;
+}
+
+#addUserModal h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+/* Label Styling */
+#addUserModal label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+  margin-top: 30px; /* Space before the label */
+  margin-bottom: 8px; /* Space between label and input field */
+}
+
+/* Input Fields Styling */
+#addUserModal input,
+#addUserModal select {
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  margin-top: 5px; /* Space between input field and its surrounding elements */
+}
+
+/* Focused Input Fields */
+#addUserModal input:focus,
+#addUserModal select:focus {
+  border-color: #27ae60;
+  box-shadow: 0 0 8px rgba(39, 174, 96, 0.4); /* Highlight effect */
+  outline: none;
+}
+
+/* Modal Buttons Positioning and Styling */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.modal-buttons button[type="submit"] {
+  background: #27ae60;
+  color: white;
+  border: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.modal-buttons button[type="submit"]:hover {
+  background: #2ecc71;
+  transform: translateY(-3px); /* Lift effect */
+}
+
+.modal-buttons button[type="button"] {
+  background: #e63f3f;
+  color: white;
+  border: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.modal-buttons button[type="button"]:hover {
+  background: #c0392b;
+  transform: translateY(-3px); /* Lift effect */
+}
+
+/* Close Button Styling */
+#addUserModal .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+#addUserModal .close:hover {
+  color: #333;
+}
+
+/* --------- curve outside on hover and active ---------- */
+.navigation ul li:hover a::before,
+.navigation ul li.active a::before {  /* Add active state */
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px 35px 0 10px var(--white);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.navigation ul li:hover a::after,
+.navigation ul li.active a::after {  /* Add active state */
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  box-shadow: 35px -35px 0 10px var(--white);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+/* Adjust for collapsed state */
+.navigation.active ul li:hover a::before,
+.navigation.active ul li.active a::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  right: 5px; /* Adjusted position for collapsed sidebar */
+  box-shadow: 20px 20px 0 8px var(--white); /* Smaller shadow for collapsed state */
+}
+
+.navigation.active ul li:hover a::after,
+.navigation.active ul li.active a::after {
+  content: "";
+  position: absolute;
+  bottom: -50px;
+  width: 50px;
+  height: 50px;
+  background-color: transparent;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  right: 5px; /* Adjusted position for collapsed sidebar */
+  box-shadow: 20px -20px 0 8px var(--white); /* Smaller shadow for collapsed state */
+}
