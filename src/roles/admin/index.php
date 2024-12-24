@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                 </li>
 
                 <li class="tab">
-                    <a href="signout.php">
+                    <a href="../../../signout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
