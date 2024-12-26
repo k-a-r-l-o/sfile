@@ -3,15 +3,15 @@ session_start();
 require_once 'config/database.php'; // Include your database class
 
 $error = ''; // Initialize the error variable
-$username = ''; // Initialize the username variable
+$email = ''; // Initialize the email variable
 $password = ''; // Initialize the password variable
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize and retrieve user input
-    $username = trim($_POST['username']);
+    $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    if (!empty($username) && !empty($password)) {
+    if (!empty($email) && !empty($password)) {
         try {
             // Create a database instance and open a connection
             $db = new database();
@@ -19,62 +19,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Prepare and execute the SQL query
             $stmt = $conn->prepare(
-                "SELECT l.username, l.password, u.user_id, u.user_role, u.user_status
-                 FROM tb_logindetails l
-                 JOIN tb_userdetails u ON l.user_id = u.user_id
-                 WHERE l.username = :username AND u.user_status = 1"
+                "SELECT l.password, u.user_id, u.user_role, l.user_status
+                 FROM tb_admin_logindetails l
+                 JOIN tb_admin_userdetails u ON l.user_id = u.user_id
+                 WHERE u.user_email = :email"
             );
-            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':email', $email);
             $stmt->execute();
 
             // Fetch the result
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user != null) {
-                if ($user && password_verify($password, $user['password'])) {
+                if ($user['user_status'] == "Online") {
+                    $error = "Your account is already logged in. Please log out from other devices.";
+                } elseif (password_verify($password, $user['password'])) {
+                    // Update user status to indicate they are logged in
+                    $updateStatusStmt = $conn->prepare("UPDATE tb_admin_logindetails SET user_status = 'Online' WHERE user_id = :user_id");
+                    $updateStatusStmt->execute([':user_id' => $user['user_id']]);
+
                     // Log successful login using the user_id
                     $logStmt = $conn->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
                     $logStmt->execute([
-                        ':doer' => $user['user_id'],  // Use user_id, not username
+                        ':doer' => $user['user_id'],
                         ':action' => 'Successfully logged in'
                     ]);
 
                     // Set session variables for the logged-in user
-                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $email;
                     $_SESSION['role'] = $user['user_role'];
 
-                    // Check the user's role and redirect accordingly
-                    switch ($user['user_role']) {
-                        case 'Administrator':
-                            // Redirect to the administrator interface
-                            header("Location: src/roles/admin/");
-                            break;
-                        case 'Head':
-                            // Redirect to the head interface
-                            header("Location: src/roles/head/");
-                            break;
-                        case 'Employee':
-                            // Redirect to the client interface
-                            header("Location: src/roles/client/");
-                            break;
-                        default:
-                            // Default action if the role is not recognized
-                            $error = "Role not recognized.";
-                            break;
+                    // Redirect based on user role
+                    if ($user['user_role'] === 'Administrator') {
+                        header("Location: src/roles/admin/");
+                        exit();
+                    } else {
+                        header("Location: src/roles/client/");
+                        exit();
                     }
                     exit();
                 } else {
                     // Log failed login attempt using the user_id
                     $logStmt = $conn->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
                     $logStmt->execute([
-                        ':doer' => $user['user_id'],  // Use user_id, not username
+                        ':doer' => $user['user_id'],
                         ':action' => 'Failed login attempt'
                     ]);
 
-                    $error = "Incorrect username or password. Please try again.";
+                    $error = "Incorrect email or password. Please try again.";
                 }
             } else {
-                $error = "Incorrect username or password. Please try again.";
+                $error = "Incorrect email or password. Please try again.";
             }
         } catch (PDOException $e) {
             error_log("Login error: " . $e->getMessage());
@@ -94,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <div class="container">
@@ -125,11 +119,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="input-boxes">
                             <div class="input-box">
                                 <i class="fas fa-envelope"></i>
-                                <input type="text" name="username" value="<?php echo $username; ?>" id="username" placeholder="Enter your username" required>
+                                <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" id="email" placeholder="Enter your email" required>
                             </div>
                             <div class="input-box">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" name="password" value="<?php echo $password; ?>" id="password" placeholder="Enter your password" required>
+                                <input type="password" name="password" value="<?php echo htmlspecialchars($password); ?>" id="password" placeholder="Enter your password" required>
                                 <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
                             </div>
 
@@ -141,14 +135,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="button input-box">
                                 <input type="submit" value="Sign in">
                             </div>
-                            <div id="g_id_onload"
-                                data-client_id="70695361299-2lkl165sdrbaqemvq4s92cp0elamhglc.apps.googleusercontent.com"
-                                data-context="signin"
-                                data-ux_mode="popup"
-                                data-callback="handleCredentialResponse"
-                                data-auto_prompt="false">
-                            </div>
-                            <div class="g_id_signin" data-type="standard"></div>
                         </div>
                     </form>
                 </div>
@@ -179,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (errorMessage) {
                 setTimeout(function() {
                     errorMessage.style.display = 'none';
-                }, 5000); // Hide after 5 seconds
+                }, 5000);
 
                 // Clear the error message if the user starts typing
                 const inputs = document.querySelectorAll("input");
@@ -190,11 +176,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             }
         };
-
-        function handleCredentialResponse(response) {
-            console.log("Encoded JWT ID token: " + response.credential);
-            // Send the token to your backend for verification.
-        }
     </script>
 </body>
 </html>

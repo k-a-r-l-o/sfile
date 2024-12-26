@@ -13,7 +13,7 @@ try {
             l.log_date, 
             l.log_action
         FROM tb_logs l
-        LEFT JOIN tb_userdetails u ON l.doer = u.user_id
+        LEFT JOIN tb_admin_userdetails u ON l.doer = u.user_id
         WHERE 1=1
     ";
 
@@ -33,7 +33,6 @@ try {
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 } catch (PDOException $e) {
     error_log("Error fetching logs: " . $e->getMessage());
     $logs = []; // In case of error, return empty array
@@ -51,11 +50,11 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/css.css">
     <title>SecureFile</title>
-    
+
     <!-- Ionicons -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    
+
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
@@ -72,9 +71,9 @@ try {
                         </span>
                         <span class="securefile">
                             <span class="secure">Secure</span><span class="file">File <br><span class="role">Administrator</span></span>
-                            </span>
                         </span>
-                        
+                        </span>
+
                     </a>
                 </li>
 
@@ -137,19 +136,19 @@ try {
                 </div>
             </div>
 
-            <div class="name"> 
+            <div class="name">
                 <h1>Activity Logs</h1>
             </div>
 
             <div class="controls">
                 <div class="filters">
                     <form method="GET" action="activitylogs.php">
-                    <select name="dateFilter" onchange="this.form.submit()">
-                        <option value="all">All Time</option>
-                        <option value="week" <?php echo isset($_GET['dateFilter']) && $_GET['dateFilter'] == 'week' ? 'selected' : ''; ?>>This Week</option>
-                        <option value="month" <?php echo isset($_GET['dateFilter']) && $_GET['dateFilter'] == 'month' ? 'selected' : ''; ?>>This Month</option>
-                        <option value="year" <?php echo isset($_GET['dateFilter']) && $_GET['dateFilter'] == 'year' ? 'selected' : ''; ?>>This Year</option>
-                    </select>
+                        <select name="dateFilter" onchange="this.form.submit()">
+                            <option value="all">All Time</option>
+                            <option value="week" <?php echo isset($_GET['dateFilter']) && $_GET['dateFilter'] == 'week' ? 'selected' : ''; ?>>This Week</option>
+                            <option value="month" <?php echo isset($_GET['dateFilter']) && $_GET['dateFilter'] == 'month' ? 'selected' : ''; ?>>This Month</option>
+                            <option value="year" <?php echo isset($_GET['dateFilter']) && $_GET['dateFilter'] == 'year' ? 'selected' : ''; ?>>This Year</option>
+                        </select>
                 </div>
             </div>
 
@@ -176,13 +175,13 @@ try {
                     </tbody>
                 </table>
             </div>
-            
-             <!-- Export Buttons -->
+
+            <!-- Export Buttons -->
             <div class="export-buttons">
                 <button class="csv" onclick="exportLogs('csv')">Export</button>
                 <button class="print" onclick="printActivityLogs()">Print</button>
             </div>
-            
+
         </div>
 
     </div> <!-- Container end -->
@@ -190,52 +189,52 @@ try {
     <script src="js/js.js"></script>
 
     <script>
-    //   document.addEventListener("DOMContentLoaded", function() {
-    //         fetch('activitylogs.php')
-    //             .then(response => response.json())  // Parse JSON
-    //             .then(data => {
-    //                 const logsTableBody = document.getElementById('logs-table-body');
-    //                 logsTableBody.innerHTML = '';  // Clear any existing rows
+        //   document.addEventListener("DOMContentLoaded", function() {
+        //         fetch('activitylogs.php')
+        //             .then(response => response.json())  // Parse JSON
+        //             .then(data => {
+        //                 const logsTableBody = document.getElementById('logs-table-body');
+        //                 logsTableBody.innerHTML = '';  // Clear any existing rows
 
-    //                 data.forEach(log => {
-    //                     const row = document.createElement('tr');
-    //                     row.innerHTML = `
-    //                         <td>${log.log_id}</td>
-    //                         <td>${log.username}</td>
-    //                         <td>${new Date(log.log_date).toLocaleString()}</td>
-    //                         <td>${log.log_action}</td>
-    //                     `;
-    //                     logsTableBody.appendChild(row);
-    //                 });
-    //             })
-    //             .catch(err => console.error('Error fetching logs:', err));
-    //     });
+        //                 data.forEach(log => {
+        //                     const row = document.createElement('tr');
+        //                     row.innerHTML = `
+        //                         <td>${log.log_id}</td>
+        //                         <td>${log.username}</td>
+        //                         <td>${new Date(log.log_date).toLocaleString()}</td>
+        //                         <td>${log.log_action}</td>
+        //                     `;
+        //                     logsTableBody.appendChild(row);
+        //                 });
+        //             })
+        //             .catch(err => console.error('Error fetching logs:', err));
+        //     });
 
-    //     // Function to filter logs by date range
-    //     function applyDateFilter() {
-    //         const filter = document.getElementById('date-filter').value;
-    //         let url = 'activitylogs.php?dateFilter=' + filter;
+        //     // Function to filter logs by date range
+        //     function applyDateFilter() {
+        //         const filter = document.getElementById('date-filter').value;
+        //         let url = 'activitylogs.php?dateFilter=' + filter;
 
-    //         fetch(url)
-    //             .then(response => response.json())
-    //             .then(data => {
-    //                 const logsTable = document.getElementById('logs-table-body');
-    //                 logsTable.innerHTML = ''; // Clear existing rows
+        //         fetch(url)
+        //             .then(response => response.json())
+        //             .then(data => {
+        //                 const logsTable = document.getElementById('logs-table-body');
+        //                 logsTable.innerHTML = ''; // Clear existing rows
 
-    //                 // Populate the table with filtered logs
-    //                 data.forEach(log => {
-    //                     const row = `<tr>
-    //                         <td>${log.log_id}</td>
-    //                         <td>${log.username}</td>
-    //                         <td>${new Date(log.log_date).toLocaleString()}</td>
-    //                         <td>${log.log_action}</td>
-    //                     </tr>`;
-    //                     logsTable.innerHTML += row;
-    //                 });
-    //             })
-    //             .catch(err => console.error('Error filtering logs:', err));
-    //     }
-        document.getElementById('searchBox').addEventListener('input', function () {
+        //                 // Populate the table with filtered logs
+        //                 data.forEach(log => {
+        //                     const row = `<tr>
+        //                         <td>${log.log_id}</td>
+        //                         <td>${log.username}</td>
+        //                         <td>${new Date(log.log_date).toLocaleString()}</td>
+        //                         <td>${log.log_action}</td>
+        //                     </tr>`;
+        //                     logsTable.innerHTML += row;
+        //                 });
+        //             })
+        //             .catch(err => console.error('Error filtering logs:', err));
+        //     }
+        document.getElementById('searchBox').addEventListener('input', function() {
             const searchValue = this.value.toLowerCase().trim();
             const tableBody = document.querySelector('#logsTable tbody');
             const rows = tableBody.getElementsByTagName('tr');
@@ -326,7 +325,9 @@ try {
                 });
 
                 // Create a Blob and trigger download
-                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const blob = new Blob([csvContent], {
+                    type: 'text/csv'
+                });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -354,8 +355,7 @@ try {
             // Open the activitylogs_print.html in a new window or tab
             window.open('activitylogs_print.html', '_blank');
         }
-
-
     </script>
 </body>
+
 </html>

@@ -8,53 +8,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname'], $_POST['lnam
         $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Insert into tb_userdetails
-        $stmt = $pdo->prepare("INSERT INTO tb_userdetails (user_fname, user_lname, user_email, user_role) 
-                                VALUES (:fname, :lname, :email, :role)");
+        // Start a transaction
+        $pdo->beginTransaction();
 
-        // Bind parameters
+        // Insert into tb_admin_userdetails
+        $stmt = $pdo->prepare("INSERT INTO tb_admin_userdetails (user_fname, user_lname, user_email, user_role) 
+                                VALUES (:fname, :lname, :email, :role)");
         $stmt->bindParam(':fname', $_POST['fname']);
         $stmt->bindParam(':lname', $_POST['lname']);
         $stmt->bindParam(':email', $_POST['email']);
         $stmt->bindParam(':role', $_POST['role']);
-
-        // Execute the query
         $stmt->execute();
 
         // Fetch the inserted user ID
         $user_id = $pdo->lastInsertId();
 
-        // Generate the username and password
-        $username = $user_id . preg_replace("/[^a-zA-Z0-9]/", "", $_POST['fname']);
+        // Generate and hash the password
         $password = $user_id . '_' . preg_replace("/[^a-zA-Z0-9]/", "", $_POST['fname']);
-
-        // Hash the password before storing it
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        // Insert into tb_logindetails
-        $stmt = $pdo->prepare("INSERT INTO tb_logindetails (username, password, user_id) 
-                               VALUES (:username, :password, :user_id)");
+        // Insert into tb_admin_logindetails
+        $loginStmt = $pdo->prepare("INSERT INTO tb_admin_logindetails (password, user_id) 
+                                    VALUES (:password, :user_id)");
+        $loginStmt->bindParam(':password', $hashed_password);
+        $loginStmt->bindParam(':user_id', $user_id);
+        $loginStmt->execute();
 
-        // Bind parameters for login details
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $hashed_password);
-        $stmt->bindParam(':user_id', $user_id);
+        // Commit the transaction
+        $pdo->commit();
 
-        // Execute the query
-        $stmt->execute();
-
-        $username = $_SESSION['username'];
         // Log the user addition
+        $email = $_SESSION['email'];
         $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
         $logStmt->execute([
-            ':doer' => $username, // Replace with dynamic value if necessary
+            ':doer' => $email,
             ':action' => "Added user: {$_POST['fname']} {$_POST['lname']}"
         ]);
 
         // Return success response
         echo json_encode(["success" => true]);
     } catch (PDOException $e) {
-        // Return error response if the query fails
+        // Rollback the transaction on error
+        $pdo->rollBack();
         echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
     }
     exit;
@@ -66,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editUserId'], $_POST[
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Update query including email
-        $stmt = $pdo->prepare("UPDATE tb_userdetails 
+        $stmt = $pdo->prepare("UPDATE tb_admin_userdetails 
                                SET user_fname = :fname, 
                                    user_lname = :lname, 
                                    user_email = :email, 
@@ -92,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editUserId'], $_POST[
 
         // Return success response
         echo json_encode(["success" => true]);
-
     } catch (PDOException $e) {
         error_log("Error: " . $e->getMessage());
         echo json_encode(["error" => $e->getMessage()]); // Return the detailed error for debugging
@@ -107,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
         $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $stmt = $pdo->prepare("SELECT user_id, user_fname, user_lname, user_email, user_role FROM tb_userdetails");
+        $stmt = $pdo->prepare("SELECT user_id, user_fname, user_lname, user_email, user_role FROM tb_admin_userdetails");
         $stmt->execute();
 
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -202,132 +196,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             </ul>
         </div>
 
-                <!-- ========================= Main ==================== -->
-                <div class="main">
-                    <div class="topbar">
-                        <div class="left-section">
-                            <div class="toggle">
-                                <ion-icon name="reorder-three-outline"></ion-icon>
-                            </div>
-
-                            <div class="search">
-                                <label>
-                                    <input type="text" id="main-search" placeholder="Search User Id, Username....">
-                                    <ion-icon name="search-outline"></ion-icon>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="user">
-                            <img src="../../assets/img/admin.png">
-                        </div>
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="left-section">
+                    <div class="toggle">
+                        <ion-icon name="reorder-three-outline"></ion-icon>
                     </div>
 
-                    <div class="name">
-                        <h1>Manage Users</h1>
+                    <div class="search">
+                        <label>
+                            <input type="text" id="main-search" placeholder="Search User Id, Username....">
+                            <ion-icon name="search-outline"></ion-icon>
+                        </label>
                     </div>
+                </div>
 
-                    <div class="controls">
-                        <div class="filters">
-                        <select id="action-filter" onchange="applyRoleFilter()">
+                <div class="user">
+                    <img src="../../assets/img/admin.png">
+                </div>
+            </div>
+
+            <div class="name">
+                <h1>Manage Users</h1>
+            </div>
+
+            <div class="controls">
+                <div class="filters">
+                    <select id="action-filter" onchange="applyRoleFilter()">
                         <option value="">All</option>
                         <option value="Administrator">Administrator</option>
                         <option value="Head">Head</option>
                         <option value="Employee">Employee</option>
                     </select>
+                </div>
+            </div>
+
+            <!-- ========================= Table ==================== -->
+            <div class="user-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email Address</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-list">
+                        <!-- Users will be dynamically injected here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Add User Button -->
+            <button class="add-user-btn" onclick="openAddUserModal()">
+                <i class="fas fa-plus"></i> Add User
+            </button>
+
+            <!-- Add User Modal -->
+            <div id="addUserModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeAddUserModal()">&times;</span>
+                    <h2>Add New User</h2>
+                    <form id="addUserForm" onsubmit="addUser(event)">
+                        <label for="fname">First Name: </label>
+                        <input type="text" id="fname" name="fname" required> <!-- Fix name attribute -->
+                        <label for="lname">Last Name: </label>
+                        <input type="text" id="lname" name="lname" required> <!-- Fix name attribute -->
+                        <label for="email">Email Address:</label>
+                        <input type="email" id="email" name="email" required>
+                        <label for="role">Role:</label>
+                        <select id="role" name="role" required>
+                            <option value="Administrator">Administrator</option>
+                            <option value="Head">Head</option>
+                            <option value="Employee">Employee</option>
+                        </select>
+                        <div class="modal-buttons">
+                            <button type="submit">Add User</button>
+                            <button type="button" onclick="closeAddUserModal()">Cancel</button>
                         </div>
-                    </div>
-
-                    <!-- ========================= Table ==================== -->
-                    <div class="user-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>User ID</th>
-                                    <th>Name</th>
-                                    <th>Email Address</th>
-                                    <th>Role</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-list">
-                                <!-- Users will be dynamically injected here by JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Add User Button -->
-                    <button class="add-user-btn" onclick="openAddUserModal()">
-                        <i class="fas fa-plus"></i> Add User
-                    </button>
-
-                <!-- Add User Modal -->
-        <div id="addUserModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeAddUserModal()">&times;</span>
-                <h2>Add New User</h2>
-                <form id="addUserForm" onsubmit="addUser(event)">
-                    <label for="fname">First Name: </label>
-                    <input type="text" id="fname" name="fname" required> <!-- Fix name attribute -->
-                    <label for="lname">Last Name: </label>
-                    <input type="text" id="lname" name="lname" required> <!-- Fix name attribute -->
-                    <label for="email">Email Address:</label>
-                    <input type="email" id="email" name="email" required>
-                    <label for="role">Role:</label>
-                    <select id="role" name="role" required>
-                        <option value="Administrator">Administrator</option>
-                        <option value="Head">Head</option>
-                        <option value="Employee">Employee</option>
-                    </select>
-                    <div class="modal-buttons">
-                        <button type="submit">Add User</button>
-                        <button type="button" onclick="closeAddUserModal()">Cancel</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <!-- Edit User Modal -->
-        <div id="editModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeEditModal()">&times;</span>
-                <h2>Edit User</h2>
-                <form id="editUserForm" onsubmit="saveUserChanges(event)">
-                <label for="editUserId">User Id:</label>
-                <input type="text" id="editUserId" name="editUserId" readonly>
+            <!-- Edit User Modal -->
+            <div id="editModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeEditModal()">&times;</span>
+                    <h2>Edit User</h2>
+                    <form id="editUserForm" onsubmit="saveUserChanges(event)">
+                        <label for="editUserId">User Id:</label>
+                        <input type="text" id="editUserId" name="editUserId" readonly>
 
-                <div class="form-group">
-                    <label for="fname">First Name:</label>
-                    <input type="text" id="fname" name="fname" required>
+                        <div class="form-group">
+                            <label for="fname">First Name:</label>
+                            <input type="text" id="fname" name="fname" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lname">Last Name:</label>
+                            <input type="text" id="lname" name="lname" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="role">Role:</label>
+                            <select id="role" name="role" required>
+                                <option value="Administrator">Administrator</option>
+                                <option value="Head">Head</option>
+                                <option value="Employee">Employee</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button type="submit">Save Changes</button>
+                            <button type="button" onclick="closeEditModal()">Cancel</button>
+                        </div>
+                    </form>
+
                 </div>
-
-                <div class="form-group">
-                    <label for="lname">Last Name:</label>
-                    <input type="text" id="lname" name="lname" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="role">Role:</label>
-                    <select id="role" name="role" required>
-                        <option value="Administrator">Administrator</option>
-                        <option value="Head">Head</option>
-                        <option value="Employee">Employee</option>
-                    </select>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="submit">Save Changes</button>
-                    <button type="button" onclick="closeEditModal()">Cancel</button>
-                </div>
-            </form>
-
             </div>
-        </div>
 
             <!-- ========================= Delete User Confirmation Modal ==================== -->
             <div id="deleteModal" class="modal">
@@ -440,49 +434,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
         }
 
         function saveUserChanges(event) {
-    event.preventDefault(); // Prevent form submission
+            event.preventDefault(); // Prevent form submission
 
-    const formData = new FormData(document.getElementById('editUserForm'));
+            const formData = new FormData(document.getElementById('editUserForm'));
 
-    fetch('index.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('User updated successfully');
-            fetchUsers(); // Refresh the user list
-            closeEditModal(); // Close the modal
-        } else {
-            alert('Error: ' + data.error);
+            fetch('index.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('User updated successfully');
+                        fetchUsers(); // Refresh the user list
+                        closeEditModal(); // Close the modal
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error updating user:", error);
+                    alert("An error occurred while updating the user.");
+                });
         }
-    })
-    .catch(error => {
-        console.error("Error updating user:", error);
-        alert("An error occurred while updating the user.");
-    });
-}
 
 
-function openEditModal(button) {
-    const userId = button.getAttribute('data-id');
-    const fname = button.getAttribute('data-fname');
-    const lname = button.getAttribute('data-lname');
-    const email = button.getAttribute('data-email');
-    const role = button.getAttribute('data-role');
+        function openEditModal(button) {
+            const userId = button.getAttribute('data-id');
+            const fname = button.getAttribute('data-fname');
+            const lname = button.getAttribute('data-lname');
+            const email = button.getAttribute('data-email');
+            const role = button.getAttribute('data-role');
 
-    // Set the values in the modal form fields
-    document.getElementById('editUserId').value = userId;
-    document.getElementById('fname').value = fname;
-    document.getElementById('lname').value = lname;
-    document.getElementById('email').value = email;
-    document.getElementById('role').value = role;
+            // Set the values in the modal form fields
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('fname').value = fname;
+            document.getElementById('lname').value = lname;
+            document.getElementById('email').value = email;
+            document.getElementById('role').value = role;
 
-    // Show the modal
-    const editUserModal = document.getElementById('editModal');
-    editUserModal.classList.add('show');
-}
+            // Show the modal
+            const editUserModal = document.getElementById('editModal');
+            editUserModal.classList.add('show');
+        }
 
 
 
