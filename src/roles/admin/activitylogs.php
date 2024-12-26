@@ -14,11 +14,11 @@ try {
             l.log_action
         FROM tb_logs l
         LEFT JOIN tb_userdetails u ON l.doer = u.user_id
-        ORDER BY l.log_date DESC
+        WHERE 1=1
     ";
 
     // Apply date filter if set
-    if (isset($_GET['dateFilter'])) {
+    if (isset($_GET['dateFilter']) && in_array($_GET['dateFilter'], ['week', 'month', 'year'])) {
         $filter = $_GET['dateFilter'];
         if ($filter === 'week') {
             $query .= " AND l.log_date >= CURDATE() - INTERVAL 1 WEEK";
@@ -28,6 +28,7 @@ try {
             $query .= " AND l.log_date >= CURDATE() - INTERVAL 1 YEAR";
         }
     }
+    $query .= " ORDER BY l.log_date DESC";
 
     $stmt = $pdo->prepare($query);
     $stmt->execute();
@@ -125,7 +126,7 @@ try {
 
                     <div class="search">
                         <label>
-                            <input type="text" id="main-search" placeholder="Search Log Id, Username...." oninput="filterLogs()">
+                            <input type="text" id="searchBox" placeholder="Search Log Id, Username....">
                             <ion-icon name="search-outline"></ion-icon>
                         </label>
                     </div>
@@ -142,13 +143,6 @@ try {
 
             <div class="controls">
                 <div class="filters">
-                    <!-- <select id="action-filter" onchange="applyActionFilter()">
-                        <option value="">All Actions</option>
-                        <option value="Upload">Upload</option>
-                        <option value="Download">Download</option>
-                        <option value="Edit">Edit</option>
-                        <option value="Delete">Delete</option>
-                    </select> -->
                     <form method="GET" action="activitylogs.php">
                     <select name="dateFilter" onchange="this.form.submit()">
                         <option value="all">All Time</option>
@@ -170,7 +164,7 @@ try {
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="logsTableBody">
                         <?php foreach ($logs as $log): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($log['log_id']); ?></td>
@@ -185,8 +179,8 @@ try {
             
              <!-- Export Buttons -->
             <div class="export-buttons">
-                <button class="csv" onclick="exportLogs('csv')">Export as CSV</button>
-                <button class="pdf" onclick="exportLogs('pdf')">Export as PDF</button>
+                <button class="csv" onclick="exportLogs('csv')">Export</button>
+                <button class="print" onclick="printActivityLogs()">Print</button>
             </div>
             
         </div>
@@ -241,24 +235,20 @@ try {
     //             })
     //             .catch(err => console.error('Error filtering logs:', err));
     //     }
-        function filterLogs() {
-            const searchInput = document.getElementById('main-search').value.toLowerCase();
-            const tableRows = document.querySelectorAll('#logs-table-body tr');
+        document.getElementById('searchBox').addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase().trim();
+            const tableBody = document.querySelector('#logsTable tbody');
+            const rows = tableBody.getElementsByTagName('tr');
             let hasMatch = false;
 
-            tableRows.forEach(row => {
-                // Skip the "No match found" row if it exists
-                if (row.id === 'no-match-message') return;
+            Array.from(rows).forEach(row => {
+                const rowText = Array.from(row.getElementsByTagName('td')).map(cell => cell.textContent.toLowerCase()).join(' ');
 
-                // Check all cells in the row for a match
-                const cells = Array.from(row.getElementsByTagName('td'));
-                const matches = cells.some(cell => cell.textContent.toLowerCase().includes(searchInput));
-
-                // Show/hide row based on match
-                row.style.display = matches ? '' : 'none';
-
-                if (matches) {
+                if (rowText.includes(searchValue)) {
+                    row.style.display = '';
                     hasMatch = true;
+                } else {
+                    row.style.display = 'none';
                 }
             });
 
@@ -266,55 +256,105 @@ try {
             let noMatchMessage = document.getElementById('no-match-message');
             if (!hasMatch) {
                 if (!noMatchMessage) {
-                    // Create the message row if it doesn't exist
                     noMatchMessage = document.createElement('tr');
                     noMatchMessage.id = 'no-match-message';
-                    noMatchMessage.innerHTML = '<td colspan="100%" style="text-align:center;">No match found.</td>';
-                    document.getElementById('logs-table-body').appendChild(noMatchMessage);
+                    noMatchMessage.innerHTML = '<td colspan="4" style="text-align: center;">No match found.</td>';
+                    tableBody.appendChild(noMatchMessage);
                 }
-                noMatchMessage.style.display = ''; // Ensure the message is visible
+                noMatchMessage.style.display = '';
             } else if (noMatchMessage) {
-                noMatchMessage.style.display = 'none'; // Hide the message if rows match
+                noMatchMessage.style.display = 'none';
             }
-        }
+        });
 
-        function applyActionFilter() {
-            const actionFilter = document.getElementById('action-filter').value;
-            const tableRows = document.querySelectorAll('#logs-table-body tr');
-
-            tableRows.forEach(row => {
-                const actionCell = row.getElementsByTagName('td')[2]; // Correct index to 2 for "Action"
-                const matches = actionFilter === "" || actionCell.textContent.trim() === actionFilter;
-                row.style.display = matches ? '' : 'none';
-            });
-        }
-
+        // Function to apply date filter
         function applyDateFilter() {
-            const dateFilter = document.getElementById('date-filter').value;
+            const dateFilter = document.querySelector('[name="dateFilter"]').value;
             const now = new Date();
-            const tableRows = document.querySelectorAll('#logs-table-body tr');
+            const rows = document.querySelectorAll('#logsTable tbody tr');
 
-            tableRows.forEach(row => {
-                const timestamp = new Date(row.getElementsByTagName('td')[4].textContent); // Correct index to 4 for "Timestamp"
-                let matches = true;
+            rows.forEach(row => {
+                const dateCell = row.cells[2]; // Adjust based on table structure
+                if (!dateCell) return;
 
-                if (dateFilter === "week") {
+                const rowDate = new Date(dateCell.textContent.trim());
+                let isVisible = true;
+
+                if (dateFilter === 'week') {
                     const weekAgo = new Date();
                     weekAgo.setDate(now.getDate() - 7);
-                    matches = timestamp >= weekAgo && timestamp <= now;
-                } else if (dateFilter === "month") {
-                    matches = timestamp.getMonth() === now.getMonth() && timestamp.getFullYear() === now.getFullYear();
-                } else if (dateFilter === "year") {
-                    matches = timestamp.getFullYear() === now.getFullYear();
+                    isVisible = rowDate >= weekAgo && rowDate <= now;
+                } else if (dateFilter === 'month') {
+                    const monthAgo = new Date();
+                    monthAgo.setMonth(now.getMonth() - 1);
+                    isVisible = rowDate >= monthAgo && rowDate <= now;
+                } else if (dateFilter === 'year') {
+                    const yearAgo = new Date();
+                    yearAgo.setFullYear(now.getFullYear() - 1);
+                    isVisible = rowDate >= yearAgo && rowDate <= now;
                 }
 
-                row.style.display = matches ? '' : 'none';
+                row.style.display = isVisible ? '' : 'none';
             });
         }
 
         function exportLogs(format) {
-            alert(`Exporting logs as ${format.toUpperCase()}...`);
+            if (format === 'csv') {
+                const table = document.getElementById('logsTable');
+                let csvContent = '';
+
+                // Loop through each row of the table
+                Array.from(table.rows).forEach(row => {
+                    const rowData = Array.from(row.cells).map(cell => {
+                        let cellContent = cell.textContent;
+
+                        // Handle date formatting issue (if applicable)
+                        // Convert to a string (you can customize the format)
+                        const datePattern = /\d{4}-\d{2}-\d{2}/; // Basic YYYY-MM-DD pattern
+                        if (datePattern.test(cellContent)) {
+                            const date = new Date(cellContent);
+                            // Convert the date to a readable string format (MM/DD/YYYY)
+                            cellContent = date.toLocaleDateString('en-US');
+                        }
+
+                        // Escape content for CSV (wrap with quotes to prevent issues with commas, line breaks, etc.)
+                        return `"${cellContent.replace(/"/g, '""')}"`; // Handle quotes inside text
+                    }).join(',');
+
+                    // Add the formatted row data to the CSV content
+                    csvContent += rowData + '\n';
+                });
+
+                // Create a Blob and trigger download
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'activity_logs.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
         }
+
+        function printActivityLogs() {
+            // Save the logs data to localStorage
+            const logs = [];
+            document.querySelectorAll('#logsTable tbody tr').forEach(row => {
+                const logData = {
+                    log_id: row.cells[0].textContent,
+                    username: row.cells[1].textContent,
+                    log_date: row.cells[2].textContent,
+                    log_action: row.cells[3].textContent
+                };
+                logs.push(logData);
+            });
+
+            localStorage.setItem('activityLogs', JSON.stringify(logs)); // Save logs in localStorage
+
+            // Open the activitylogs_print.html in a new window or tab
+            window.open('activitylogs_print.html', '_blank');
+        }
+
 
     </script>
 </body>

@@ -1,3 +1,59 @@
+/* Fonts */
+:root {
+  --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --heading-font: "Montserrat",  sans-serif;
+  --nav-font: "Poppins",  sans-serif;
+}
+
+/* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
+:root { 
+  --background-color: #ffffff; /* Background color for the entire website, including individual sections */
+  --default-color: #444444; /* Default color used for the majority of the text content across the entire website */
+  --heading-color: #124265; /* Color for headings, subheadings and title throughout the website */
+  --accent-color: #2487ce; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
+  --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
+  --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
+}
+
+/* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
+:root {
+  --nav-color: #124265;  /* The default color of the main navmenu links */
+  --nav-hover-color: #2487ce; /* Applied to main navmenu links when they are hovered over or active */
+  --nav-mobile-background-color: #ffffff; /* Used as the background color for mobile navigation menu */
+  --nav-dropdown-background-color: #ffffff; /* Used as the background color for dropdown items that appear when hovering over primary navigation items */
+  --nav-dropdown-color: #124265; /* Used for navigation links of the dropdown items in the navigation menu. */
+  --nav-dropdown-hover-color: #2487ce; /* Similar to --nav-hover-color, this color is applied to dropdown navigation links when they are hovered over. */
+}
+
+/* Color Presets - These classes override global colors when applied to any section or element, providing reuse of the sam color scheme. */
+
+.light-background {
+  --background-color: #f6fafd;
+  --surface-color: #ffffff;
+}
+
+.dark-background {
+  --background-color: #060606;
+  --default-color: #ffffff;
+  --heading-color: #ffffff;
+  --surface-color: #252525;
+  --contrast-color: #ffffff;
+}
+
+.accent-background {
+  --background-color: #2487ce;
+  --default-color: #ffffff;
+  --heading-color: #ffffff;
+  --accent-color: #ffffff;
+  --surface-color: #469fdf;
+  --contrast-color: #ffffff;
+}
+
+/* Smooth scroll */
+:root {
+  scroll-behavior: smooth;
+}
+
 /* =========== Google Fonts ============ */
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap");
@@ -5,7 +61,7 @@
 
 /* =============== Globals ============== */
 * {
-  font-family: "Poppins", sans-serif;
+  font-family: var(--nav-font);
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -21,7 +77,7 @@
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--nav-font);
   margin: 0;
   padding: 0;
   background-color: #f4f4f4;
@@ -114,7 +170,7 @@ body {
 }
 
 .navigation ul li .tab {
-  font-family: Montserrat, sans-serif;
+  font-family: var(--heading-font);
   font-size: 15px;
   font-weight: 400;
   color: #909090;
@@ -171,7 +227,7 @@ body {
     line-height: 15px;
     text-align: start;
     white-space: nowrap;
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--nav-font);
     margin-top: 4vh;
     margin-left: 10%;
     margin-right: 20%;
@@ -406,7 +462,7 @@ body {
   opacity: 0; /* Hidden at start */
   transition: transform 0.4s ease, opacity 0.4s ease; /* Pop-up transition */
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); /* Stronger shadow for elevation */
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--nav-font);
 }
 
 /* Modal Show Class */
@@ -598,6 +654,7 @@ h2 {
   border-radius: 8px;
   margin-left: 10px;
   cursor: pointer;
+  width: 10%;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
@@ -606,7 +663,7 @@ h2 {
   color: white;
 }
 
-.export-buttons button.pdf {
+.export-buttons button.print {
   background-color: #dc3545;
   color: white;
 }
@@ -1047,13 +1104,13 @@ h3 {
   align-items: last baseline; /* Center vertically */
   padding: 30px; /* Add spacing */
   margin-left: 20px;
-  font-family: 'Poppins' serif;
+  font-family: var(--nav-font);
 }
 
 .name h1 {
   font-size: 30px; /* Adjust header size */
   color: #000; /* Text color for contrast */
-  font-family: 'Arial', sans-serif; /* Clean font */
+  font-family: var(--default-font);
   font-weight: bold; /* Make it prominent */
   margin: 0; /* Remove default margin */
   text-align: center; /* Center text inside the header */
@@ -1389,4 +1446,12 @@ h3 {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+
+#no-match-message {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  font-size: 14px;
 }
