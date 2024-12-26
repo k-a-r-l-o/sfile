@@ -13,7 +13,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #d4edda;
+  background: #B0DFE5;
   padding: 30px;
 }
 
@@ -55,9 +55,7 @@ body {
 
 .securefile-text .file {
   color: #050deb;
-}
-
-  
+} 
 
 .container .cover {
   position: absolute;
@@ -99,6 +97,8 @@ body {
   width: 100%;
   object-fit: cover;
   z-index: 10;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
 }
 
 .container .cover .text {
@@ -118,7 +118,9 @@ body {
   height: 100%;
   width: 100%;
   opacity: 0.5;
-  background: #2ecc71;
+  background: #5b9bc9;
+  border-bottom-right-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
 .cover .text .text-1,
@@ -166,7 +168,7 @@ body {
   bottom: 0;
   height: 3px;
   width: 25px;
-  background: #9fe8b0;
+  background: #5b9bc9;
 }
 
 .forms .signup-form .title:before {
@@ -200,12 +202,12 @@ body {
 
 .form-content .input-box input:focus,
 .form-content .input-box input:valid {
-  border-color: #9fe8b0;
+  border-color: #2487ce;
 }
 
 .form-content .input-box i {
   position: absolute;
-  color: #2ecc71;
+  color: #5b9bc9;
   font-size: 17px;
   padding-left: 10px;
   padding-right: 20px;
@@ -231,16 +233,18 @@ body {
 }
 
 .forms .form-content .button input {
-  color: #000;
-  background: #9fe8b0;
+  color: #fff;
+  background: #5b9bc9 ;
   border-radius: 6px;
   padding: 0;
   cursor: pointer;
   transition: all 0.4s ease;
+
 }
 
 .forms .form-content .button input:hover {
   background: #d4edda;
+  color: #000;
 }
 
 .forms .form-content label {
