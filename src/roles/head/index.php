@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/client.css">
+    <link rel="stylesheet" href="css/head.css">
     <title>SecureFile</title>
-    
+
     <!-- Ionicons -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    
+
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
@@ -28,31 +28,22 @@
                             <img src="../../assets/img/logo.png">
                         </span>
                         <span class="securefile">
-                            <span class="secure">Secure</span><span class="file">File</span>
+                            <span class="secure">Secure</span><span class="file">File <br><span class="role">Head</span></span>
                         </span>
-                    </a>
-                </li>
-
-                <li class="tab">
-                    <a href="../client/index.php">
-                        <span class="icon">
-                            <ion-icon name="cloud-upload-outline"></ion-icon>
-                        </span>
-                        <span class="title">Upload Files</span>
                     </a>
                 </li>
 
                 <li class="tab active">
-                    <a href="../client/myfiles.php">
+                    <a href="../head/index.php">
                         <span class="icon">
                             <ion-icon name="folder-outline"></ion-icon>
                         </span>
-                        <span class="title">My Files</span>
+                        <span class="title">Manage Users Files</span>
                     </a>
                 </li>
 
                 <li class="tab">
-                    <a href="../client/profileclient.php">
+                    <a href="../head/profilehead.php">
                         <span class="icon">
                             <ion-icon name="settings-outline"></ion-icon>
                         </span>
@@ -92,136 +83,118 @@
                 </div>
             </div>
 
-            <div class="name"> 
-                <h1>My Files</h1>
+            <div class="name">
+                <h1>User Files</h1>
             </div>
 
-            <!-- Controls section -->
-            <div class="controls">
-                <div class="filters">
-                    <select id="sort-options" onchange="applySort()">
-                        <option value="default">Select to sort</option> <!-- Default option with no effect -->
-                        <option value="filename-asc">Filename (A-Z)</option>
-                        <option value="filename-desc">Filename (Z-A)</option>
-                        <option value="filetype-asc">File Type (A-Z)</option>
-                        <option value="filetype-desc">File Type (Z-A)</option>
-                        <option value="filesize-asc">File Size (Smallest)</option>
-                        <option value="filesize-desc">File Size (Largest)</option>
-                        <option value="date-asc">Date (Oldest)</option>
-                        <option value="date-desc">Date (Newest)</option>
-                    </select> 
-                    <select id="date-filter" onchange="applyDateFilter()">
-                        <option value="all">All Time</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                        <option value="year">This Year</option>
-                    </select>
+            <!-- ========================= Client Cards ==================== -->
+            <div id="client-cards" class="client-cards">
+                <div class="client-card" onclick="handleCardClick('Client 1')">
+                    <img src="client1.jpg" alt="Client 1">
+                    <h2>Client 1</h2>
+                </div>
+                <div class="client-card" onclick="handleCardClick('Client 2')">
+                    <img src="client2.jpg" alt="Client 2">
+                    <h2>Client 2</h2>
+                </div>
+                <!-- Add more client cards here -->
+            </div>
+
+            <!-- ========================= Breadcrumbs ==================== -->
+            <div id="breadcrumbs" class="breadcrumbs" style="display:none;">
+                <a href="#" onclick="showClientCards()">Back</a> &gt; <span id="current-client"></span>
+            </div>
+
+            <!-- ========================= Client Files ==================== -->
+            <div id="client-files" class="client-files" style="display:none;">
+                <div class="client-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Date & Time Uploaded</th>
+                                <th>File </th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="files-table-body">
+                            <!-- Files will be dynamically inserted here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
             
-            <!-- ========================= File List ==================== -->
-            <div class="client-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Filename</th>
-                            <th>Date & Time Uploaded</th>
-                            <th>File Size</th>
-                            <th>Owner</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="files-table-body">
-                        <tr>
-                            <td>data.csv</td>
-                            <td>2024-12-10 11:00 AM</td>
-                            <td>16 KB</td>
-                            <td>me</td>
-                            <td>
-                                <div class="action-menu">
-                                    <button class="action-btn" onclick="toggleDropdown(event)">
-                                        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a href="#" onclick="alert('View clicked')">View</a>
-                                        <a href="#" onclick="alert('Download clicked')">Download</a>
-                                        <a href="#" onclick="alert('Rename clicked')">Rename</a>
-                                        <a href="#" onclick="alert('Delete clicked')">Delete</a>
-                                    </div>
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>report.pdf</td>
-                            <td>2024-12-12 10:30 AM</td>
-                            <td>146 KB</td>
-                            <td>me</td>
-                            <td>
-                                <div class="action-menu">
-                                    <button class="action-btn" onclick="toggleDropdown(event)">
-                                        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a href="#" onclick="alert('View clicked')">View</a>
-                                        <a href="#" onclick="alert('Download clicked')">Download</a>
-                                        <a href="#" onclick="alert('Rename clicked')">Rename</a>
-                                        <a href="#" onclick="alert('Delete clicked')">Delete</a>
-                                    </div>
-                                </div>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>draft.docx</td>
-                            <td>2024-12-05 09:15 AM</td>
-                            <td>18 KB</td>
-                            <td>me</td>
-                            <td>
-                                <div class="action-menu">
-                                    <button class="action-btn" onclick="toggleDropdown(event)">
-                                        <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a href="#" onclick="alert('View clicked')">View</a>
-                                        <a href="#" onclick="alert('Download clicked')">Download</a>
-                                        <a href="#" onclick="alert('Rename clicked')">Rename</a>
-                                        <a href="#" onclick="alert('Delete clicked')">Delete</a>
-                                    </div>
-                                </div>
-
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Enhanced Modal Structure -->
-        <div id="action-modal" class="modal">
-            <div class="modal-content">
-                <h3 id="modal-title">Action</h3>
-                <p id="modal-message">Are you sure you want to proceed?</p>
-
-                <!-- Rename Field -->
-                <div id="rename-input" style="display: none;">
-                    <label for="rename-field">New Filename:</label>
-                    <input type="text" id="rename-field" placeholder="Enter new filename..." />
-                </div>
-
-                <!-- Modal Buttons -->
-                <div class="modal-buttons">
-                    <button id="confirm-btn" class="btn confirm">Confirm</button>
-                    <button id="cancel-btn" class="btn cancel">Cancel</button>
-                </div>
-            </div>
         </div>
 
     </div> <!-- Container end -->
 
-    <script src="js/client.js"></script>
+    <script src="js/head.js"></script>
 
     <script>
+        // Sample client data for demonstration
+        const clientData = {
+            'Client 1': [
+                { filename: 'data.csv', date: '2024-12-10 11:00 AM', size: '16 KB' },
+                { filename: 'report.pdf', date: '2024-12-12 10:30 AM', size: '146 KB' },
+                { filename: 'draft.docx', date: '2024-12-05 09:15 AM', size: '18 KB' }
+            ],
+            'Client 2': [
+                { filename: 'budget.xlsx', date: '2024-12-11 02:15 PM', size: '45 KB' },
+                { filename: 'invoice.pdf', date: '2024-12-14 04:20 PM', size: '120 KB' }
+            ]
+        };
+
+        // Function to display client files in the table
+        function displayClientFiles(clientName) {
+            const clientFiles = clientData[clientName];
+            const tableBody = document.getElementById('files-table-body');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            clientFiles.forEach(file => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${file.filename}</td>
+                    <td>${file.date}</td>
+                    <td>${file.size}</td>
+                    <td>
+                        <div class="action-menu">
+                            <button class="action-btn" onclick="toggleDropdown(event)">
+                                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a href="#" onclick="alert('View clicked')">View</a>
+                                <a href="#" onclick="alert('Download clicked')">Download</a>
+                                <a href="#" onclick="alert('Rename clicked')">Rename</a>
+                                <a href="#" onclick="alert('Delete clicked')">Delete</a>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Show the client files section and hide the client cards
+            document.getElementById('client-cards').style.display = 'none';
+            document.getElementById('client-files').style.display = 'block';
+
+            // Show breadcrumbs and update current client
+            document.getElementById('breadcrumbs').style.display = 'block';
+            document.getElementById('current-client').textContent = clientName;
+        }
+
+        // Function to handle client card click
+        function handleCardClick(clientName) {
+            displayClientFiles(clientName);
+        }
+
+        // Function to show client cards again when clicking "Back to Client Cards"
+        function showClientCards() {
+            document.getElementById('client-cards').style.display = 'block';
+            document.getElementById('client-files').style.display = 'none';
+            document.getElementById('breadcrumbs').style.display = 'none';
+        }
+
         function toggleDropdown(event) {
             const dropdown = event.target.closest('.action-menu').querySelector('.dropdown-menu');
             const table = event.target.closest('table');
