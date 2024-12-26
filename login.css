@@ -30,9 +30,10 @@ body {
 
 /* Logo Section */
 .logo-section {
-    display: flex;
+  display: flex;
   text-align: left;
   margin-bottom: 30px;
+  flex-wrap: wrap; 
 }
 
 .logo-section .logo {
@@ -40,10 +41,11 @@ body {
   margin-bottom: 5px;
   margin-right: 5px;
   margin-left: 10px;
+  flex-shrink: 0; 
 }
 
 .securefile-text {
-    margin-top: 30px;
+  margin-top: 30px;
   font-size: 30px;
   font-weight: 600;
   font-family: 'Poppins';
@@ -266,6 +268,23 @@ body {
   display: none;
 }
 
+.input-box {
+  position: relative;
+}
+  
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #aaa;
+}
+  
+.toggle-password:hover {
+  color: #000;
+}
+
 @media (max-width: 730px) {
   .container .cover {
     display: none;
@@ -289,20 +308,39 @@ body {
   }
 }
 
-.input-box {
-    position: relative;
+@media screen and (max-width: 768px) {
+  .logo-section {
+      justify-content: center; 
+      margin-bottom: 20px;
+  }
+
+  .logo-section .logo {
+      max-width: 80px; 
+      margin-left: 5px;
+      margin-right: 5px;
+  }
+
+  .securefile-text {
+      text-align: center; 
   }
   
-  .toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #aaa;
+}
+
+@media screen and (max-width: 480px) {
+  .logo-section {
+    justify-content: center; 
+    margin-bottom: 20px;
   }
-  
-  .toggle-password:hover {
-    color: #000;
+
+  .logo-section .logo {
+      max-width: 80px; 
+      margin-left: 5px;
+      margin-right: 5px;
   }
+
+  .securefile-text {
+      text-align: center; 
+  }
+
+}
   

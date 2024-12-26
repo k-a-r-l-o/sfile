@@ -155,26 +155,28 @@ try {
 
             <!-- ========================= Table ==================== -->
             <div class="user-table">
-                <table id="logsTable">
-                    <thead>
-                        <tr>
-                            <th>Log ID</th>
-                            <th>Username</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logsTableBody">
-                        <?php foreach ($logs as $log): ?>
+                <div class="user-table-wrapper">
+                    <table id="logsTable">
+                        <thead>
                             <tr>
-                                <td><?php echo htmlspecialchars($log['log_id']); ?></td>
-                                <td><?php echo htmlspecialchars($log['username']); ?></td>
-                                <td><?php echo date("Y-m-d H:i:s", strtotime($log['log_date'])); ?></td>
-                                <td><?php echo htmlspecialchars($log['log_action']); ?></td>
+                                <th>Log ID</th>
+                                <th>Username</th>
+                                <th>Date</th>
+                                <th>Action</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <?php foreach ($logs as $log): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($log['log_id']); ?></td>
+                                    <td><?php echo htmlspecialchars($log['username']); ?></td>
+                                    <td><?php echo date("Y-m-d H:i:s", strtotime($log['log_date'])); ?></td>
+                                    <td><?php echo htmlspecialchars($log['log_action']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
             
              <!-- Export Buttons -->
@@ -190,51 +192,6 @@ try {
     <script src="js/js.js"></script>
 
     <script>
-    //   document.addEventListener("DOMContentLoaded", function() {
-    //         fetch('activitylogs.php')
-    //             .then(response => response.json())  // Parse JSON
-    //             .then(data => {
-    //                 const logsTableBody = document.getElementById('logs-table-body');
-    //                 logsTableBody.innerHTML = '';  // Clear any existing rows
-
-    //                 data.forEach(log => {
-    //                     const row = document.createElement('tr');
-    //                     row.innerHTML = `
-    //                         <td>${log.log_id}</td>
-    //                         <td>${log.username}</td>
-    //                         <td>${new Date(log.log_date).toLocaleString()}</td>
-    //                         <td>${log.log_action}</td>
-    //                     `;
-    //                     logsTableBody.appendChild(row);
-    //                 });
-    //             })
-    //             .catch(err => console.error('Error fetching logs:', err));
-    //     });
-
-    //     // Function to filter logs by date range
-    //     function applyDateFilter() {
-    //         const filter = document.getElementById('date-filter').value;
-    //         let url = 'activitylogs.php?dateFilter=' + filter;
-
-    //         fetch(url)
-    //             .then(response => response.json())
-    //             .then(data => {
-    //                 const logsTable = document.getElementById('logs-table-body');
-    //                 logsTable.innerHTML = ''; // Clear existing rows
-
-    //                 // Populate the table with filtered logs
-    //                 data.forEach(log => {
-    //                     const row = `<tr>
-    //                         <td>${log.log_id}</td>
-    //                         <td>${log.username}</td>
-    //                         <td>${new Date(log.log_date).toLocaleString()}</td>
-    //                         <td>${log.log_action}</td>
-    //                     </tr>`;
-    //                     logsTable.innerHTML += row;
-    //                 });
-    //             })
-    //             .catch(err => console.error('Error filtering logs:', err));
-    //     }
         document.getElementById('searchBox').addEventListener('input', function () {
             const searchValue = this.value.toLowerCase().trim();
             const tableBody = document.querySelector('#logsTable tbody');

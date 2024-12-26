@@ -53,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname'], $_POST['lnam
 
         // Return success response
         echo json_encode(["success" => true]);
-    } catch (PDOException $e) {
-        // Return error response if the query fails
-        echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
-    }
+        } catch (PDOException $e) {
+            // Return error response if the query fails
+            echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
+        }
     exit;
 }
 
@@ -100,7 +100,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editUserId'], $_POST[
     exit;
 }
 
-
 // Fetching users
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
     try {
@@ -124,9 +123,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
     exit;
 }
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -202,132 +198,133 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             </ul>
         </div>
 
-                <!-- ========================= Main ==================== -->
-                <div class="main">
-                    <div class="topbar">
-                        <div class="left-section">
-                            <div class="toggle">
-                                <ion-icon name="reorder-three-outline"></ion-icon>
-                            </div>
-
-                            <div class="search">
-                                <label>
-                                    <input type="text" id="main-search" placeholder="Search User Id, Username....">
-                                    <ion-icon name="search-outline"></ion-icon>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="user">
-                            <img src="../../assets/img/admin.png">
-                        </div>
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="left-section">
+                    <div class="toggle">
+                        <ion-icon name="reorder-three-outline"></ion-icon>
                     </div>
 
-                    <div class="name">
-                        <h1>Manage Users</h1>
+                    <div class="search">
+                        <label>
+                            <input type="text" id="main-search" placeholder="Search User Id, Username....">
+                            <ion-icon name="search-outline"></ion-icon>
+                        </label>
                     </div>
+                </div>
 
-                    <div class="controls">
-                        <div class="filters">
-                        <select id="action-filter" onchange="applyRoleFilter()">
+                <div class="user">
+                    <img src="../../assets/img/admin.png">
+                </div>
+            </div>
+
+            <div class="name">
+                <h1>Manage Users</h1>
+            </div>
+
+            <div class="controls">
+                <div class="filters">
+                    <select id="action-filter" onchange="applyRoleFilter()">
                         <option value="">All</option>
                         <option value="Administrator">Administrator</option>
                         <option value="Head">Head</option>
                         <option value="Employee">Employee</option>
                     </select>
+                </div>
+            </div>
+
+            <!-- ========================= Table ==================== -->
+            <div class="user-table">
+                <div class="user-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email Address</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-list">
+                            <!-- Users will be dynamically injected here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Add User Button -->
+            <button class="add-user-btn" onclick="openAddUserModal()">
+                <i class="fas fa-plus"></i> Add User
+            </button>
+
+            <!-- Add User Modal -->
+            <div id="addUserModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeAddUserModal()">&times;</span>
+                    <h2>Add New User</h2>
+                    <form id="addUserForm" onsubmit="addUser(event)">
+                        <label for="fname">First Name: </label>
+                        <input type="text" id="fname" name="fname" required> <!-- Fix name attribute -->
+                        <label for="lname">Last Name: </label>
+                        <input type="text" id="lname" name="lname" required> <!-- Fix name attribute -->
+                        <label for="email">Email Address:</label>
+                        <input type="email" id="email" name="email" required>
+                        <label for="role">Role:</label>
+                        <select id="role" name="role" required>
+                            <option value="Administrator">Administrator</option>
+                            <option value="Head">Head</option>
+                            <option value="Employee">Employee</option>
+                        </select>
+                        <div class="modal-buttons">
+                            <button type="submit">Add User</button>
+                            <button type="button" onclick="closeAddUserModal()">Cancel</button>
                         </div>
-                    </div>
-
-                    <!-- ========================= Table ==================== -->
-                    <div class="user-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>User ID</th>
-                                    <th>Name</th>
-                                    <th>Email Address</th>
-                                    <th>Role</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-list">
-                                <!-- Users will be dynamically injected here by JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Add User Button -->
-                    <button class="add-user-btn" onclick="openAddUserModal()">
-                        <i class="fas fa-plus"></i> Add User
-                    </button>
-
-                <!-- Add User Modal -->
-        <div id="addUserModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeAddUserModal()">&times;</span>
-                <h2>Add New User</h2>
-                <form id="addUserForm" onsubmit="addUser(event)">
-                    <label for="fname">First Name: </label>
-                    <input type="text" id="fname" name="fname" required> <!-- Fix name attribute -->
-                    <label for="lname">Last Name: </label>
-                    <input type="text" id="lname" name="lname" required> <!-- Fix name attribute -->
-                    <label for="email">Email Address:</label>
-                    <input type="email" id="email" name="email" required>
-                    <label for="role">Role:</label>
-                    <select id="role" name="role" required>
-                        <option value="Administrator">Administrator</option>
-                        <option value="Head">Head</option>
-                        <option value="Employee">Employee</option>
-                    </select>
-                    <div class="modal-buttons">
-                        <button type="submit">Add User</button>
-                        <button type="button" onclick="closeAddUserModal()">Cancel</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <!-- Edit User Modal -->
-        <div id="editModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeEditModal()">&times;</span>
-                <h2>Edit User</h2>
-                <form id="editUserForm" onsubmit="saveUserChanges(event)">
-                <label for="editUserId">User Id:</label>
-                <input type="text" id="editUserId" name="editUserId" readonly>
+            <!-- Edit User Modal -->
+            <div id="editModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeEditModal()">&times;</span>
+                    <h2>Edit User</h2>
+                    <form id="editUserForm" onsubmit="saveUserChanges(event)">
+                        <label for="editUserId">User Id:</label>
+                        <input type="text" id="editUserId" name="editUserId" readonly>
 
-                <div class="form-group">
-                    <label for="fname">First Name:</label>
-                    <input type="text" id="fname" name="fname" required>
+                        <div class="form-group">
+                            <label for="fname">First Name:</label>
+                            <input type="text" id="fname" name="fname" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lname">Last Name:</label>
+                            <input type="text" id="lname" name="lname" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="role">Role:</label>
+                            <select id="role" name="role" required>
+                                <option value="Administrator">Administrator</option>
+                                <option value="Head">Head</option>
+                                <option value="Employee">Employee</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button type="submit">Save Changes</button>
+                            <button type="button" onclick="closeEditModal()">Cancel</button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="form-group">
-                    <label for="lname">Last Name:</label>
-                    <input type="text" id="lname" name="lname" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="role">Role:</label>
-                    <select id="role" name="role" required>
-                        <option value="Administrator">Administrator</option>
-                        <option value="Head">Head</option>
-                        <option value="Employee">Employee</option>
-                    </select>
-                </div>
-
-                <div class="modal-buttons">
-                    <button type="submit">Save Changes</button>
-                    <button type="button" onclick="closeEditModal()">Cancel</button>
-                </div>
-            </form>
-
             </div>
-        </div>
 
             <!-- ========================= Delete User Confirmation Modal ==================== -->
             <div id="deleteModal" class="modal">
@@ -378,19 +375,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                             <td>${user.user_fname} ${user.user_lname}</td>
                             <td>${user.user_email}</td>
                             <td>${user.user_role}</td>
-                            <td>
-                                <i class="fas fa-edit action-icon edit-icon" 
-                                data-id="${user.user_id}" 
+                            <td class="action-buttons">
+                                <button 
+                                    class="action-icon edit-icon" 
+                                    data-id="${user.user_id}" 
                                     data-fname="${user.user_fname}" 
                                     data-lname="${user.user_lname}" 
                                     data-email="${user.user_email}" 
                                     data-role="${user.user_role}" 
-                                    onclick="openEditModal(this)">
-                                </i>
-                                <i class="fas fa-trash action-icon delete-icon" 
+                                    onclick="openEditModal(this)"
+                                    aria-label="Edit user">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button 
+                                    class="action-icon delete-icon" 
                                     data-id="${user.user_id}" 
-                                    onclick="openDeleteModal(this)">
-                                </i>
+                                    onclick="openDeleteModal(this)"
+                                    aria-label="Delete user">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </td>
                         `;
                         userList.appendChild(row);
@@ -440,59 +443,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
         }
 
         function saveUserChanges(event) {
-    event.preventDefault(); // Prevent form submission
+            event.preventDefault(); // Prevent form submission
 
-    const formData = new FormData(document.getElementById('editUserForm'));
+            const formData = new FormData(document.getElementById('editUserForm'));
 
-    fetch('index.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('User updated successfully');
-            fetchUsers(); // Refresh the user list
-            closeEditModal(); // Close the modal
-        } else {
-            alert('Error: ' + data.error);
+            fetch('index.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('User updated successfully');
+                    fetchUsers(); // Refresh the user list
+                    closeEditModal(); // Close the modal
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error updating user:", error);
+                alert("An error occurred while updating the user.");
+            });
         }
-    })
-    .catch(error => {
-        console.error("Error updating user:", error);
-        alert("An error occurred while updating the user.");
-    });
-}
 
 
-function openEditModal(button) {
-    const userId = button.getAttribute('data-id');
-    const fname = button.getAttribute('data-fname');
-    const lname = button.getAttribute('data-lname');
-    const email = button.getAttribute('data-email');
-    const role = button.getAttribute('data-role');
+        function openEditModal(button) {
+            const userId = button.getAttribute('data-id');
+            const fname = button.getAttribute('data-fname');
+            const lname = button.getAttribute('data-lname');
+            const email = button.getAttribute('data-email');
+            const role = button.getAttribute('data-role');
 
-    // Set the values in the modal form fields
-    document.getElementById('editUserId').value = userId;
-    document.getElementById('fname').value = fname;
-    document.getElementById('lname').value = lname;
-    document.getElementById('email').value = email;
-    document.getElementById('role').value = role;
+            // Set the values in the modal form fields
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('fname').value = fname;
+            document.getElementById('lname').value = lname;
+            document.getElementById('email').value = email;
+            document.getElementById('role').value = role;
 
-    // Show the modal
-    const editUserModal = document.getElementById('editModal');
-    editUserModal.classList.add('show');
-}
-
-
-
+            // Show the modal
+            const editUserModal = document.getElementById('editModal');
+            editUserModal.classList.add('show');
+        }
 
         // Function to close the Edit User Modal
         function closeEditModal() {
             const editModal = document.getElementById('editModal');
             editModal.classList.remove('show'); // Hide the modal
         }
-
 
         // Function to open the Delete User Confirmation Modal (with user ID from the clicked icon)
         function openDeleteModal(icon) {
@@ -545,23 +544,38 @@ function openEditModal(button) {
             });
         }
 
-        document.getElementById('main-search').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase(); // Get the search term and normalize it to lowercase
-            const tableRows = document.querySelectorAll('.user-table tbody tr'); // Select all table rows in the tbody
+        document.getElementById('main-search').addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase().trim();
+            const tableBody = document.querySelector('#user-list'); // Target the user list tbody
+            const rows = tableBody.getElementsByTagName('tr');
+            let hasMatch = false;
 
-            tableRows.forEach(row => {
-                const userId = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase(); // User ID column
-                const username = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase(); // Username column
-                const email = row.querySelector('td:nth-child(3)').textContent.trim().toLowerCase(); // Email Address column
+            Array.from(rows).forEach(row => {
+                const rowText = Array.from(row.getElementsByTagName('td')).map(cell => cell.textContent.toLowerCase()).join(' ');
 
-                // Check if any of the columns contain the search term
-                if (userId.includes(searchTerm) || username.includes(searchTerm) || email.includes(searchTerm)) {
-                    row.style.display = ""; // Show the row if there's a match
+                if (rowText.includes(searchValue)) {
+                    row.style.display = '';  // Show matching rows
+                    hasMatch = true;
                 } else {
-                    row.style.display = "none"; // Hide the row if there's no match
+                    row.style.display = 'none';  // Hide non-matching rows
                 }
             });
+
+            // Handle "No match found" message
+            let noMatchMessage = document.getElementById('no-match-message');
+            if (!hasMatch) {
+                if (!noMatchMessage) {
+                    noMatchMessage = document.createElement('tr');
+                    noMatchMessage.id = 'no-match-message';
+                    noMatchMessage.innerHTML = '<td colspan="5" style="text-align: center;">No match found.</td>'; // Updated colspan to 5 for the table
+                    tableBody.appendChild(noMatchMessage);
+                }
+                noMatchMessage.style.display = ''; // Ensure the message is visible
+            } else if (noMatchMessage) {
+                noMatchMessage.style.display = 'none'; // Hide the message if there are matches
+            }
         });
+
     </script>
 </body>
 
