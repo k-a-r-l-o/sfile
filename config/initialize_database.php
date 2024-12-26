@@ -89,7 +89,7 @@ try {
     // Log entry for default admin setup
     $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
     $logStmt->execute([
-        ':doer' => 'System',
+        ':doer' => 'Administrator', 
         ':action' => 'Default administrator added'
     ]);
     error_log('Log for default admin action added successfully.');

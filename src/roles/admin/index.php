@@ -60,35 +60,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname'], $_POST['lnam
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editUserId'], $_POST['fname'],  $_POST['lname'], $_POST['role'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editUserId'], $_POST['fname'], $_POST['lname'], $_POST['email'], $_POST['role'])) {
     try {
         $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Prepare the SQL query to update user details (excluding email)
-        $stmt = $pdo->prepare("UPDATE tb_userdetails SET user_fname = :fname, user_lname = :lname, user_role = :role WHERE user_id = :id");
+        // Update query including email
+        $stmt = $pdo->prepare("UPDATE tb_userdetails 
+                               SET user_fname = :fname, 
+                                   user_lname = :lname, 
+                                   user_email = :email, 
+                                   user_role = :role
+                               WHERE user_id = :id");
 
-        // Bind parameters
+        // Bind parameters for update
         $stmt->bindParam(':id', $_POST['editUserId']);
         $stmt->bindParam(':fname', $_POST['fname']);
         $stmt->bindParam(':lname', $_POST['lname']);
+        $stmt->bindParam(':email', $_POST['email']);
         $stmt->bindParam(':role', $_POST['role']);
 
-        // Execute the query
+        // Execute the update query
         $stmt->execute();
 
         // Log the user update
         $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
         $logStmt->execute([
-            ':doer' => 'Administrator', // Replace with dynamic value if necessary
-            ':action' => "Edited user: {$_POST['fname']} {$_POST['lname']}"
+            ':doer' => 'Administrator',
+            ':action' => "Edited user: {$_POST['fname']} {$_POST['lname']}, Email: {$_POST['email']}"
         ]);
 
         // Return success response
         echo json_encode(["success" => true]);
+
     } catch (PDOException $e) {
-        // Return error response if the query fails
-        echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
+        error_log("Error: " . $e->getMessage());
+        echo json_encode(["error" => $e->getMessage()]); // Return the detailed error for debugging
     }
     exit;
 }
@@ -100,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
         $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $stmt = $pdo->prepare("SELECT user_id, user_fname, user_lname, user_email, user_role, user_status FROM tb_userdetails");
+        $stmt = $pdo->prepare("SELECT user_id, user_fname, user_lname, user_email, user_role FROM tb_userdetails");
         $stmt->execute();
 
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -117,6 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
     exit;
 }
 ?>
+
 
 
 
@@ -285,38 +293,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                 <span class="close" onclick="closeEditModal()">&times;</span>
                 <h2>Edit User</h2>
                 <form id="editUserForm" onsubmit="saveUserChanges(event)">
-                    <label for="editUserId">User Id:</label>
-                    <input type="text" id="editUserId" readonly> <!-- User ID is readonly, non-editable -->
+                <label for="editUserId">User Id:</label>
+                <input type="text" id="editUserId" name="editUserId" readonly>
 
-                    <div class="form-group">
-                        <label for="username">First Name:</label>
-                        <input type="text" id="username" name="username" required>
-                    </div>
+                <div class="form-group">
+                    <label for="fname">First Name:</label>
+                    <input type="text" id="fname" name="fname" required>
+                </div>
 
-                    <div class="form-group">
-                        <label for="lastName">Last Name:</label>
-                        <input type="text" id="lastName" name="lastName" required>
-                    </div>
+                <div class="form-group">
+                    <label for="lname">Last Name:</label>
+                    <input type="text" id="lname" name="lname" required>
+                </div>
 
-                    <div class="form-group">
-                        <label for="email">Email Address:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
+                <div class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
 
-                    <div class="form-group">
-                        <label for="role">Role:</label>
-                        <select id="role" name="role" required>
-                            <option value="Administrator">Administrator</option>
-                            <option value="Head">Head</option>
-                            <option value="Employee">Employee</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="role">Role:</label>
+                    <select id="role" name="role" required>
+                        <option value="Administrator">Administrator</option>
+                        <option value="Head">Head</option>
+                        <option value="Employee">Employee</option>
+                    </select>
+                </div>
 
-                    <div class="modal-buttons">
-                        <button type="submit">Save Changes</button> <!-- Save Changes button -->
-                        <button type="button" onclick="closeEditModal()">Cancel</button> <!-- Cancel button -->
-                    </div>
-                </form>
+                <div class="modal-buttons">
+                    <button type="submit">Save Changes</button>
+                    <button type="button" onclick="closeEditModal()">Cancel</button>
+                </div>
+            </form>
+
             </div>
         </div>
 
@@ -431,52 +440,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
         }
 
         function saveUserChanges(event) {
-            event.preventDefault(); // Prevent the form from reloading the page
+    event.preventDefault(); // Prevent form submission
 
-            const formData = new FormData(document.getElementById('editUserForm'));
+    const formData = new FormData(document.getElementById('editUserForm'));
 
-            fetch('index.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('User updated successfully');
-                        fetchUsers(); // Refresh the user list
-                        closeEditModal(); // Close the modal
-                    } else {
-                        alert('Error: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error("Error updating user:", error);
-                    alert("An error occurred while updating the user.");
-                });
+    fetch('index.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('User updated successfully');
+            fetchUsers(); // Refresh the user list
+            closeEditModal(); // Close the modal
+        } else {
+            alert('Error: ' + data.error);
         }
+    })
+    .catch(error => {
+        console.error("Error updating user:", error);
+        alert("An error occurred while updating the user.");
+    });
+}
 
 
-        // Function to open the Edit User Modal
-        function openEditModal(icon) {
-            const editModal = document.getElementById('editModal');
+function openEditModal(button) {
+    const userId = button.getAttribute('data-id');
+    const fname = button.getAttribute('data-fname');
+    const lname = button.getAttribute('data-lname');
+    const email = button.getAttribute('data-email');
+    const role = button.getAttribute('data-role');
 
-            // Get user data from the clicked icon's data attributes
-            const userId = icon.getAttribute('data-id');
-            const userFname = icon.getAttribute('data-fname');
-            const userLname = icon.getAttribute('data-lname');
-            const email = icon.getAttribute('data-email');
-            const userRole = icon.getAttribute('data-role');
+    // Set the values in the modal form fields
+    document.getElementById('editUserId').value = userId;
+    document.getElementById('fname').value = fname;
+    document.getElementById('lname').value = lname;
+    document.getElementById('email').value = email;
+    document.getElementById('role').value = role;
 
-            // Populate the modal fields
-            document.getElementById('editUserId').value = userId;
-            document.getElementById('username').value = userFname;
-            document.getElementById('lastName').value = userLname;
-            document.getElementById('email').value = email;
-            document.getElementById('role').value = userRole;
+    // Show the modal
+    const editUserModal = document.getElementById('editModal');
+    editUserModal.classList.add('show');
+}
 
-            // Show the modal
-            editModal.classList.add('show');
-        }
+
+
 
         // Function to close the Edit User Modal
         function closeEditModal() {

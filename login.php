@@ -43,16 +43,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['username'] = $user['username'];
                     $_SESSION['role'] = $user['user_role'];
 
-                    // Check if the user is an Administrator
-                    if ($user['user_role'] === 'Administrator') {
-                        // Redirect to the administrator profile page
-                        header("Location: src/roles/admin/");
-                        exit();
-                    } else {
-                        // Redirect to the dashboard or another page for non-admin users
-                        header("Location: src/roles/client/");
-                        exit();
+                    // Check the user's role and redirect accordingly
+                    switch ($user['user_role']) {
+                        case 'Administrator':
+                            // Redirect to the administrator interface
+                            header("Location: src/roles/admin/");
+                            break;
+                        case 'Head':
+                            // Redirect to the head interface
+                            header("Location: src/roles/head/");
+                            break;
+                        case 'Employee':
+                            // Redirect to the client interface
+                            header("Location: src/roles/client/");
+                            break;
+                        default:
+                            // Default action if the role is not recognized
+                            $error = "Role not recognized.";
+                            break;
                     }
+                    exit();
                 } else {
                     // Log failed login attempt using the user_id
                     $logStmt = $conn->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
@@ -76,11 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
 <head>
     <meta charset="UTF-8">
     <title>Login Form</title>
@@ -89,7 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-
 <body>
     <div class="container">
         <input type="checkbox" id="flip">
@@ -173,7 +179,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (errorMessage) {
                 setTimeout(function() {
                     errorMessage.style.display = 'none';
-                    //errorMessage.style.visibility = 'hidden';
                 }, 5000); // Hide after 5 seconds
 
                 // Clear the error message if the user starts typing
@@ -181,7 +186,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 inputs.forEach(function(input) {
                     input.addEventListener('input', function() {
                         errorMessage.style.display = 'none';
-                        //errorMessage.style.visibility = 'hidden';
                     });
                 });
             }
@@ -192,7 +196,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Send the token to your backend for verification.
         }
     </script>
-
 </body>
-
 </html>
