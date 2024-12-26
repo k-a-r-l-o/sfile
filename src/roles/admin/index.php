@@ -194,128 +194,131 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             </ul>
         </div>
 
-        <!-- ========================= Main ==================== -->
-        <div class="main">
-            <div class="topbar">
-                <div class="left-section">
-                    <div class="toggle">
-                        <ion-icon name="reorder-three-outline"></ion-icon>
+                <!-- ========================= Main ==================== -->
+                <div class="main">
+                    <div class="topbar">
+                        <div class="left-section">
+                            <div class="toggle">
+                                <ion-icon name="reorder-three-outline"></ion-icon>
+                            </div>
+
+                            <div class="search">
+                                <label>
+                                    <input type="text" id="main-search" placeholder="Search User Id, Username....">
+                                    <ion-icon name="search-outline"></ion-icon>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="user">
+                            <img src="../../assets/img/admin.png">
+                        </div>
                     </div>
 
-                    <div class="search">
-                        <label>
-                            <input type="text" id="main-search" placeholder="Search User Id, Username....">
-                            <ion-icon name="search-outline"></ion-icon>
-                        </label>
+                    <div class="name">
+                        <h1>Manage Users</h1>
                     </div>
-                </div>
 
-                <div class="user">
-                    <img src="../../assets/img/admin.png">
-                </div>
-            </div>
-
-            <div class="name">
-                <h1>Manage Users</h1>
-            </div>
-
-            <div class="controls">
-                <div class="filters">
-                    <select id="action-filter" onchange="applyRoleFilter()">
+                    <div class="controls">
+                        <div class="filters">
+                        <select id="action-filter" onchange="applyRoleFilter()">
                         <option value="">All</option>
                         <option value="Administrator">Administrator</option>
-                        <option value="User">User</option>
+                        <option value="Head">Head</option>
+                        <option value="Employee">Employee</option>
                     </select>
-                </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================= Table ==================== -->
+                    <div class="user-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Email Address</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-list">
+                                <!-- Users will be dynamically injected here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Add User Button -->
+                    <button class="add-user-btn" onclick="openAddUserModal()">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+
+                <!-- Add User Modal -->
+        <div id="addUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddUserModal()">&times;</span>
+                <h2>Add New User</h2>
+                <form id="addUserForm" onsubmit="addUser(event)">
+                    <label for="fname">First Name: </label>
+                    <input type="text" id="fname" name="fname" required> <!-- Fix name attribute -->
+                    <label for="lname">Last Name: </label>
+                    <input type="text" id="lname" name="lname" required> <!-- Fix name attribute -->
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="role">Role:</label>
+                    <select id="role" name="role" required>
+                        <option value="Administrator">Administrator</option>
+                        <option value="Head">Head</option>
+                        <option value="Employee">Employee</option>
+                    </select>
+                    <div class="modal-buttons">
+                        <button type="submit">Add User</button>
+                        <button type="button" onclick="closeAddUserModal()">Cancel</button>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <!-- ========================= Table ==================== -->
-            <div class="user-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Email Address</th>
-                            <th>Role</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-list">
-                        <!-- Users will be dynamically injected here by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
+        <!-- Edit User Modal -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeEditModal()">&times;</span>
+                <h2>Edit User</h2>
+                <form id="editUserForm" onsubmit="saveUserChanges(event)">
+                    <label for="editUserId">User Id:</label>
+                    <input type="text" id="editUserId" readonly> <!-- User ID is readonly, non-editable -->
 
-            <!-- Add User Button -->
-            <button class="add-user-btn" onclick="openAddUserModal()">
-                <i class="fas fa-plus"></i> Add User
-            </button>
+                    <div class="form-group">
+                        <label for="username">First Name:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
 
-            <!-- Add User Modal -->
-            <div id="addUserModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeAddUserModal()">&times;</span>
-                    <h2>Add New User</h2>
-                    <form id="addUserForm" onsubmit="addUser(event)">
-                        <label for="fname">First Name: </label>
-                        <input type="text" id="fname" name="fname" required> <!-- Fix name attribute -->
-                        <label for="lname">Last Name: </label>
-                        <input type="text" id="lname" name="lname" required> <!-- Fix name attribute -->
+                    <div class="form-group">
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+
+                    <div class="form-group">
                         <label for="email">Email Address:</label>
                         <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
                         <label for="role">Role:</label>
                         <select id="role" name="role" required>
                             <option value="Administrator">Administrator</option>
-                            <option value="User">User</option>
+                            <option value="Head">Head</option>
+                            <option value="Employee">Employee</option>
                         </select>
-                        <div class="modal-buttons">
-                            <button type="submit">Add User</button>
-                            <button type="button" onclick="closeAddUserModal()">Cancel</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="submit">Save Changes</button> <!-- Save Changes button -->
+                        <button type="button" onclick="closeEditModal()">Cancel</button> <!-- Cancel button -->
+                    </div>
+                </form>
             </div>
-
-            <!-- ========================= Edit User Modal ==================== -->
-            <div id="editModal" class="modal">
-                <div class="modal-content">
-                    <span class="close" onclick="closeEditModal()">&times;</span>
-                    <h2>Edit User</h2>
-                    <form id="editUserForm" onsubmit="saveUserChanges(event)">
-                        <label for="editUserId">User Id:</label>
-                        <input type="text" id="editUserId" readonly> <!-- User ID is readonly, non-editable -->
-
-                        <div class="form-group">
-                            <label for="username">First Name:</label>
-                            <input type="text" id="username" name="username" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="lastName">Last Name:</label>
-                            <input type="text" id="lastName" name="lastName" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Email Address:</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="role">Role:</label>
-                            <select id="role" name="role" required>
-                                <option value="Administrator">Administrator</option>
-                                <option value="User">User</option>
-                            </select>
-                        </div>
-
-                        <div class="modal-buttons">
-                            <button type="submit">Save Changes</button> <!-- Save Changes button -->
-                            <button type="button" onclick="closeEditModal()">Cancel</button> <!-- Cancel button -->
-                        </div>
-                    </form>
-                </div>
-            </div>
+        </div>
 
             <!-- ========================= Delete User Confirmation Modal ==================== -->
             <div id="deleteModal" class="modal">
