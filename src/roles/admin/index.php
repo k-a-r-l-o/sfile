@@ -43,10 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname'], $_POST['lnam
         // Execute the query
         $stmt->execute();
 
+        $username = $_SESSION['username'];
         // Log the user addition
         $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
         $logStmt->execute([
-            ':doer' => 'Administrator', // Replace with dynamic value if necessary
+            ':doer' => $username, // Replace with dynamic value if necessary
             ':action' => "Added user: {$_POST['fname']} {$_POST['lname']}"
         ]);
 

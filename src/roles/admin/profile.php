@@ -8,11 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/css.css">
     <title>SecureFile</title>
-    
+
     <!-- Ionicons -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-    
+
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
@@ -29,9 +29,9 @@
                         </span>
                         <span class="securefile">
                             <span class="secure">Secure</span><span class="file">File <br><span class="role">Administrator</span></span>
-                            </span>
                         </span>
-                        
+                        </span>
+
                     </a>
                 </li>
 
@@ -63,7 +63,7 @@
                 </li>
 
                 <li class="tab">
-                    <a href="signout.php">
+                    <a href="../../../signout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
@@ -87,7 +87,7 @@
                 </div>
             </div>
 
-            <div class="name"> 
+            <div class="name">
                 <h1>Profile Settings</h1>
             </div>
 
@@ -149,13 +149,13 @@
 
                 <!-- ========================= Reset Password ==================== -->
                 <div class="form-group">
-                <div class="change-password">
-                <label for="password">Change Password: </label>
-                    <!-- Reset Password Button -->
-                    <form action="reset_password.php" method="POST">
-                        <button type="submit" name="reset-password-btn" class="reset-password-btn">Reset Password</button>
-                    </form>
-                </div>
+                    <div class="change-password">
+                        <label for="password">Change Password: </label>
+                        <!-- Reset Password Button -->
+                        <form action="reset_password.php" method="POST">
+                            <button type="submit" name="reset-password-btn" class="reset-password-btn">Reset Password</button>
+                        </form>
+                    </div>
                 </div>
 
 
@@ -164,7 +164,7 @@
                     <button type="button" class="btn save-btn" onclick="saveChanges()">Save Changes</button>
                     <button type="button" class="btn cancel-btn" onclick="cancelEdit()">Cancel</button>
                 </div>
-                
+
             </div> <!-- Profile Settings End -->
 
             <div id="message-modal" class="modal-settings">
@@ -192,10 +192,10 @@
                 document.getElementById('edit-profile-pic').src = newPicUrl;
                 showModal("Profile picture updated successfully!");
             }
-            }
+        }
 
-            // Update Personal Information function
-            function updatePersonalInfo(event) {
+        // Update Personal Information function
+        function updatePersonalInfo(event) {
             event.preventDefault();
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
@@ -204,21 +204,27 @@
             const role = document.getElementById('role').value;
 
             showModal("Profile updated successfully!");
-            console.log("Updated Profile:", { name, email, birthday, contact, role });
-            }
+            console.log("Updated Profile:", {
+                name,
+                email,
+                birthday,
+                contact,
+                role
+            });
+        }
 
-            // Save Changes function
-            function saveChanges() {
+        // Save Changes function
+        function saveChanges() {
             const profileIsValid = validateAndSubmit(new Event("submit"));
             const passwordIsValid = validatePassword(new Event("submit"));
 
             if (profileIsValid && passwordIsValid) {
                 showModal("Changes saved successfully!");
             }
-            }
+        }
 
-            // Cancel editing function
-            function cancelEdit() {
+        // Cancel editing function
+        function cancelEdit() {
             document.getElementById("personal-info-form").reset();
             document.getElementById("password-form").reset();
             showModal("Edit cancelled!");
@@ -351,12 +357,12 @@
             // Close the modal when clicking outside it
             window.onclick = (event) => {
                 if (event.target === modal) {
-                modal.style.display = "none";
+                    modal.style.display = "none";
                 }
             };
         }
     </script>
 
 </body>
-</html>
 
+</html>

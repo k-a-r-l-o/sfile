@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input type="submit" value="Sign in">
                             </div>
                             <div id="g_id_onload"
-                                data-client_id="YOUR_CLIENT_ID"
+                                data-client_id="70695361299-2lkl165sdrbaqemvq4s92cp0elamhglc.apps.googleusercontent.com"
                                 data-context="signin"
                                 data-ux_mode="popup"
                                 data-callback="handleCredentialResponse"
@@ -186,6 +186,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             }
         };
+
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+            // Send the token to your backend for verification.
+        }
     </script>
 
 </body>

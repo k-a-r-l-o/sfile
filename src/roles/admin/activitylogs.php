@@ -105,7 +105,7 @@ try {
                 </li>
 
                 <li class="tab">
-                    <a href="signout.php">
+                    <a href="../../../signout.php">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
