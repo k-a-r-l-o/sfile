@@ -8,55 +8,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fname'], $_POST['lnam
         $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Insert into tb_userdetails
-        $stmt = $pdo->prepare("INSERT INTO tb_userdetails (user_fname, user_lname, user_email, user_role) 
-                                VALUES (:fname, :lname, :email, :role)");
+        // Start a transaction
+        $pdo->beginTransaction();
 
-        // Bind parameters
+        // Insert into tb_admin_userdetails
+        $stmt = $pdo->prepare("INSERT INTO tb_admin_userdetails (user_fname, user_lname, user_email, user_role) 
+                                VALUES (:fname, :lname, :email, :role)");
         $stmt->bindParam(':fname', $_POST['fname']);
         $stmt->bindParam(':lname', $_POST['lname']);
         $stmt->bindParam(':email', $_POST['email']);
         $stmt->bindParam(':role', $_POST['role']);
-
-        // Execute the query
         $stmt->execute();
 
         // Fetch the inserted user ID
         $user_id = $pdo->lastInsertId();
 
-        // Generate the username and password
-        $username = $user_id . preg_replace("/[^a-zA-Z0-9]/", "", $_POST['fname']);
+        // Generate and hash the password
         $password = $user_id . '_' . preg_replace("/[^a-zA-Z0-9]/", "", $_POST['fname']);
-
-        // Hash the password before storing it
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        // Insert into tb_logindetails
-        $stmt = $pdo->prepare("INSERT INTO tb_logindetails (username, password, user_id) 
-                               VALUES (:username, :password, :user_id)");
+        // Insert into tb_admin_logindetails
+        $loginStmt = $pdo->prepare("INSERT INTO tb_admin_logindetails (password, user_id) 
+                                    VALUES (:password, :user_id)");
+        $loginStmt->bindParam(':password', $hashed_password);
+        $loginStmt->bindParam(':user_id', $user_id);
+        $loginStmt->execute();
 
-        // Bind parameters for login details
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $hashed_password);
-        $stmt->bindParam(':user_id', $user_id);
+        // Commit the transaction
+        $pdo->commit();
 
-        // Execute the query
-        $stmt->execute();
-
-        $username = $_SESSION['username'];
         // Log the user addition
+        $email = $_SESSION['email'];
         $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
         $logStmt->execute([
-            ':doer' => $username, // Replace with dynamic value if necessary
+            ':doer' => $email,
             ':action' => "Added user: {$_POST['fname']} {$_POST['lname']}"
         ]);
 
         // Return success response
         echo json_encode(["success" => true]);
-        } catch (PDOException $e) {
-            // Return error response if the query fails
-            echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
-        }
+    } catch (PDOException $e) {
+        // Rollback the transaction on error
+        $pdo->rollBack();
+        echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
+    }
     exit;
 }
 
@@ -66,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editUserId'], $_POST[
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Update query including email
-        $stmt = $pdo->prepare("UPDATE tb_userdetails 
+        $stmt = $pdo->prepare("UPDATE tb_admin_userdetails 
                                SET user_fname = :fname, 
                                    user_lname = :lname, 
                                    user_email = :email, 
@@ -92,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editUserId'], $_POST[
 
         // Return success response
         echo json_encode(["success" => true]);
-
     } catch (PDOException $e) {
         error_log("Error: " . $e->getMessage());
         echo json_encode(["error" => $e->getMessage()]); // Return the detailed error for debugging
@@ -106,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
         $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $stmt = $pdo->prepare("SELECT user_id, user_fname, user_lname, user_email, user_role FROM tb_userdetails");
+        $stmt = $pdo->prepare("SELECT user_id, user_fname, user_lname, user_email, user_role FROM tb_admin_userdetails");
         $stmt->execute();
 
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -236,22 +230,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
 
             <!-- ========================= Table ==================== -->
             <div class="user-table">
-                <div class="user-table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>User ID</th>
-                                <th>Name</th>
-                                <th>Email Address</th>
-                                <th>Role</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="user-list">
-                            <!-- Users will be dynamically injected here by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email Address</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-list">
+                        <!-- Users will be dynamically injected here by JavaScript -->
+                    </tbody>
+                </table>
             </div>
 
             <!-- Add User Button -->
@@ -323,6 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                             <button type="button" onclick="closeEditModal()">Cancel</button>
                         </div>
                     </form>
+
                 </div>
             </div>
 
@@ -448,23 +441,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             const formData = new FormData(document.getElementById('editUserForm'));
 
             fetch('index.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('User updated successfully');
-                    fetchUsers(); // Refresh the user list
-                    closeEditModal(); // Close the modal
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error("Error updating user:", error);
-                alert("An error occurred while updating the user.");
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('User updated successfully');
+                        fetchUsers(); // Refresh the user list
+                        closeEditModal(); // Close the modal
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error updating user:", error);
+                    alert("An error occurred while updating the user.");
+                });
         }
 
 
@@ -486,6 +479,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             const editUserModal = document.getElementById('editModal');
             editUserModal.classList.add('show');
         }
+
+
+
 
         // Function to close the Edit User Modal
         function closeEditModal() {
