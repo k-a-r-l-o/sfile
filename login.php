@@ -1,68 +1,58 @@
 <?php
 session_start();
+require_once 'config/Database.php'; // Use PascalCase for the class name
 
-require_once 'config/database.php'; // Include your database class
-
-$error = ''; // Initialize the error variable
-$email = ''; // Initialize the email variable
-$password = ''; // Initialize the password variable
+$error = ''; // Initialize error message
+$email = '';
+$password = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize and retrieve user input
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
     if (!empty($email) && !empty($password)) {
         try {
-            // Create a database instance and open a connection
-            $db = new database();
+            $db = new Database(); // Use correct case
             $conn = $db->getConnection();
 
-            // Prepare and execute the SQL query
             $stmt = $conn->prepare(
                 "SELECT l.password, u.user_id, u.user_role, l.user_status
                  FROM tb_admin_logindetails l
                  JOIN tb_admin_userdetails u ON l.user_id = u.user_id
                  WHERE u.user_email = :email"
             );
-            $stmt->bindParam(':email', $email);
+            $stmt->bindValue(':email', $email); // Using bindValue for consistency
             $stmt->execute();
-
-            // Fetch the result
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($user != null) {
-                if ($user['user_status'] == "Online") {
+            if ($user) {
+                if ($user['user_status'] === "Online") {
                     $error = "Your account is already logged in. Please log out from other devices.";
                 } elseif (password_verify($password, $user['password'])) {
-                    // Update user status to indicate they are logged in
-                    $updateStatusStmt = $conn->prepare("UPDATE tb_admin_logindetails SET user_status = 'Onlin' WHERE user_id = :user_id");
+                    $updateStatusStmt = $conn->prepare(
+                        "UPDATE tb_admin_logindetails SET user_status = 'Onlin' WHERE user_id = :user_id"
+                    );
                     $updateStatusStmt->execute([':user_id' => $user['user_id']]);
 
-                    // Log successful login using the user_id
-                    $logStmt = $conn->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
+                    $logStmt = $conn->prepare(
+                        "INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)"
+                    );
                     $logStmt->execute([
                         ':doer' => $user['user_id'],
                         ':action' => 'Successfully logged in'
                     ]);
 
-                    // Set session variables for the logged-in user
+                    session_regenerate_id(true); // Prevent session fixation
                     $_SESSION['email'] = $email;
                     $_SESSION['role'] = $user['user_role'];
                     $_SESSION['user_id'] = $user['user_id'];
 
-                    // Redirect based on user role
-                    if ($user['user_role'] === 'Administrator') {
-                        header("Location: src/roles/admin/");
-                        exit();
-                    } else {
-                        header("Location: src/roles/client/");
-                        exit();
-                    }
+                    header("Location: " . ($user['user_role'] === 'Administrator' ? "src/roles/admin/" : "src/roles/client/"));
                     exit();
                 } else {
-                    // Log failed login attempt using the user_id
-                    $logStmt = $conn->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
+                    $logStmt = $conn->prepare(
+                        "INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)"
+                    );
                     $logStmt->execute([
                         ':doer' => $user['user_id'],
                         ':action' => 'Failed login attempt'
@@ -85,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="UTF-8">
     <title>Login Form</title>
@@ -92,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <body>
     <div class="container">
         <input type="checkbox" id="flip">
@@ -180,4 +172,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         };
     </script>
 </body>
+
 </html>
