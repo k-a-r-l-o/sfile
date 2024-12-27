@@ -236,7 +236,6 @@ try {
         //             })
         //             .catch(err => console.error('Error filtering logs:', err));
         //     }
-        document.getElementById('searchBox').addEventListener('input', function() {
         document.getElementById('searchBox').addEventListener('input', function () {
             const searchValue = this.value.toLowerCase().trim();
             const tableBody = document.querySelector('#logsTable tbody');
@@ -359,6 +358,7 @@ try {
             window.open('activitylogs_print.html', '_blank');
         }
     </script>
+
 </body>
 
 </html>
