@@ -96,7 +96,6 @@
 
                 <!-- ========================= Edit Profile Picture ==================== -->
                 <div class="edit-profile-picture">
-                    <!-- <h3>Edit Profile Picture</h3> -->
                     <div class="profile-pic-container">
                         <img src="../../assets/img/admin.png" id="edit-profile-pic" alt="Profile Picture">
                         <label for="profile-pic-input" class="change-icon">

@@ -33,7 +33,7 @@ body {
   width: 100%;
 }
 
-/* =============== Navigation ================ */
+/* =============== Navigation 4 All ================ */
 .navigation {
   position: fixed;
   width: 300px;
@@ -43,6 +43,7 @@ body {
   transition: 0.5s;
   overflow: hidden;
 }
+
 .navigation.active {
   width: 1000px;
 }
@@ -126,14 +127,6 @@ body {
   transition: all 0.5s;
 }
 
-.navigation ul li .tab.active {
-  font-weight: 600;
-  color: #800000;
-  background-color: #FDE3E3;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
 /* Manage Logo resizing */
 .navigation ul li a.logo img {
   height: 16vh;
@@ -164,135 +157,35 @@ body {
 }
 
 .navigation ul li a .securefile {
-    position: relative;
-    display: block;
-    padding: 20px 10px;
-    height: 60px;
-    line-height: 15px;
-    text-align: start;
-    white-space: nowrap;
-    font-family: 'Poppins', sans-serif;
-    margin-top: 4vh;
-    margin-left: 10%;
-    margin-right: 20%;
-    font-size: 4vh;
-    font-weight: 900;
+  position: relative;
+  display: block;
+  padding: 20px 10px;
+  height: 60px;
+  line-height: 15px;
+  text-align: start;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  margin-top: 4vh;
+  margin-left: 10%;
+  margin-right: 20%;
+  font-size: 4vh;
+  font-weight: 900;
 }
 
 .navigation ul li a .securefile .secure {
-    color: black;
+  color: black;
 }
 
 .navigation ul li a .securefile .file {
-    color: #050deb;
+  color: #050deb;
 }
 
 /* Administrator styling */
 .navigation ul li a.logo .securefile .file .role {
-    color: red;
-    font-size:2vh; /* Smaller font size for Administrator */
-    font-style: italic;
-    margin-left: 70%;
-}
-
-/* --------- curve outside on hover and active ---------- */
-.navigation ul li:hover a::before,
-.navigation ul li.active a::before {  /* Add active state */
-  content: "";
-  position: absolute;
-  right: 0;
-  top: -50px;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border-radius: 50%;
-  box-shadow: 35px 35px 0 10px var(--white);
-  pointer-events: none;
-}
-
-.navigation ul li:hover a::after,
-.navigation ul li.active a::after {  /* Add active state */
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: -50px;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border-radius: 50%;
-  box-shadow: 35px -35px 0 10px var(--white);
-  pointer-events: none;
-}
-
-/* ===================== Main ===================== */
-.main {
-  position: absolute;
-  width: calc(100% - 300px);
-  left: 300px;
-  min-height: 100vh;
-  background: var(--white);
-  transition: 0.5s;
-}
-.main.active {
-  width: calc(100% - 80px);
-  left: 80px;
-}
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-}
-
-.left-section {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.search label {
-  display: flex;
-  align-items: center;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 5px 10px;
-}
-
-.search input {
-  border: none;
-  outline: none;
-  width: 300px; /* Smaller width */
-  font-size: 14px;
-}
-
-.search ion-icon {
-  margin-left: 5px;
-  color: #999;
-}
-
-.user img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
-  border: #bababa 1px solid;
-}
-
-.toggle {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2.5rem;
-  cursor: pointer;
-  z-index: 100;
+  color: red;
+  font-size:2vh; /* Smaller font size for Administrator */
+  font-style: italic;
+  margin-left: 30%;
 }
 
 /* Ensure the text moves slightly (5px) when toggle is active */
@@ -306,912 +199,6 @@ body {
   width: auto;
   transition: transform 0.3s ease;
 }
-
-.controls {
-  display: flex;
-  justify-content: flex-end; /* Align to the right */
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 20px;
-  flex-wrap: wrap;
-  width: 90%; 
-  margin: 0 auto; /* Center align within the parent container */
-}
-
-.filters {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.filters select {
-  padding: 10px 12px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.filters select:hover {
-  border-color: #007bff;
-}
-
-/* Table styling */
-.client-table {
-  background-color: white;
-  padding: 5px;
-  border-radius: 20px; /* Rounded corners */
-  overflow: visible;
-  position: relative; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 90%; /* Match width with controls */
-  margin: 0 auto; /* Center align within the parent container */
-  margin-bottom: 100px;
-}
-
-.client-table table {
-  width: 100%; /* Table spans full width of container */
-  border-collapse: collapse;
-  font-size: 14px; /* Set font size */
-  background-color: white; /* Table background */
-}
-
-.client-table th, .client-table td {
-  padding: 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd; /* Horizontal lines only */
-}
-
-.client-table th {
-  background-color: transparent; /* No background color */
-  color: black; /* Neutral text color */
-  font-weight: bold; /* Ensure header stands out */
-}
-
-.client-table td {
-  background-color: white; /* White background for rows */
-  transition: background-color 0.3s ease; /* Smooth hover effect */
-}
-
-.client-table tr:hover td {
-  background-color: #d4edda; /* Light green hover effect */
-}
-
-.profile-settings {
-  max-width: 90%;
-  margin: auto;
-}
-
-h3 {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 5px;
-  color: #555;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: 14px;
-  color: #333;
-  background-color: #fff;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  border-color: #4caf50;
-  outline: none;
-}
-
-.form-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin: 25px 0;
-}
-
-.form-buttons .btn {
-  padding: 10px 10px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-
-.save-btn {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.save-btn:hover {
-  background-color: #0056b3;
-}
-
-.cancel-btn {
-  background-color: #f8f9fa;
-  color: #333;
-  border: 1px solid #ccc;
-}
-
-.cancel-btn:hover {
-  background-color: #e2e6ea;
-}
-
-.edit-profile-picture {
-  margin-bottom: 30px;
-}
-
-.profile-pic-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-#userpic {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.change-icon {
-  cursor: pointer;
-  color: #007bff;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.change-icon ion-icon {
-  vertical-align: middle;
-  margin-right: 5px;
-}
-
-#profile-pic-input {
-  display: none;
-}
-
-/* Styling for the Change Password Section */
-/* .change-password {
-  margin-top: 30px;
-} */
-
-.profile-pic-container img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.form-group-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-}
-.form-group {
-  flex: 1;
-}
-.error-message {
-  color: red;
-  font-size: 0.85em;
-  display: none;
-}
-.form-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-/* Modal background overlay */
-.modal-settings {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.6);
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-/* Modal content container */
-.modal-settings-content {
-  position: relative;
-  background: linear-gradient(135deg, #ffffff, #f4f4f4);
-  border-radius: 12px;
-  padding: 20px 30px;
-  width: 90%;
-  max-width: 400px;
-  margin: auto;
-  top: 50%;
-  transform: translateY(-50%);
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-  animation: slideIn 0.4s ease-in-out;
-  text-align: center;
-}
-
-/* Modal message text */
-#modal-message {
-  font-size: 16px;
-  color: #333;
-  margin: 20px 0;
-  line-height: 1.5;
-}
-
-/* OK button */
-#modal-ok-button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-}
-
-.close {
-  color: #aaa;
-  font-size: 28px;
-  position: absolute;
-  top: 10px;
-  right: 20px;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-#modal-ok-button:hover {
-  background-color: #45a049;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    background-color: rgba(0, 0, 0, 0);
-  }
-  to {
-    background-color: rgba(0, 0, 0, 0.6);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-60%);
-  }
-  to {
-    transform: translateY(-50%);
-  }
-}
-
-@media (max-width: 768px) {
-
-  .navigation.active ul li a .icon {
-    min-width: 50px; /* Adjust icon size if necessary */
-  }
-
-  .navigation.active ul li a.logo img {
-    height: 8vh; /* Reduced size for small screens */
-  }
-
-  .navigation.active {
-    width: 80px; /* Sidebar collapses to show only icons */
-  }
-
-  .navigation ul li:hover a::before,
-  .navigation ul li.active a::before {
-    right: 5px; /* Adjusted position for collapsed sidebar */
-    box-shadow: 20px 20px 0 8px var(--white); /* Smaller shadow for collapsed state */
-  }
-
-  .navigation ul li:hover a::after,
-  .navigation ul li.active a::after {
-    right: 5px; /* Adjusted position for collapsed sidebar */
-    box-shadow: 20px -20px 0 8px var(--white); /* Smaller shadow for collapsed state */
-  }
-
-  .navigation.active ul li:hover a::before,
-  .navigation.active ul li.active a::before {
-    right: 5px; /* Ensure alignment in active collapsed state */
-    box-shadow: 15px 15px 0 6px var(--white);
-  }
-
-  .navigation.active ul li:hover a::after,
-  .navigation.active ul li.active a::after {
-    right: 5px; /* Ensure alignment in active collapsed state */
-    box-shadow: 15px -15px 0 6px var(--white);
-  }
-}
-
-@media (max-width: 768px) {
-  .navigation {
-    width: 70px; /* Ensure sidebar width adapts for smaller screens */
-  }
-
-  .navigation ul li a .title {
-    display: none; /* Hide titles explicitly */
-  }
-
-  .navigation ul li a .icon {
-    min-width: 50px; /* Ensure icons remain visible */
-    font-size: 1.5rem; /* Adjust icon size for clarity */
-  }
-}
-
-/* General mobile sidebar styles */
-@media (max-width: 768px) {
-  .navigation {
-    width: 75px; /* Sidebar width for small screens */
-    overflow: hidden; /* Prevent content overflow */
-    transition: width 0.4s ease; /* Smooth transition for toggling */
-  }
-
-  .navigation.active {
-    width: 90px; /* Slightly larger width when active */
-  }
-
-  .navigation ul {
-    padding: 0;
-  }
-
-  .navigation ul li {
-    position: relative;
-  }
-
-  .navigation ul li a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 0; /* Adjust padding for smaller sidebar */
-    transition: all 0.3s ease;
-  }
-
-  .navigation ul li a .icon {
-    min-width: 55px; /* Ensure icons remain visible */
-    font-size: 1.6rem; /* Adjust icon size for clarity */
-    text-align: center; /* Center the icon */
-  }
-
-  .navigation ul li a .title {
-    display: none; /* Hide titles explicitly */
-  }
-
-  .navigation ul li a.logo img {
-    height: 10vh; /* Adjust logo size for mobile */
-    margin: 0 auto; /* Center the logo */
-  }
-
-  .navigation ul li:hover a .title {
-    display: inline-block; /* Show titles on hover */
-    position: absolute;
-    left: 80px; /* Position title outside the sidebar */
-    white-space: nowrap;
-    background: #f8f8f8; /* Background for better readability */
-    color: #333; /* Text color */
-    padding: 6px 12px;
-    border-radius: 6px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-    z-index: 200; /* Ensure titles appear above other content */
-  }
-
-  /* Handle toggle animation */
-  .navigation ul li a:hover .icon {
-    transform: scale(1.2); /* Slightly enlarge icon on hover */
-  }
-}
-
-@media (max-width: 480px) {
-  /* Reduce sidebar width */
-  .navigation {
-    width: 60px;
-    overflow: hidden;
-  }
-
-  .navigation.active {
-    width: 50px; /* Collapsed state for ultra-small screens */
-  }
-
-  /* Adjust logo for small screens */
-  .navigation ul li a.logo img {
-    height: 7vh; /* Smaller logo height */
-    width: auto; /* Maintain aspect ratio */
-    margin: 5px auto; /* Center the logo */
-  }
-
-  /* Ensure icons remain visible and clickable */
-  .navigation ul li a .icon {
-    min-width: 45px; /* Slightly smaller for tiny screens */
-    font-size: 1.2rem; /* Adjust icon size */
-    text-align: center;
-  }
-
-  /* Hide titles on very small screens */
-  .navigation ul li a .title {
-    display: none;
-  }
-
-  /* SecureFile title adjustments */
-  .navigation ul li a .securefile {
-    font-size: 2.5vh; /* Scale down font size */
-    text-align: center;
-    margin: 2vh 0; /* Adjust spacing */
-  }
-
-  /* Adjust other elements for better spacing */
-  .main {
-    width: calc(100% - 60px); /* Adjust main content width */
-    left: 60px;
-  }
-
-  .toggle {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem; /* Smaller toggle icon */
-  }
-}
-
-@media (max-width: 320px) {
-  /* Minimal width adjustments */
-  .navigation {
-    width: 50px;
-  }
-
-  .navigation ul li a.logo img {
-    height: 5vh; /* Even smaller logo */
-    margin: 2px auto;
-  }
-
-  .navigation ul li a .icon {
-    font-size: 1rem; /* Smaller icon size */
-  }
-
-  .main {
-    width: calc(100% - 50px);
-    left: 50px;
-  }
-
-  .toggle {
-    font-size: 1.2rem; /* Smallest toggle icon */
-  }
-}
-
-/* Responsive Design */
-@media screen and (max-width: 768px) {
-  .container {
-      flex-direction: column;
-  }
-
-  .navigation {
-      width: 100%;
-      height: auto;
-  }
-
-  .main {
-      width: 100%;
-  }
-
-  .user-table {
-      margin-top: 15px;
-  }
-}
-
-.name {
-  display: flex; /* Align items within */
-  justify-content: left; /* Center horizontally */
-  align-items: last baseline; /* Center vertically */
-  padding: 30px; /* Add spacing */
-  margin-left: 20px;
-  font-family: 'Poppins' serif;
-}
-
-.name h1 {
-  font-size: 30px; /* Adjust header size */
-  color: #000; /* Text color for contrast */
-  font-family: 'Arial', sans-serif; /* Clean font */
-  font-weight: bold; /* Make it prominent */
-  margin: 0; /* Remove default margin */
-  text-align: center; /* Center text inside the header */
-}
-
-
-
-/* Styling for the Change Password Label and Button */
-.change-password {
-  display: flex;
-  align-items: center; /* Vertically align the label and button */
-  gap: 10px; /* Space between the label and button */
-}
-
-/* Styling for the Change Password Label */
-.change-password label {
-  font-size: 16px;
-  font-weight: bold;
-  margin: 0;
-  color: #555; /* Dark color for label text */
-}
-
-/* Styling for the Reset Password Button */
-.reset-password-btn {
-  padding: 8px 15px;
-  background-color: #28a745; /* Green background for the button */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-/* Button hover effect */
-.reset-password-btn:hover {
-  background-color: #218838; /* Darker green when hovered */
-}
-
-/* Responsive Design: Stacking label and button vertically on small screens */
-@media screen and (max-width: 600px) {
-  .change-password {
-      flex-direction: column; /* Stack label and button vertically */
-      align-items: flex-start; /* Align them to the left */
-  }
-}
-
-.upload-container {
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  margin: 0 auto;
-  border: 2px dashed #ccc;
-  padding: 20px;
-  text-align: center;
-  border-radius: 10px;
-  position: relative;
-}
-
-.drag-area {
-  border: 2px dashed #cccccc;
-  border-radius: 10px;
-  text-align: center;
-  padding: 20px;
-  cursor: pointer;
-  margin-bottom: 20px;
-  color: #666;
-  position: relative;
-}
-
-.drag-area.highlight {
-  border-color: #2aa4e2;
-  background-color: #f0faff;
-}
-
-.file-list {
-  list-style: none;
-  padding: 0;
-}
-
-.file-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px;
-  background-color: #f7f7f7;
-  margin: 5px 0;
-  border-radius: 5px;
-}
-
-.file-progress {
-  flex-grow: 1;
-  margin: 0 10px;
-}
-
-.file-progress-bar {
-  width: 100%;
-  height: 8px;
-  background-color: #ddd;
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-}
-
-.file-progress-fill {
-  width: 0;
-  height: 100%;
-  background-color: #007bff;
-  transition: width 0.3s ease;
-}
-
-.remove-btn {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 3px 8px;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.upload-btn {
-  background-color: #050deb;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 1em;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.upload-btn:hover {
-  background-color: #0309b3;
-}
-
-/* Action Button */
-.action-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-/* Ensure action button and dropdown are properly aligned */
-.action-menu {
-  position: relative;
-  display: inline-block;
-}
-
-/* Initially hide the dropdown menu */
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  padding: 10px;
-  list-style: none;
-  z-index: 1000;
-}
-
-/* Show the dropdown when active */
-.dropdown-menu.show {
-  display: block;
-}
-
-.dropdown-menu a {
-  display: block;
-  padding: 10px;
-  color: #333;
-  text-decoration: none;
-}
-
-.dropdown-menu a:hover {
-  background-color: #f5f5f5;
-}
-
-/* Enhanced Modal Styles */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.modal.show {
-  display: flex;
-  opacity: 1;
-}
-
-.modal-content {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  max-width: 400px;
-  width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: slideIn 0.3s ease-out;
-  z-index: 100;
-}
-
-@keyframes slideIn {
-  0% {
-      transform: translateY(-50px);
-      opacity: 0;
-  }
-  100% {
-      transform: translateY(0);
-      opacity: 1;
-  }
-}
-
-h3 {
-  font-size: 24px;
-  font-family: 'Poppins', sans-serif;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-p {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 20px;
-}
-
-#rename-input {
-  margin-top: 15px;
-}
-
-#rename-field {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  margin-top: 8px;
-}
-
-.modal-buttons {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  display: inline-block;
-}
-
-.confirm {
-  background-color: #28a745;
-  color: white;
-}
-
-.confirm:hover {
-  background-color: #218838;
-}
-
-.cancel {
-  background-color: #dc3545;
-  color: white;
-  margin-left: 10px;
-}
-
-.cancel:hover {
-  background-color: #c82333;
-}
-
-/* Input field focus state */
-#rename-field:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-/* Ensure dropdown-menu is hidden when modal is visible */
-.modal.show ~ .dropdown-menu {
-  display: none !important;
-}
-
-/* Alert Modal Styles */
-.alert-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
-  overflow: auto;
-  transition: all 0.3s ease-in-out;
-  opacity: 0;
-}
-
-.alert-modal.show {
-  opacity: 1;
-  display: block;
-}
-
-.alert-modal-content {
-  background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 80%;
-  max-width: 500px;
-  position: relative;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-      transform: translateY(-50px);
-      opacity: 0;
-  }
-  to {
-      transform: translateY(0);
-      opacity: 1;
-  }
-}
-
-.alert-modal-content h2 {
-  font-size: 24px;
-  margin-bottom: 15px;
-  color: #333;
-  text-align: center;
-}
-
-.alert-modal-content p {
-  font-size: 16px;
-  color: #555;
-  text-align: center;
-}
-
-.alert-modal-content .alert-btn {
-  display: block;
-  width: 30%;
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
-  margin-top: 20px;
-  margin: auto;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
-
-.alert-modal-content .alert-btn:hover {
-  background-color: #45a049;
-}
-
-.close-modal {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
-  color: #333;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  transition: color 0.3s ease;
-}
-
-.close-modal:hover {
-  color: #d9534f;
-}
-
 
 /* --------- curve outside on hover and active ---------- */
 .navigation ul li:hover a::before,
@@ -1275,8 +262,131 @@ p {
   box-shadow: 20px -20px 0 8px var(--white); /* Smaller shadow for collapsed state */
 }
 
-/* Add this CSS to your 'head.css' or in a <style> tag */
+/* ===================== End of Navigation ===================== */
 
+/* ===================== Main ===================== */
+.main {
+  position: absolute;
+  width: calc(100% - 300px);
+  left: 300px;
+  min-height: 100vh;
+  background: var(--white);
+  transition: 0.5s;
+}
+
+.main.active {
+  width: calc(100% - 80px);
+  left: 80px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.search label {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.search input {
+  border: none;
+  outline: none;
+  width: 300px; /* Smaller width */
+  font-size: 14px;
+}
+
+.search ion-icon {
+  margin-left: 5px;
+  color: #999;
+}
+
+.user img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: #bababa 1px solid;
+}
+
+.toggle {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.name {
+  display: flex; /* Align items within */
+  justify-content: left; /* Center horizontally */
+  align-items: last baseline; /* Center vertically */
+  padding: 30px; /* Add spacing */
+  margin-left: 20px;
+  font-family: var(--nav-font);
+}
+
+.name h1 {
+  font-size: 30px; /* Adjust header size */
+  color: #000; /* Text color for contrast */
+  font-family: var(--default-font);
+  font-weight: bold; /* Make it prominent */
+  margin: 0; /* Remove default margin */
+  text-align: center; /* Center text inside the header */
+}
+
+.controls {
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 90%; 
+  margin: 0 auto; /* Center align within the parent container */
+}
+
+.filters {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.filters select {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filters select:hover {
+  border-color: #007bff;
+}
+
+/* ===================== Manage Users Files ===================== */
 .client-cards {
   display: flex;
   flex-wrap: wrap;
@@ -1378,3 +488,485 @@ p {
   display: none;
 }
 
+.client-table {
+  background-color: white;
+  padding: 5px;
+  border-radius: 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  margin: 0 auto;
+  margin-bottom: 100px;
+}
+
+/* Wrapper for horizontal scrolling */
+.client-table-wrapper {
+  width: 100%;
+  overflow-x: auto; 
+}
+
+/* Ensure the table is wider than its container if necessary */
+.client-table table {
+  min-width: 1000px; /* Set a minimum width for the table */
+  width: 100%; /* Table spans full width of the wrapper */
+  border-collapse: collapse;
+  font-size: 14px;
+  background-color: white;
+}
+
+.client-table th, .client-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.client-table th {
+  background-color: transparent;
+  color: black;
+  font-weight: bold;
+}
+
+.client-table td {
+  background-color: white;
+  transition: background-color 0.3s ease;
+}
+
+.client-table tr:hover td {
+  background-color: #d4edda;
+}
+
+/* ===================== Profile Setting ===================== */
+.profile-settings {
+  max-width: 90%;
+  margin: auto;
+}
+
+.edit-profile-picture {
+  margin-bottom: 30px;
+}
+
+.profile-pic-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#userpic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.change-icon {
+  cursor: pointer;
+  color: #007bff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.change-icon ion-icon {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+#profile-pic-input {
+  display: none;
+}
+
+.profile-pic-container img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  background-color: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.form-group-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px 0;
+}
+
+.form-buttons .btn {
+  padding: 10px 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.save-btn {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.save-btn:hover {
+  background-color: #0056b3;
+}
+
+.cancel-btn {
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.cancel-btn:hover {
+  background-color: #e2e6ea;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.85em;
+  display: none;
+}
+
+/* Modal background overlay */
+.modal-settings {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal content container */
+.modal-settings-content {
+  position: relative;
+  background: linear-gradient(135deg, #ffffff, #f4f4f4);
+  border-radius: 12px;
+  padding: 20px 30px;
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.4s ease-in-out;
+  text-align: center;
+}
+
+/* Modal message text */
+#modal-message {
+  font-size: 16px;
+  color: #333;
+  margin: 20px 0;
+  line-height: 1.5;
+}
+
+/* OK button */
+#modal-ok-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+#modal-ok-button:hover {
+  background-color: #45a049;
+}
+
+/* Styling for the Change Password Label and Button */
+.change-password {
+  display: flex;
+  align-items: center; /* Vertically align the label and button */
+  gap: 10px; /* Space between the label and button */
+}
+
+/* Styling for the Change Password Label */
+.change-password label {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  color: #555; /* Dark color for label text */
+}
+
+/* Styling for the Reset Password Button */
+.reset-password-btn {
+  padding: 8px 15px;
+  background-color: #28a745; /* Green background for the button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+.reset-password-btn:hover {
+  background-color: #218838; /* Darker green when hovered */
+}
+
+/* ===================== End of Profile Settings ===================== */
+
+/* ===================== Animations ===================== */
+@keyframes fadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-60%);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===================== Responsiveness ===================== */
+@media (max-width: 320px) {
+  /* Minimal width adjustments */
+  .navigation {
+    width: 50px;
+  }
+
+  .navigation ul li a.logo img {
+    height: 5vh; /* Even smaller logo */
+    margin: 2px auto;
+  }
+
+  .navigation ul li a .icon {
+    font-size: 1rem; /* Smaller icon size */
+  }
+
+  .main {
+    width: calc(100% - 50px);
+    left: 50px;
+  }
+
+  .toggle {
+    font-size: 1.2rem; /* Smallest toggle icon */
+  }
+}
+
+@media (max-width: 480px) {
+  /* Reduce sidebar width */
+  .navigation {
+    width: 60px;
+    overflow: hidden;
+  }
+
+  .navigation.active {
+    width: 50px; /* Collapsed state for ultra-small screens */
+  }
+
+  /* Adjust logo for small screens */
+  .navigation ul li a.logo img {
+    height: 7vh; /* Smaller logo height */
+    width: auto; /* Maintain aspect ratio */
+    margin: 5px auto; /* Center the logo */
+  }
+
+  /* Ensure icons remain visible and clickable */
+  .navigation ul li a .icon {
+    min-width: 45px; /* Slightly smaller for tiny screens */
+    font-size: 1.2rem; /* Adjust icon size */
+    text-align: center;
+  }
+
+  /* Hide titles on very small screens */
+  .navigation ul li a .title {
+    display: none;
+  }
+
+  /* SecureFile title adjustments */
+  .navigation ul li a .securefile {
+    font-size: 2.5vh; /* Scale down font size */
+    text-align: center;
+    margin: 2vh 0; /* Adjust spacing */
+  }
+
+  /* Adjust other elements for better spacing */
+  .main {
+    width: calc(100% - 60px); /* Adjust main content width */
+    left: 60px;
+  }
+
+  .toggle {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem; /* Smaller toggle icon */
+  }
+}
+
+@media (max-width: 768px) {
+
+  .navigation {
+    width: 75px; /* Sidebar width for small screens */
+    overflow: hidden; /* Prevent content overflow */
+    transition: width 0.4s ease; /* Smooth transition for toggling */
+  }
+
+  .navigation.active {
+    width: 90px; /* Slightly larger width when active */
+  }
+
+  .navigation ul {
+    padding: 0;
+  }
+
+  .navigation ul li {
+    position: relative;
+  }
+
+  .navigation ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 0; /* Adjust padding for smaller sidebar */
+    transition: all 0.3s ease;
+  }
+
+  .navigation ul li a .icon {
+    min-width: 55px; /* Ensure icons remain visible */
+    font-size: 1.6rem; /* Adjust icon size for clarity */
+    text-align: center; /* Center the icon */
+  }
+
+  .navigation ul li a .title {
+    display: none; /* Hide titles explicitly */
+  }
+
+  .navigation ul li a.logo img {
+    height: 10vh; /* Adjust logo size for mobile */
+    margin: 0 auto; /* Center the logo */
+  }
+
+  .navigation ul li:hover a .title {
+    display: inline-block; /* Show titles on hover */
+    position: absolute;
+    left: 80px; /* Position title outside the sidebar */
+    white-space: nowrap;
+    background: #f8f8f8; /* Background for better readability */
+    color: #333; /* Text color */
+    padding: 6px 12px;
+    border-radius: 6px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    z-index: 200; /* Ensure titles appear above other content */
+  }
+
+  /* Hover and active states */
+  .navigation ul li:hover a::before,
+  .navigation ul li.active a::before,
+  .navigation.active ul li:hover a::before,
+  .navigation.active ul li.active a::before {
+    right: 5px;
+    box-shadow: 15px 15px 0 6px var(--white);
+  }
+
+  .navigation ul li:hover a::after,
+  .navigation ul li.active a::after,
+  .navigation.active ul li:hover a::after,
+  .navigation.active ul li.active a::after {
+    right: 5px;
+    box-shadow: 15px -15px 0 6px var(--white);
+  }
+
+  /* Sidebar hover animation */
+  .navigation ul li a:hover .icon {
+    transform: scale(1.2); /* Slightly enlarge icon on hover */
+  }
+
+  .client-table {
+    padding: 10px; /* Adjust padding for smaller screens */
+  }
+}
+
+/* Responsive Design: Stacking label and button vertically on small screens */
+@media screen and (max-width: 600px) {
+  .change-password {
+      flex-direction: column; /* Stack label and button vertically */
+      align-items: flex-start; /* Align them to the left */
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+      flex-direction: column;
+  }
+
+  .navigation {
+      width: 100%;
+      height: auto;
+  }
+
+  .main {
+      width: 100%;
+  }
+
+  .client-table {
+      margin-top: 15px;
+  }
+}

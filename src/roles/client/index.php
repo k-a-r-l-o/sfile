@@ -81,7 +81,7 @@
 
                     <div class="search">
                         <label>
-                            <input type="text" id="main-search" placeholder="Search filename...">
+                            <input type="text" id="main-search" placeholder="Search filename..." oninput="filterFiles()">
                             <ion-icon name="search-outline"></ion-icon>
                         </label>
                     </div>
@@ -114,18 +114,20 @@
 
             <!-- Table Displaying Uploaded Files -->
             <div class="client-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>File Name</th>
-                            <th>File Size</th>
-                            <th>Upload Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="uploaded-files-table">
-                        <!-- Uploaded file rows will display here -->
-                    </tbody>
-                </table>
+                <div class="client-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>File Size</th>
+                                <th>Upload Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="uploaded-files-table">
+                            <!-- Uploaded file rows will display here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Modal for alerts -->
@@ -146,6 +148,44 @@
     <script src="js/client.js"></script>
 
     <script>
+        function filterFiles() {
+            const searchInput = document.getElementById('main-search').value.toLowerCase();
+            const fileItems = document.querySelectorAll('#uploaded-files-table tr:not(#no-match-message)'); // Select file rows in the correct table
+            let hasMatch = false;
+
+            // Iterate through all file rows to check for matches
+            fileItems.forEach(item => {
+                const fileName = item.querySelector('td:nth-child(1)').textContent.toLowerCase(); // Filename column
+                const matches = fileName.includes(searchInput);
+
+                // Show or hide the row based on the match
+                item.style.display = matches ? '' : 'none';
+
+                // If any row matches, set hasMatch to true
+                if (matches) {
+                    hasMatch = true;
+                }
+            });
+
+            // Handle the "No match found" message
+            let noMatchMessage = document.getElementById('no-match-message');
+            if (!hasMatch) {
+                // If no matches, ensure the "No match found" row exists
+                if (!noMatchMessage) {
+                    noMatchMessage = document.createElement('tr');
+                    noMatchMessage.id = 'no-match-message';
+                    noMatchMessage.innerHTML = '<td colspan="3" style="text-align:center; font-style: italic;">No match found.</td>';
+                    document.getElementById('uploaded-files-table').appendChild(noMatchMessage);
+                }
+                noMatchMessage.style.display = ''; // Ensure the message is visible
+            } else {
+                // If matches are found, hide or remove the "No match found" row
+                if (noMatchMessage) {
+                    noMatchMessage.style.display = 'none';
+                }
+            }
+        }
+
         const dragArea = document.getElementById("drag-area");
         const fileInput = document.getElementById("file-input");
         const fileList = document.getElementById("file-list");
@@ -181,7 +221,8 @@
                 const listItem = document.createElement("li");
                 listItem.className = "file-item";
                 listItem.innerHTML = `
-                    <span>${file.name}</span>
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-size">${formatFileSize(file.size)}</span>
                     <div class="file-progress"></div>
                     <button class="remove-btn">X</button>
                 `;
@@ -233,17 +274,30 @@
         // Simulate Progress Bar for Each File Upload
         async function simulateFileUpload(fileObj) {
             const progressBarFill = fileObj.progressBar.querySelector(".file-progress-fill");
+            const fileSize = fileObj.file.size; // Get file size in bytes
+
+            let uploadSpeed = 1; // Default upload speed (1% per interval)
+
+            // Adjust upload speed based on file size
+            if (fileSize < 1024 * 1024) { // Small file (KB)
+                uploadSpeed = 10; // Faster upload speed for smaller files
+            } else if (fileSize < 1024 * 1024 * 10) { // Medium file (less than 10MB)
+                uploadSpeed = 5; // Moderate upload speed for medium-sized files
+            } else { // Larger files (MB and GB)
+                uploadSpeed = 2; // Slower upload speed for larger files
+            }
+
             return new Promise((resolve) => {
                 let progress = 0;
                 const interval = setInterval(() => {
-                    progress += Math.random() * 20; // Increment progress randomly
-                    progressBarFill.style.width = `${Math.min(progress, 100)}%`;
+                    progress += Math.random() * uploadSpeed; // Increment progress
+                    progressBarFill.style.width = `${Math.min(progress, 100)}%`; // Update progress
 
                     if (progress >= 100) {
                         clearInterval(interval);
                         resolve();
                     }
-                }, 300);
+                }, 300); // Simulate upload every 300ms
             });
         }
 
@@ -302,7 +356,11 @@
             // Add uploaded file to the table
             uploadedFiles.forEach((fileObj) => {
                 const row = document.createElement("tr");
-                row.innerHTML = `<td>${fileObj.file.name}</td><td>${fileObj.file.size} bytes</td><td>${new Date().toLocaleString()}</td>`;
+                row.innerHTML = `
+                    <td>${fileObj.file.name}</td>
+                    <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
+                    <td>${new Date().toLocaleString()}</td>
+                `;
                 uploadedFilesTable.appendChild(row);
             });
 
@@ -315,6 +373,21 @@
             // Show success modal
             showModal("Files uploaded successfully!");
         });
+
+        // Function to format file size in KB, MB, or GB
+        function formatFileSize(sizeInBytes) {
+            if (sizeInBytes < 1024) {
+                return `${sizeInBytes} B`;
+            } else if (sizeInBytes < 1048576) {
+                return (sizeInBytes / 1024).toFixed(2) + " KB";
+            } else if (sizeInBytes < 1073741824) {
+                return (sizeInBytes / 1048576).toFixed(2) + " MB";
+            } else {
+                return (sizeInBytes / 1073741824).toFixed(2) + " GB";
+            }
+        }
+
+
     </script>
 </body>
 

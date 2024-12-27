@@ -94,7 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editUserId'], $_POST[
     exit;
 }
 
-
 // Fetching users
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
     try {
@@ -118,9 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
     exit;
 }
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -372,19 +368,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                             <td>${user.user_fname} ${user.user_lname}</td>
                             <td>${user.user_email}</td>
                             <td>${user.user_role}</td>
-                            <td>
-                                <i class="fas fa-edit action-icon edit-icon" 
-                                data-id="${user.user_id}" 
+                            <td class="action-buttons">
+                                <button 
+                                    class="action-icon edit-icon" 
+                                    data-id="${user.user_id}" 
                                     data-fname="${user.user_fname}" 
                                     data-lname="${user.user_lname}" 
                                     data-email="${user.user_email}" 
                                     data-role="${user.user_role}" 
-                                    onclick="openEditModal(this)">
-                                </i>
-                                <i class="fas fa-trash action-icon delete-icon" 
+                                    onclick="openEditModal(this)"
+                                    aria-label="Edit user">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button 
+                                    class="action-icon delete-icon" 
                                     data-id="${user.user_id}" 
-                                    onclick="openDeleteModal(this)">
-                                </i>
+                                    onclick="openDeleteModal(this)"
+                                    aria-label="Delete user">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </td>
                         `;
                         userList.appendChild(row);
@@ -458,7 +460,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                 });
         }
 
-
         function openEditModal(button) {
             const userId = button.getAttribute('data-id');
             const fname = button.getAttribute('data-fname');
@@ -486,7 +487,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             const editModal = document.getElementById('editModal');
             editModal.classList.remove('show'); // Hide the modal
         }
-
 
         // Function to open the Delete User Confirmation Modal (with user ID from the clicked icon)
         function openDeleteModal(icon) {
@@ -539,23 +539,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             });
         }
 
-        document.getElementById('main-search').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase(); // Get the search term and normalize it to lowercase
-            const tableRows = document.querySelectorAll('.user-table tbody tr'); // Select all table rows in the tbody
+        document.getElementById('main-search').addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase().trim();
+            const tableBody = document.querySelector('#user-list'); // Target the user list tbody
+            const rows = tableBody.getElementsByTagName('tr');
+            let hasMatch = false;
 
-            tableRows.forEach(row => {
-                const userId = row.querySelector('td:nth-child(1)').textContent.trim().toLowerCase(); // User ID column
-                const username = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase(); // Username column
-                const email = row.querySelector('td:nth-child(3)').textContent.trim().toLowerCase(); // Email Address column
+            Array.from(rows).forEach(row => {
+                const rowText = Array.from(row.getElementsByTagName('td')).map(cell => cell.textContent.toLowerCase()).join(' ');
 
-                // Check if any of the columns contain the search term
-                if (userId.includes(searchTerm) || username.includes(searchTerm) || email.includes(searchTerm)) {
-                    row.style.display = ""; // Show the row if there's a match
+                if (rowText.includes(searchValue)) {
+                    row.style.display = '';  // Show matching rows
+                    hasMatch = true;
                 } else {
-                    row.style.display = "none"; // Hide the row if there's no match
+                    row.style.display = 'none';  // Hide non-matching rows
                 }
             });
+
+            // Handle "No match found" message
+            let noMatchMessage = document.getElementById('no-match-message');
+            if (!hasMatch) {
+                if (!noMatchMessage) {
+                    noMatchMessage = document.createElement('tr');
+                    noMatchMessage.id = 'no-match-message';
+                    noMatchMessage.innerHTML = '<td colspan="5" style="text-align: center;">No match found.</td>'; // Updated colspan to 5 for the table
+                    tableBody.appendChild(noMatchMessage);
+                }
+                noMatchMessage.style.display = ''; // Ensure the message is visible
+            } else if (noMatchMessage) {
+                noMatchMessage.style.display = 'none'; // Hide the message if there are matches
+            }
         });
+
     </script>
 </body>
 

@@ -154,26 +154,28 @@ try {
 
             <!-- ========================= Table ==================== -->
             <div class="user-table">
-                <table id="logsTable">
-                    <thead>
-                        <tr>
-                            <th>Log ID</th>
-                            <th>Username</th>
-                            <th>Date</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="logsTableBody">
-                        <?php foreach ($logs as $log): ?>
+                <div class="user-table-wrapper">
+                    <table id="logsTable">
+                        <thead>
                             <tr>
-                                <td><?php echo htmlspecialchars($log['log_id']); ?></td>
-                                <td><?php echo htmlspecialchars($log['username']); ?></td>
-                                <td><?php echo date("Y-m-d H:i:s", strtotime($log['log_date'])); ?></td>
-                                <td><?php echo htmlspecialchars($log['log_action']); ?></td>
+                                <th>Log ID</th>
+                                <th>Username</th>
+                                <th>Date</th>
+                                <th>Action</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <?php foreach ($logs as $log): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($log['log_id']); ?></td>
+                                    <td><?php echo htmlspecialchars($log['username']); ?></td>
+                                    <td><?php echo date("Y-m-d H:i:s", strtotime($log['log_date'])); ?></td>
+                                    <td><?php echo htmlspecialchars($log['log_action']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Export Buttons -->
@@ -235,6 +237,7 @@ try {
         //             .catch(err => console.error('Error filtering logs:', err));
         //     }
         document.getElementById('searchBox').addEventListener('input', function() {
+        document.getElementById('searchBox').addEventListener('input', function () {
             const searchValue = this.value.toLowerCase().trim();
             const tableBody = document.querySelector('#logsTable tbody');
             const rows = tableBody.getElementsByTagName('tr');
