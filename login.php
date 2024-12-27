@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once 'config/database.php'; // Include your database class
 
 $error = ''; // Initialize the error variable
@@ -48,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Set session variables for the logged-in user
                     $_SESSION['email'] = $email;
                     $_SESSION['role'] = $user['user_role'];
+                    $_SESSION['user_id'] = $user['user_id'];
 
                     // Redirect based on user role
                     if ($user['user_role'] === 'Administrator') {

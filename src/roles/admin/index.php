@@ -1,4 +1,7 @@
 <?php
+// Include the session check
+include "../../../session/sessioncheck.php";
+
 // Include the configuration file
 require_once __DIR__ . '/../../../config/config.php';
 
@@ -539,7 +542,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             });
         }
 
-        document.getElementById('main-search').addEventListener('input', function () {
+        document.getElementById('main-search').addEventListener('input', function() {
             const searchValue = this.value.toLowerCase().trim();
             const tableBody = document.querySelector('#user-list'); // Target the user list tbody
             const rows = tableBody.getElementsByTagName('tr');
@@ -549,10 +552,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                 const rowText = Array.from(row.getElementsByTagName('td')).map(cell => cell.textContent.toLowerCase()).join(' ');
 
                 if (rowText.includes(searchValue)) {
-                    row.style.display = '';  // Show matching rows
+                    row.style.display = ''; // Show matching rows
                     hasMatch = true;
                 } else {
-                    row.style.display = 'none';  // Hide non-matching rows
+                    row.style.display = 'none'; // Hide non-matching rows
                 }
             });
 
@@ -570,7 +573,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                 noMatchMessage.style.display = 'none'; // Hide the message if there are matches
             }
         });
-
     </script>
 </body>
 

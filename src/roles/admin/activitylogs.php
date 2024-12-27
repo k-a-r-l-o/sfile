@@ -1,4 +1,8 @@
 <?php
+
+// Include the session check
+include "../../../session/sessioncheck.php";
+
 require_once __DIR__ . '/../../../config/config.php';
 
 try {
