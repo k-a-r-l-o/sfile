@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $error = "Your account is already logged in. Please log out from other devices.";
                 } elseif (password_verify($password, $user['password'])) {
                     // Update user status to indicate they are logged in
-                    $updateStatusStmt = $conn->prepare("UPDATE tb_admin_logindetails SET user_status = 'Online' WHERE user_id = :user_id");
+                    $updateStatusStmt = $conn->prepare("UPDATE tb_admin_logindetails SET user_status = 'Onlin' WHERE user_id = :user_id");
                     $updateStatusStmt->execute([':user_id' => $user['user_id']]);
 
                     // Log successful login using the user_id
