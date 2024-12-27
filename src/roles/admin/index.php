@@ -460,7 +460,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
                 });
         }
 
-
         function openEditModal(button) {
             const userId = button.getAttribute('data-id');
             const fname = button.getAttribute('data-fname');
