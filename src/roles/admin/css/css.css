@@ -444,18 +444,20 @@ body {
 /* ===================== Table styling for Manage Users ===================== */
 .user-table {
   background-color: white;
-  padding: 5px;
   border-radius: 20px;
-  width: 90%;
-  margin: 25px auto;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 90%;
+  margin: 0 auto;
+  margin-bottom: 100px;
 }
 
+/* Wrapper for horizontal scrolling */
 .user-table-wrapper {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: auto;  
   scrollbar-width: none;
 }
 
@@ -463,8 +465,10 @@ body {
   display: none;  
 }  
 
+/* Ensure the table is wider than its container if necessary */
 .user-table table {
-  width: 100%; /* Ensure table width adapts */
+  min-width: 1000px; /* Set a minimum width for the table */
+  width: 100%; /* Table spans full width of the wrapper */
   border-collapse: collapse;
   font-size: 14px;
   background-color: white;
@@ -474,16 +478,21 @@ body {
   padding: 25px;
   text-align: left;
   border-bottom: 1px solid #ddd;
-  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.user-table th {
+  background-color: transparent;
+  color: black;
+  font-weight: bold;
+}
+
+.user-table td {
+  background-color: white;
+  transition: background-color 0.3s ease;
 }
 
 .user-table tr:hover td {
   background-color: #d4edda;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 8px; /* Add space between buttons */
 }
 
 .action-icon {

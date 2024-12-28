@@ -232,21 +232,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_users'])) {
             </div>
 
             <!-- ========================= Table ==================== -->
-            <div class="user-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Email Address</th>
-                            <th>Role</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-list">
-                        <!-- Users will be dynamically injected here by JavaScript -->
-                    </tbody>
-                </table>
+            <div class="user-table">  
+                <div class="user-table-wrapper">  
+                    <table>  
+                        <thead>  
+                            <tr>  
+                                <th>User ID</th>  
+                                <th>Name</th>  
+                                <th>Email Address</th>  
+                                <th>Role</th>  
+                                <th>Action</th>  
+                            </tr>  
+                        </thead>  
+                        <tbody id="user-list">  
+                            <!-- Users will be dynamically injected here by JavaScript -->  
+                        </tbody>  
+                    </table>  
+                </div>  
             </div>
 
             <!-- Add User Button -->
