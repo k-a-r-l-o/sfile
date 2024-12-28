@@ -11,15 +11,15 @@ if (isset($_GET['token'])) {
 
         // Join tb_admin_logindetails and tb_admin_userdetails to retrieve role and other details
         $stmt = $conn->prepare(
-            "SELECT l.user_id, u.user_role, l.token_expiration 
+            "SELECT l.user_id, u.user_role, l.token, l.token_expiration 
              FROM tb_admin_logindetails l
              JOIN tb_admin_userdetails u ON l.user_id = u.user_id
-             WHERE l.token = :token AND l.token_expiration > NOW()"
+             WHERE l.token_expiration > NOW()"
         );
-        $stmt->execute([':token' => $token]);
+        $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user) {
+        if ($user && password_verify($token, $user['token'])) {
             // Clear token to prevent reuse
             $clearTokenStmt = $conn->prepare(
                 "UPDATE tb_admin_logindetails 

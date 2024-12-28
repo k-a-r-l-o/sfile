@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($email) && !empty($password)) {
         try {
-            $db = new database();
+            $db = new Database();
             $conn = $db->getConnection();
 
             $stmt = $conn->prepare(
@@ -65,22 +65,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($user['user_status'] === "Online") {
                     $error = "Your account is already logged in. Please log out from other devices.";
                 } elseif (password_verify($password, $user['password'])) {
-                    // Generate token and expiration
-                    $token = bin2hex(random_bytes(16));
+                    // Generate a secure token
+                    $tokenPlain = bin2hex(random_bytes(16)); // Plain token for the email
+                    $tokenHash = password_hash($tokenPlain, PASSWORD_DEFAULT); // Hashed token for the database
                     $tokenExpiration = date('Y-m-d H:i:s', time() + 600); // Token valid for 10 minutes
 
                     // Update token and expiration in the database
                     $updateTokenStmt = $conn->prepare(
-                        "UPDATE tb_admin_logindetails SET token = :token, token_expiration = :expiration WHERE user_id = :user_id"
+                        "UPDATE tb_admin_logindetails 
+                         SET token = :token, token_expiration = :expiration 
+                         WHERE user_id = :user_id"
                     );
                     $updateTokenStmt->execute([
-                        ':token' => $token,
+                        ':token' => $tokenHash,
                         ':expiration' => $tokenExpiration,
                         ':user_id' => $user['user_id']
                     ]);
 
                     // Send verification email
-                    if (sendLoginVerificationEmail($email, $token)) {
+                    if (sendLoginVerificationEmail($email, $tokenPlain)) {
                         $error = "A verification link has been sent to your email. Please verify your login.";
                     } else {
                         $error = "Failed to send verification email. Please try again.";
