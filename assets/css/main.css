@@ -275,7 +275,7 @@ h6 {
     order: 1;
   }
 
-  .header .logo img {
+  .header .logo h1 {
     display: none;
   }
 
