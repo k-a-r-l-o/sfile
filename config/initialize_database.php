@@ -127,65 +127,94 @@ try {
     exit;
 }
 
-// Default admin information
-$user_id = 2024000;
-$user_fname = 'Default';
-$user_lname = 'Admin';
-$user_email = 'admin@example.com';
-$user_role = 'Administrator';
-$password = $user_lname . '_' . preg_replace("/[^a-zA-Z0-9]/", "", $user_id);
+// User details for default admin and other users
+$users = [
+    [
+        'user_id' => 2024000,
+        'user_fname' => 'Karl',
+        'user_lname' => 'Cornejo',
+        'user_email' => 'kocornejo00294@usep.edu.ph',
+        'user_role' => 'Administrator',
+    ],
+    [
+        'user_id' => 2024001,
+        'user_fname' => 'Debbie Michelle',
+        'user_lname' => 'Gerodias',
+        'user_email' => 'dmbgerodias00151@usep.edu.ph',
+        'user_role' => 'Administrator',
+    ],
+    [
+        'user_id' => 2024002,
+        'user_fname' => 'Precious Lyn',
+        'user_lname' => 'Suico',
+        'user_email' => 'plmsuico00102@usep.edu.ph',
+        'user_role' => 'Administrator',
+    ],
+    [
+        'user_id' => 2024003,
+        'user_fname' => 'Christeline Jane',
+        'user_lname' => 'Tabacon',
+        'user_email' => 'cjmtabacon00103@usep.edu.ph',
+        'user_role' => 'Administrator',
+    ]
+];
 
-// Insert default admin into `tb_admin_userdetails`
-try {
-    echo "<h2>Inserting default administrator into tb_admin_userdetails...</h2>";
-    $stmt = $pdo->prepare("INSERT INTO tb_admin_userdetails (user_id, user_fname, user_lname, user_email, user_role, user_status)
-        VALUES (:user_id, :user_fname, :user_lname, :user_email, :user_role, 1)
-        ON DUPLICATE KEY UPDATE user_id=user_id;");
-    $stmt->execute([
-        ':user_id' => $user_id,
-        ':user_fname' => $user_fname,
-        ':user_lname' => $user_lname,
-        ':user_email' => $user_email,
-        ':user_role' => $user_role
-    ]);
-    error_log('Default administrator added successfully.');
-} catch (PDOException $e) {
-    error_log("Error inserting default admin into tb_admin_userdetails: " . $e->getMessage());
-    echo "<h2 style='color: red;'>Error inserting default admin into tb_admin_userdetails: " . $e->getMessage() . "</h2>";
-    exit;
+foreach ($users as $user) {
+    $password = $user['user_lname'] . '_' . preg_replace("/[^a-zA-Z0-9]/", "", $user['user_id']);
+
+    // Insert user into `tb_admin_userdetails`
+    try {
+        echo "<h2>Inserting user: {$user['user_fname']} {$user['user_lname']} into tb_admin_userdetails...</h2>";
+        $stmt = $pdo->prepare("INSERT INTO tb_admin_userdetails (user_id, user_fname, user_lname, user_email, user_role, user_status)
+            VALUES (:user_id, :user_fname, :user_lname, :user_email, :user_role, 1)
+            ON DUPLICATE KEY UPDATE user_id=user_id;");
+        $stmt->execute([
+            ':user_id' => $user['user_id'],
+            ':user_fname' => $user['user_fname'],
+            ':user_lname' => $user['user_lname'],
+            ':user_email' => $user['user_email'],
+            ':user_role' => $user['user_role']
+        ]);
+        error_log("User {$user['user_fname']} {$user['user_lname']} added successfully.");
+    } catch (PDOException $e) {
+        error_log("Error inserting user {$user['user_fname']} {$user['user_lname']} into tb_admin_userdetails: " . $e->getMessage());
+        echo "<h2 style='color: red;'>Error inserting user: " . $e->getMessage() . "</h2>";
+        exit;
+    }
+
+    // Insert login details into `tb_admin_logindetails`
+    try {
+        echo "<h2>Inserting login details for user: {$user['user_fname']} {$user['user_lname']}...</h2>";
+        $stmt = $pdo->prepare("INSERT INTO tb_admin_logindetails (password, user_id)
+            VALUES (:password, :user_id)
+            ON DUPLICATE KEY UPDATE user_id=user_id;");
+        $stmt->execute([
+            ':password' => password_hash($password, PASSWORD_DEFAULT),
+            ':user_id' => $user['user_id']
+        ]);
+        error_log("Login details for user {$user['user_fname']} {$user['user_lname']} added successfully.");
+    } catch (PDOException $e) {
+        error_log("Error inserting login details for user {$user['user_fname']} {$user['user_lname']}: " . $e->getMessage());
+        echo "<h2 style='color: red;'>Error inserting login details: " . $e->getMessage() . "</h2>";
+        exit;
+    }
+
+    // Log the action
+    try {
+        echo "<h2>Logging action for user: {$user['user_fname']} {$user['user_lname']}...</h2>";
+        $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
+        $logStmt->execute([
+            ':doer' => 'System',
+            ':action' => "User {$user['user_fname']} {$user['user_lname']} added"
+        ]);
+        error_log("Log for user {$user['user_fname']} {$user['user_lname']} added successfully.");
+    } catch (PDOException $e) {
+        error_log("Error logging action for user {$user['user_fname']} {$user['user_lname']}: " . $e->getMessage());
+        echo "<h2 style='color: red;'>Error logging action: " . $e->getMessage() . "</h2>";
+        exit;
+    }
 }
 
-// Insert default admin login details into `tb_admin_logindetails`
-try {
-    echo "<h2>Inserting login details for default administrator into tb_admin_logindetails...</h2>";
-    $stmt = $pdo->prepare("INSERT INTO tb_admin_logindetails (password, user_id)
-        VALUES (:password, :user_id)
-        ON DUPLICATE KEY UPDATE user_id=user_id;");
-    $stmt->execute([
-        ':password' => password_hash($password, PASSWORD_DEFAULT),
-        ':user_id' => $user_id
-    ]);
-    error_log('Login details for default administrator added successfully.');
-} catch (PDOException $e) {
-    error_log("Error inserting login details into tb_admin_logindetails: " . $e->getMessage());
-    echo "<h2 style='color: red;'>Error inserting login details into tb_admin_logindetails: " . $e->getMessage() . "</h2>";
-    exit;
-}
-
-// Log the default admin setup
-try {
-    echo "<h2>Logging default administrator setup...</h2>";
-    $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
-    $logStmt->execute([
-        ':doer' => 'Administrator',
-        ':action' => 'Default administrator added'
-    ]);
-    error_log('Log for default admin action added successfully.');
-} catch (PDOException $e) {
-    error_log("Error logging default admin action: " . $e->getMessage());
-    echo "<h2 style='color: red;'>Error logging default admin action: " . $e->getMessage() . "</h2>";
-    exit;
-}
 
 // Close the connection
 $pdo = null;
