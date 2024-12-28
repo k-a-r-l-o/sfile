@@ -239,7 +239,7 @@ h6 {
 
 .header .logo img {
   max-height: 36px;
-  margin-right: 0px;
+  margin-right: 8px;
 }
 
 .header .logo h1 {
@@ -273,6 +273,10 @@ h6 {
 @media (max-width: 1200px) {
   .header .logo {
     order: 1;
+  }
+
+  .header .logo img {
+    display: none;
   }
 
   .header .btn-getstarted {
