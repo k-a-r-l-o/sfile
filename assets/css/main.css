@@ -276,7 +276,7 @@ h6 {
   }
 
   .header .logo h1 {
-    display: none;
+    font-size: 20px;
   }
 
   .header .btn-getstarted {
