@@ -436,6 +436,7 @@ body {
   font-weight: 600;
   margin: 5px 0;
   color: #444;
+  text-align: center;
 }
 
 .card-body {
