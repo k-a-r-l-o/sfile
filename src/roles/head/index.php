@@ -88,16 +88,86 @@
             </div>
 
             <!-- ========================= Client Cards ==================== -->
-            <div id="client-cards" class="client-cards">
-                <div class="client-card" onclick="handleCardClick('Client 1')">
-                    <img src="client1.jpg" alt="Client 1">
-                    <h2>Client 1</h2>
-                </div>
-                <div class="client-card" onclick="handleCardClick('Client 2')">
-                    <img src="client2.jpg" alt="Client 2">
-                    <h2>Client 2</h2>
-                </div>
-                <!-- Add more client cards here -->
+            <div id="client-cards" class="client-cards">  
+                <div class="client-cards">  
+                    <div class="card">  
+                        <div class="card-header">  
+                            <img src="../../../assets/img/team/team-1.png" alt="Karl Cornejo" class="client-image">  
+                            <h4>Karl Cornejo</h4>  
+                        </div>  
+                        <div class="card-body">  
+                            <p>Files: <strong>3</strong></p>  
+                            <a href="#" class="view-files-button" onclick="handleCardClick('Client 1')">View Files</a> <!-- View Files button -->
+                        </div>  
+                    </div>  
+
+                    <div class="card">  
+                        <div class="card-header">  
+                            <img src="../../../assets/img/team/team-2.png" alt="Debbie Michelle Gerodias" class="client-image">  
+                            <h4>Debbie Michelle Gerodias</h4>  
+                        </div>  
+                        <div class="card-body">  
+                            <p>Files: <strong>3</strong></p>
+                            <a href="#" class="view-files-button" onclick="handleCardClick('Client 2')">View Files</a> <!-- View Files button -->
+                        </div> 
+                    </div>  
+
+                    <div class="card">  
+                        <div class="card-header">  
+                            <img src="../../../assets/img/team/team-3.png" alt="Precious Lyn Suico" class="client-image">  
+                            <h4>Precious Lyn Suico</h4>  
+                        </div>  
+                        <div class="card-body">  
+                            <p>Files: <strong>2</strong></p>  
+                            <a href="#" class="view-files-button" onclick="handleCardClick('Client 3')">View Files</a> <!-- View Files button -->
+                        </div>   
+                    </div>  
+
+                    <div class="card">  
+                        <div class="card-header">  
+                            <img src="../../../assets/img/team/team-4.png" alt="Christeline Jane M. Tabacon" class="client-image">  
+                            <h4>Christeline Jane Tabacon</h4>  
+                        </div>  
+                        <div class="card-body">  
+                            <p>Files: <strong>2</strong></p>  
+                            <a href="#" class="view-files-button" onclick="handleCardClick('Client 4')">View Files</a> <!-- View Files button -->
+                        </div>   
+                    </div> 
+                    
+                    <div class="card">  
+                        <div class="card-header">  
+                            <img src="../../../assets/img/clients/client-1.png" alt="Karl Cornejo" class="client-image">  
+                            <h4>Karl Cornejo</h4>  
+                        </div>  
+                        <div class="card-body">  
+                            <p>Files: <strong>3</strong></p>  
+                            <a href="#" class="view-files-button" onclick="handleCardClick('Client 1')">View Files</a> <!-- View Files button -->
+                        </div>  
+                    </div>  
+
+                    <div class="card">  
+                        <div class="card-header">  
+                            <img src="../../../assets/img//hero-bg-secured.jpg" alt="Debbie Michelle Gerodias" class="client-image">  
+                            <h4>Debbie Michelle Gerodias</h4>  
+                        </div>  
+                        <div class="card-body">  
+                            <p>Files: <strong>3</strong></p>
+                            <a href="#" class="view-files-button" onclick="handleCardClick('Client 2')">View Files</a> <!-- View Files button -->
+                        </div> 
+                    </div>  
+
+                    <div class="card">  
+                        <div class="card-header">  
+                            <img src="../../../assets/img/hero-bg-abstract.jpg" alt="Precious Lyn Suico" class="client-image">  
+                            <h4>Precious Lyn Suico</h4>  
+                        </div>  
+                        <div class="card-body">  
+                            <p>Files: <strong>2</strong></p>  
+                            <a href="#" class="view-files-button" onclick="handleCardClick('Client 3')">View Files</a> <!-- View Files button -->
+                        </div>   
+                    </div>   
+
+                </div>  
             </div>
 
             <!-- ========================= Breadcrumbs ==================== -->
@@ -108,23 +178,24 @@
             <!-- ========================= Client Files ==================== -->
             <div id="client-files" class="client-files" style="display:none;">
                 <div class="client-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Filename</th>
-                                <th>Date & Time Uploaded</th>
-                                <th>File </th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="files-table-body">
-                            <!-- Files will be dynamically inserted here -->
-                        </tbody>
-                    </table>
+                    <div class="client-table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Filename</th>
+                                    <th>Date & Time Uploaded</th>
+                                    <th>File </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="files-table-body">
+                                <!-- Files will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            
         </div>
 
     </div> <!-- Container end -->
@@ -142,7 +213,15 @@
             'Client 2': [
                 { filename: 'budget.xlsx', date: '2024-12-11 02:15 PM', size: '45 KB' },
                 { filename: 'invoice.pdf', date: '2024-12-14 04:20 PM', size: '120 KB' }
-            ]
+            ], 
+            'Client 3': [  
+                { filename: 'presentation.pptx', date: '2024-12-15 01:00 PM', size: '200 KB' },  
+                { filename: 'summary.docx', date: '2024-12-16 03:00 PM', size: '90 KB' }  
+            ],  
+            'Client 4': [  
+                { filename: 'contract.pdf', date: '2024-12-17 09:30 AM', size: '300 KB' },  
+                { filename: 'notes.txt', date: '2024-12-18 10:00 AM', size: '10 KB' }  
+            ]  
         };
 
         // Function to display client files in the table
@@ -208,7 +287,7 @@
             // Check if the row is the 3rd-to-last or beyond
             if (rowIndex >= rows.length - 1) {
                 dropdown.style.top = '';  // Reset any previous styles
-                dropdown.style.bottom = '25px';  // Position it above
+                dropdown.style.bottom = '20px';  // Position it above
             } else {
                 dropdown.style.top = '25px';  // Default position below
                 dropdown.style.bottom = '';  // Reset bottom

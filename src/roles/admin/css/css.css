@@ -456,7 +456,12 @@ body {
 .user-table-wrapper {
   width: 100%;
   overflow-x: auto;
+  scrollbar-width: none;
 }
+
+&::-webkit-scrollbar {  
+  display: none;  
+}  
 
 .user-table table {
   width: 100%; /* Ensure table width adapts */
@@ -466,7 +471,7 @@ body {
 }
 
 .user-table th, .user-table td {
-  padding: 15px;
+  padding: 25px;
   text-align: left;
   border-bottom: 1px solid #ddd;
   white-space: nowrap; /* Prevent text from wrapping */
