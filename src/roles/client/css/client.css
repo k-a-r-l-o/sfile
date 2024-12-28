@@ -757,6 +757,12 @@ p {
   display: none !important;
 }
 
+#no-match-message {
+  text-align: center;
+  font-style: italic;
+  font-size: 14px;
+}
+
 /* ===================== Profile Setting ===================== */
 .profile-settings {
   max-width: 90%;

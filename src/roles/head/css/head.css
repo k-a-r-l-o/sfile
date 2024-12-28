@@ -391,7 +391,6 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center; 
-  overflow-x: auto;
 }
 
 .card {
@@ -604,6 +603,40 @@ body {
   z-index: 100;
 }
 
+.modal-buttons {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.confirm {
+  background-color: #28a745;
+  color: white;
+}
+
+.confirm:hover {
+  background-color: #218838;
+}
+
+.cancel {
+  background-color: #dc3545;
+  color: white;
+  margin-left: 10px;
+}
+
+.cancel:hover {
+  background-color: #c82333;
+}
+
 .modal.show {
   display: flex;
   opacity: 1;
@@ -612,6 +645,12 @@ body {
 /* Ensure dropdown-menu is hidden when modal is visible */
 .modal.show ~ .dropdown-menu {
   display: none !important;
+}
+
+#no-match-message {
+  text-align: center;
+  font-style: italic;
+  font-size: 14px;
 }
 
 /* ===================== Profile Setting ===================== */

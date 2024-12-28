@@ -38,7 +38,7 @@
                         <span class="icon">
                             <ion-icon name="folder-outline"></ion-icon>
                         </span>
-                        <span class="title">Manage Users Files</span>
+                        <span class="title">Manage Employee Files</span>
                     </a>
                 </li>
 
@@ -96,7 +96,7 @@
                             <h4>Karl Cornejo</h4>  
                         </div>  
                         <div class="card-body">  
-                            <p>Files: <strong>3</strong></p>  
+                            <p>Files: <strong>2</strong></p>  
                             <a href="#" class="view-files-button" onclick="handleCardClick('Client 1')">View Files</a> <!-- View Files button -->
                         </div>  
                     </div>  
@@ -107,7 +107,7 @@
                             <h4>Debbie Michelle Gerodias</h4>  
                         </div>  
                         <div class="card-body">  
-                            <p>Files: <strong>3</strong></p>
+                            <p>Files: <strong>2</strong></p>
                             <a href="#" class="view-files-button" onclick="handleCardClick('Client 2')">View Files</a> <!-- View Files button -->
                         </div> 
                     </div>  
@@ -140,7 +140,7 @@
                             <h4>Karl Cornejo</h4>  
                         </div>  
                         <div class="card-body">  
-                            <p>Files: <strong>3</strong></p>  
+                            <p>Files: <strong>2</strong></p>  
                             <a href="#" class="view-files-button" onclick="handleCardClick('Client 1')">View Files</a> <!-- View Files button -->
                         </div>  
                     </div>  
@@ -151,7 +151,7 @@
                             <h4>Debbie Michelle Gerodias</h4>  
                         </div>  
                         <div class="card-body">  
-                            <p>Files: <strong>3</strong></p>
+                            <p>Files: <strong>2</strong></p>
                             <a href="#" class="view-files-button" onclick="handleCardClick('Client 2')">View Files</a> <!-- View Files button -->
                         </div> 
                     </div>  
@@ -198,6 +198,26 @@
 
         </div>
 
+        <!-- Enhanced Modal Structure -->
+        <div id="action-modal" class="modal">
+            <div class="modal-content">
+                <h3 id="modal-title">Action</h3>
+                <p id="modal-message">Are you sure you want to proceed?</p>
+
+                <!-- Rename Field -->
+                <div id="rename-input" style="display: none;">
+                    <label for="rename-field">New Filename:</label>
+                    <input type="text" id="rename-field" placeholder="Enter new filename..." />
+                </div>
+
+                <!-- Modal Buttons -->
+                <div class="modal-buttons">
+                    <button id="confirm-btn" class="btn confirm">Confirm</button>
+                    <button id="cancel-btn" class="btn cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
     </div> <!-- Container end -->
 
     <script src="js/head.js"></script>
@@ -208,7 +228,6 @@
             'Client 1': [
                 { filename: 'data.csv', date: '2024-12-10 11:00 AM', size: '16 KB' },
                 { filename: 'report.pdf', date: '2024-12-12 10:30 AM', size: '146 KB' },
-                { filename: 'draft.docx', date: '2024-12-05 09:15 AM', size: '18 KB' }
             ],
             'Client 2': [
                 { filename: 'budget.xlsx', date: '2024-12-11 02:15 PM', size: '45 KB' },
@@ -224,42 +243,42 @@
             ]  
         };
 
-        // Function to display client files in the table
-        function displayClientFiles(clientName) {
-            const clientFiles = clientData[clientName];
-            const tableBody = document.getElementById('files-table-body');
-            tableBody.innerHTML = ''; // Clear existing rows
+        // Function to display client files in the table  
+        function displayClientFiles(clientName) {  
+            const clientFiles = clientData[clientName];  
+            const tableBody = document.getElementById('files-table-body');  
+            tableBody.innerHTML = ''; // Clear existing rows  
 
-            clientFiles.forEach(file => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${file.filename}</td>
-                    <td>${file.date}</td>
-                    <td>${file.size}</td>
-                    <td>
-                        <div class="action-menu">
-                            <button class="action-btn" onclick="toggleDropdown(event)">
-                                <ion-icon name="ellipsis-vertical-outline"></ion-icon>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a href="#" onclick="alert('View clicked')">View</a>
-                                <a href="#" onclick="alert('Download clicked')">Download</a>
-                                <a href="#" onclick="alert('Rename clicked')">Rename</a>
-                                <a href="#" onclick="alert('Delete clicked')">Delete</a>
-                            </div>
-                        </div>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
+            clientFiles.forEach(file => {  
+                const row = document.createElement('tr');  
+                row.innerHTML = `  
+                    <td>${file.filename}</td>  
+                    <td>${file.date}</td>  
+                    <td>${file.size}</td>  
+                    <td>  
+                        <div class="action-menu">  
+                            <button class="action-btn" onclick="toggleDropdown(event)">  
+                                <ion-icon name="ellipsis-vertical-outline"></ion-icon>  
+                            </button>  
+                            <div class="dropdown-menu">  
+                                <a href="#" onclick="showModal('View', '${file.filename}')">View</a>  
+                                <a href="#" onclick="showModal('Download', '${file.filename}')">Download</a>  
+                                <a href="#" onclick="showModal('Rename', '${file.filename}')">Rename</a>  
+                                <a href="#" onclick="showModal('Delete', '${file.filename}')">Delete</a>  
+                            </div>  
+                        </div>  
+                    </td>  
+                `;  
+                tableBody.appendChild(row);  
+            });  
 
-            // Show the client files section and hide the client cards
-            document.getElementById('client-cards').style.display = 'none';
-            document.getElementById('client-files').style.display = 'block';
+            // Show the client files section and hide the client cards  
+            document.getElementById('client-cards').style.display = 'none';  
+            document.getElementById('client-files').style.display = 'block';  
 
-            // Show breadcrumbs and update current client
-            document.getElementById('breadcrumbs').style.display = 'block';
-            document.getElementById('current-client').textContent = clientName;
+            // Show breadcrumbs and update current client  
+            document.getElementById('breadcrumbs').style.display = 'block';  
+            document.getElementById('current-client').textContent = clientName;  
         }
 
         // Function to handle client card click
@@ -388,42 +407,75 @@
         window.onload = updateActionLinks;
 
 
-        function filterFiles() {
-            const searchInput = document.getElementById('main-search').value.toLowerCase();
-            const fileItems = document.querySelectorAll('#files-table-body tr:not(#no-match-message)'); // Exclude the "No match found" row
-            let hasMatch = false;
+        function filterFiles() {  
+            const searchInput = document.getElementById('main-search').value.toLowerCase();  
 
-            // Iterate through all file rows to check for matches
-            fileItems.forEach(item => {
-                const fileName = item.querySelector('td:nth-child(1)').textContent.toLowerCase(); // Filename column
-                const matches = fileName.includes(searchInput);
+            // Filter client cards  
+            const clientCards = document.querySelectorAll('.client-cards .card');  
+            let hasCardMatch = false;  
 
-                // Show or hide the row based on the match
-                item.style.display = matches ? '' : 'none';
+            // Create or reference the "No match found" message for client cards  
+            let noCardMatchMessage = document.getElementById('no-card-match-message');  
+            if (!noCardMatchMessage) {  
+                noCardMatchMessage = document.createElement('div');  
+                noCardMatchMessage.id = 'no-card-match-message';  
+                noCardMatchMessage.style.textAlign = 'center';  
+                noCardMatchMessage.style.margin = '10px 0';  
+                noCardMatchMessage.textContent = 'No match found.';  
+                document.getElementById('client-cards').appendChild(noCardMatchMessage);  
+            }  
 
-                // If any row matches, set hasMatch to true
-                if (matches) {
-                    hasMatch = true;
-                }
-            });
+            clientCards.forEach(card => {  
+                const clientName = card.querySelector('h4').textContent.toLowerCase();  
+                const matches = clientName.includes(searchInput);  
 
-            // Handle the "No match found" message
-            let noMatchMessage = document.getElementById('no-match-message');
-            if (!hasMatch) {
-                // If no matches, ensure the "No match found" row exists
-                if (!noMatchMessage) {
-                    noMatchMessage = document.createElement('tr');
-                    noMatchMessage.id = 'no-match-message';
-                    noMatchMessage.innerHTML = '<td colspan="100%" style="text-align:center;">No match found.</td>';
-                    document.getElementById('files-table-body').appendChild(noMatchMessage);
-                }
-                noMatchMessage.style.display = ''; // Ensure the message is visible
-            } else {
-                // If matches are found, hide or remove the "No match found" row
-                if (noMatchMessage) {
-                    noMatchMessage.style.display = 'none';
-                }
-            }
+                // Show or hide the card based on the match  
+                card.style.display = matches ? '' : 'none';  
+
+                // If any card matches, set hasCardMatch to true  
+                if (matches) {  
+                    hasCardMatch = true;  
+                }  
+            });  
+
+            // Show/hide the "No match found" message for client cards  
+            noCardMatchMessage.style.display = hasCardMatch ? 'none' : '';  
+
+            // Filter client files  
+            const fileItems = document.querySelectorAll('#files-table-body tr:not(#no-match-message)'); // Exclude the "No match found" row  
+            let hasFileMatch = false;  
+
+            // Iterate through all file rows to check for matches  
+            fileItems.forEach(item => {  
+                const fileName = item.querySelector('td:nth-child(1)').textContent.toLowerCase(); // Filename column  
+                const matches = fileName.includes(searchInput);  
+
+                // Show or hide the row based on the match  
+                item.style.display = matches ? '' : 'none';  
+
+                // If any row matches, set hasFileMatch to true  
+                if (matches) {  
+                    hasFileMatch = true;  
+                }  
+            });  
+
+            // Handle the "No match found" message for files  
+            let noMatchMessage = document.getElementById('no-match-message');  
+            if (!hasFileMatch) {  
+                // If no matches, ensure the "No match found" row exists  
+                if (!noMatchMessage) {  
+                    noMatchMessage = document.createElement('tr');  
+                    noMatchMessage.id = 'no-match-message';  
+                    noMatchMessage.innerHTML = '<td colspan="100%" style="text-align:center;">No match found.</td>';  
+                    document.getElementById('files-table-body').appendChild(noMatchMessage);  
+                }  
+                noMatchMessage.style.display = ''; // Ensure the message is visible  
+            } else {  
+                // If matches are found, hide or remove the "No match found" row  
+                if (noMatchMessage) {  
+                    noMatchMessage.style.display = 'none';  
+                }  
+            }  
         }
 
         function applySort() {
