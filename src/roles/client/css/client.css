@@ -460,7 +460,7 @@ body {
 }
 
 .upload-btn {
-  background-color: #050deb;
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -470,7 +470,7 @@ body {
 }
 
 .upload-btn:hover {
-  background-color: #0309b3;
+  background-color: #1158a3;
 }
 
 h3 {
@@ -569,7 +569,14 @@ p {
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   animation: slideIn 0.3s ease-out;
+  text-align: center;
 }
+
+.modal-icon {  
+  font-size: 40px; 
+  margin-bottom: 15px;  
+  color: #1158a3; 
+}  
 
 .alert-modal-content h2 {
   font-size: 24px;
@@ -581,13 +588,12 @@ p {
 .alert-modal-content p {
   font-size: 16px;
   color: #555;
-  text-align: center;
 }
 
 .alert-modal-content .alert-btn {
   display: block;
-  width: 30%;
-  background-color: #4CAF50;
+  width: 40%;
+  background-color: #007bff; 
   color: #fff;
   border: none;
   padding: 10px;
@@ -601,7 +607,7 @@ p {
 }
 
 .alert-modal-content .alert-btn:hover {
-  background-color: #45a049;
+  background-color: #1158a3;
 }
 
 .close-modal {

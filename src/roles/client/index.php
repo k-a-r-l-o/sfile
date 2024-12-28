@@ -130,13 +130,17 @@
                 </div>
             </div>
 
-            <!-- Modal for alerts -->
-            <div id="alert-modal" class="alert-modal">
-                <div class="alert-modal-content">
-                    <span id="close-modal" class="close-modal">&times;</span>
-                    <p id="modal-message">This is a sample message.</p>
-                    <button class="alert-btn" id="alert-close-btn">Okay</button>
-                </div>
+            <!-- Modal for alerts -->  
+            <div id="alert-modal" class="alert-modal">  
+                <div class="alert-modal-content">  
+                    <span id="close-modal" class="close-modal">&times;</span>  
+                    <div class="modal-icon">  
+                        <i id="modal-icon" class="fas fa-info-circle"></i> <!-- Default icon -->  
+                    </div>  
+                    <h2 id="modal-title">Alert</h2> <!-- Title for the modal -->  
+                    <p id="modal-message">This is a sample message.</p>  
+                    <button class="alert-btn" id="alert-close-btn">Okay</button>  
+                </div>  
             </div>
 
 
@@ -302,26 +306,45 @@
         }
 
         // Function to show the modal
-        function showModal(message) {
-            const modal = document.getElementById('alert-modal');
-            const modalMessage = document.getElementById('modal-message');
-            const modalTitle = document.getElementById('modal-title');
-            
-            modalMessage.textContent = message; // Set the message
-            modal.classList.add('show');  // Add the 'show' class to trigger modal display
+        function showModal(message, type = 'info') {  
+            const modal = document.getElementById('alert-modal');  
+            const modalMessage = document.getElementById('modal-message');  
+            const modalTitle = document.getElementById('modal-title');  
+            const modalIcon = document.getElementById('modal-icon');  
 
-            const closeModal = document.getElementById('close-modal');
-            closeModal.onclick = () => modal.classList.remove('show');
+            modalMessage.textContent = message; // Set the message  
 
-            // Close the modal if clicked outside
-            window.onclick = (event) => {
-                if (event.target === modal) {
-                    modal.classList.remove('show');
-                }
-            };
+            // Set icon based on type  
+            switch (type) {  
+                case 'success':  
+                    modalIcon.className = 'fas fa-check-circle'; // Success icon  
+                    modalTitle.textContent = "Success!";  
+                    break;  
+                case 'error':  
+                    modalIcon.className = 'fas fa-exclamation-circle'; // Error icon  
+                    modalTitle.textContent = "Error!";  
+                    break;  
+                case 'info':  
+                default:  
+                    modalIcon.className = 'fas fa-info-circle'; // Info icon  
+                    modalTitle.textContent = "Information";  
+                    break;  
+            }  
 
-            const alertCloseButton = document.getElementById('alert-close-btn');
-            alertCloseButton.onclick = () => modal.classList.remove('show');
+            modal.classList.add('show');  // Show the modal  
+
+            const closeModal = document.getElementById('close-modal');  
+            closeModal.onclick = () => modal.classList.remove('show');  
+
+            // Close the modal if clicked outside  
+            window.onclick = (event) => {  
+                if (event.target === modal) {  
+                    modal.classList.remove('show');  
+                }  
+            };  
+
+            const alertCloseButton = document.getElementById('alert-close-btn');  
+            alertCloseButton.onclick = () => modal.classList.remove('show');  
         }
 
         // Function to close the modal
@@ -341,37 +364,68 @@
             }, 3000); // Close after 3 seconds
         }
 
-        // Upload Files Button Event
-        uploadButton.addEventListener("click", async () => {
-            if (uploadedFiles.length === 0) {
-                showModal("Please select at least one file to upload.");
-                return;
-            }
+        // Upload Files Button Event  
+        uploadButton.addEventListener("click", async () => {  
+            if (uploadedFiles.length === 0) {  
+                showModal("Please select at least one file to upload.");  
+                return;  
+            }  
 
-            // Simulate file upload and progress bar completion
-            for (const fileObj of uploadedFiles) {
-                await simulateFileUpload(fileObj);
-            }
+            // Simulate file upload and progress bar completion  
+            for (const fileObj of uploadedFiles) {  
+                await simulateFileUpload(fileObj);  
+            }  
 
-            // Add uploaded file to the table
-            uploadedFiles.forEach((fileObj) => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${fileObj.file.name}</td>
-                    <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
-                    <td>${new Date().toLocaleString()}</td>
-                `;
-                uploadedFilesTable.appendChild(row);
-            });
+            // Add uploaded file to the table  
+            uploadedFiles.forEach((fileObj) => {  
+                let fileName = fileObj.file.name;  
+                let baseName = fileName.replace(/\.[^/.]+$/, ""); // Base name without extension  
+                let extension = fileName.split('.').pop(); // Get the file extension  
+                let count = 0;  
 
-            // Remove files from the list and reset the selection
-            fileList.innerHTML = "";
-            uploadedFiles = [];
-            allFiles.clear();
-            updateFileCountIndicator();
+                // Check for existing file names in the table  
+                const existingRows = uploadedFilesTable.querySelectorAll("tr");  
+                existingRows.forEach(row => {  
+                    const existingFileName = row.cells[0].textContent;  
+                    const existingBaseName = existingFileName.replace(/\s\(\d+\)\.\w+$/, "").replace(/\.[^/.]+$/, ""); // Extract base name from existing file name
+                    const existingExtension = existingFileName.split('.').pop(); // Get the existing file extension
 
-            // Show success modal
-            showModal("Files uploaded successfully!");
+                    // Check if the existing file name matches the base name and extension
+                    if (existingBaseName === baseName && existingExtension === extension) {  
+                        const match = existingFileName.match(/\s\((\d+)\)\.\w+$/); // Check for existing count (like "email (1).png")  
+                        if (match) {  
+                            const existingCount = parseInt(match[1]); // Extract existing count  
+                            count = Math.max(count, existingCount + 1); // Increment count for the new upload  
+                        } else {
+                            count = 1; // If exact match found, set count to 1  
+                        }  
+                    } else if (existingBaseName === baseName && existingExtension !== extension) {
+                        // If the base name matches but the extension is different, do not increment the count
+                        count = 0; // Reset count for different extension
+                    }
+                });  
+
+                // Create new file name with count if necessary  
+                const newFileName = count > 0 ? `${baseName} (${count}).${extension}` : fileName;  
+
+                // Add a new row to the table  
+                const row = document.createElement("tr");  
+                row.innerHTML = `  
+                    <td>${newFileName}</td>  
+                    <td>${formatFileSize(fileObj.file.size)}</td>  
+                    <td>${new Date().toLocaleString()}</td>  
+                `;  
+                uploadedFilesTable.appendChild(row);  
+            });  
+
+            // Remove files from the list and reset the selection  
+            fileList.innerHTML = "";  
+            uploadedFiles = [];  
+            allFiles.clear();  
+            updateFileCountIndicator();  
+
+            // Show success modal  
+            showModal("Files uploaded successfully!");  
         });
 
         // Function to format file size in KB, MB, or GB
