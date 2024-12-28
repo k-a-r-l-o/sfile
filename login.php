@@ -1,10 +1,45 @@
 <?php
 session_start();
-require_once 'config/Database.php'; // Use PascalCase for the class name
+require_once 'config/database.php';
+require 'vendor/autoload.php'; // For PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-$error = ''; // Initialize error message
+$error = '';
 $email = '';
 $password = '';
+
+function sendLoginVerificationEmail($email, $token)
+{
+    $mail = new PHPMailer(true);
+    try {
+        // SMTP configuration
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'kocornejo00294@usep.edu.ph';
+        $mail->Password = 'gubz tazq acwf ecny';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+
+        // Email content
+        $mail->setFrom('kocornejo00294@usep.edu.ph', 'SecureFile');
+        $mail->addAddress($email);
+        $mail->isHTML(true);
+        $mail->Subject = 'Verify Your Login';
+        $mail->Body = "
+            <p>We noticed a login attempt for your account. Click the link below to verify it:</p>
+            <a href='https://sfile.site/session/verify-login.php?token=$token'>Verify Login</a>
+            <p>This link will expire in 10 minutes.</p>
+        ";
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Email error: " . $mail->ErrorInfo);
+        return false;
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
@@ -12,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($email) && !empty($password)) {
         try {
-            $db = new Database(); // Use correct case
+            $db = new database();
             $conn = $db->getConnection();
 
             $stmt = $conn->prepare(
@@ -21,35 +56,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  JOIN tb_admin_userdetails u ON l.user_id = u.user_id
                  WHERE u.user_email = :email"
             );
-            $stmt->bindValue(':email', $email); // Using bindValue for consistency
+            $stmt->bindValue(':email', $email);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user) {
+                // Check if the user is already logged in
                 if ($user['user_status'] === "Online") {
                     $error = "Your account is already logged in. Please log out from other devices.";
                 } elseif (password_verify($password, $user['password'])) {
-                    $updateStatusStmt = $conn->prepare(
-                        "UPDATE tb_admin_logindetails SET user_status = 'Onlin' WHERE user_id = :user_id"
-                    );
-                    $updateStatusStmt->execute([':user_id' => $user['user_id']]);
+                    // Generate token and expiration
+                    $token = bin2hex(random_bytes(16));
+                    $tokenExpiration = date('Y-m-d H:i:s', time() + 600); // Token valid for 10 minutes
 
-                    $logStmt = $conn->prepare(
-                        "INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)"
+                    // Update token and expiration in the database
+                    $updateTokenStmt = $conn->prepare(
+                        "UPDATE tb_admin_logindetails SET token = :token, token_expiration = :expiration WHERE user_id = :user_id"
                     );
-                    $logStmt->execute([
-                        ':doer' => $user['user_id'],
-                        ':action' => 'Successfully logged in'
+                    $updateTokenStmt->execute([
+                        ':token' => $token,
+                        ':expiration' => $tokenExpiration,
+                        ':user_id' => $user['user_id']
                     ]);
 
-                    session_regenerate_id(true); // Prevent session fixation
-                    $_SESSION['email'] = $email;
-                    $_SESSION['role'] = $user['user_role'];
-                    $_SESSION['user_id'] = $user['user_id'];
-
-                    header("Location: " . ($user['user_role'] === 'Administrator' ? "src/roles/admin/" : "src/roles/client/"));
-                    exit();
+                    // Send verification email
+                    if (sendLoginVerificationEmail($email, $token)) {
+                        $error = "A verification link has been sent to your email. Please verify your login.";
+                    } else {
+                        $error = "Failed to send verification email. Please try again.";
+                    }
                 } else {
+                    // Log failed login attempt
                     $logStmt = $conn->prepare(
                         "INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)"
                     );

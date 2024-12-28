@@ -79,6 +79,9 @@ try {
         password VARCHAR(255) NOT NULL,
         user_status VARCHAR(255) NULL,
         user_log VARCHAR(255) NULL,
+        token VARCHAR(255) NULL,
+        verified TINYINT(1) DEFAULT 0,
+        token_expiration DATETIME NULL,
         FOREIGN KEY (user_id) REFERENCES tb_admin_userdetails(user_id) ON DELETE CASCADE
     );");
     error_log('Table tb_admin_logindetails created successfully.');
@@ -96,6 +99,9 @@ try {
         password VARCHAR(255) NOT NULL,
         user_status VARCHAR(255) NULL,
         user_log VARCHAR(255) NULL,
+        token VARCHAR(255) NULL,
+        verified TINYINT(1) DEFAULT 0,
+        token_expiration DATETIME NULL, 
         FOREIGN KEY (user_id) REFERENCES tb_client_userdetails(user_id) ON DELETE CASCADE
     );");
     error_log('Table tb_client_logindetails created successfully.');
@@ -171,7 +177,7 @@ try {
     echo "<h2>Logging default administrator setup...</h2>";
     $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
     $logStmt->execute([
-        ':doer' => 'Administrator', 
+        ':doer' => 'Administrator',
         ':action' => 'Default administrator added'
     ]);
     error_log('Log for default admin action added successfully.');
