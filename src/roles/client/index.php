@@ -343,11 +343,6 @@
         // Function to handle file validation and preparation
         function handleFiles(files) {
             for (let file of files) {
-                if (allFiles.has(file.name)) {
-                    showModal(`You have already selected the file: ${file.name}`);
-                    return;
-                }
-                allFiles.add(file.name); // Add to the set to track already selected files
 
                 if (uploadedFiles.length + 1 > limitfile) {
                     showModal(`You can upload a maximum of ${limitfile} files.`);
@@ -387,6 +382,8 @@
             }
         }
 
+        let uploadedFileNames = new Map(); 
+
         // Upload Files Button Event
         uploadButton.addEventListener("click", async () => {
             let successfulUploads = 0;
@@ -423,7 +420,8 @@
                     const result = await response.json();
                     if (result.status === 'success') {
                         successfulUploads++;
-                        showModal(`${successfulUploads} file(s) uploaded successfully!`);
+                        showModal(successfulUploads + ' file(s) uploaded successfully!');
+                        
                         // Remove file from the DOM and list
                         const listItem = fileObj.progressBar.closest(".file-item");
                         if (listItem) {
@@ -433,9 +431,28 @@
                         allFiles.delete(fileObj.file.name); // Remove from the set
                         updateFileCountIndicator(); // Update file count indicator
 
+                        // Handle duplicate filenames
+                        let originalFileName = fileObj.file.name;
+                        let fileName = originalFileName;
+                        if (uploadedFileNames.has(originalFileName)) {
+                            const count = uploadedFileNames.get(originalFileName) + 1;
+                            uploadedFileNames.set(originalFileName, count);
+                            const extIndex = fileName.lastIndexOf(".");
+                            if (extIndex !== -1) {
+                                const namePart = fileName.substring(0, extIndex);
+                                const extPart = fileName.substring(extIndex);
+                                fileName = `${namePart} (${count})${extPart}`;
+                            } else {
+                                fileName = `${fileName} (${count})`; // No extension case
+                            }
+                        } else {
+                            uploadedFileNames.set(originalFileName, 0); // First occurrence
+                        }
+                        const finalFileName = result.fileName;
+                        // Add file with unique name to the table
                         const row = document.createElement("tr");
                         row.innerHTML = `
-                            <td>${fileObj.file.name}</td>
+                            <td>${fileName}</td>
                             <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
                             <td>${new Date().toLocaleString()}</td>     
                         `;
@@ -447,52 +464,6 @@
                     console.error('Upload failed:', error);
                 }
             }
-            // Simulate file upload and progress bar completion  
-            for (const fileObj of uploadedFiles) {  
-                await simulateFileUpload(fileObj);  
-            }  
-
-            // Add uploaded file to the table  
-            uploadedFiles.forEach((fileObj) => {  
-                let fileName = fileObj.file.name;  
-                let baseName = fileName.replace(/\.[^/.]+$/, ""); // Base name without extension  
-                let extension = fileName.split('.').pop(); // Get the file extension  
-                let count = 0;  
-
-                // Check for existing file names in the table  
-                const existingRows = uploadedFilesTable.querySelectorAll("tr");  
-                existingRows.forEach(row => {  
-                    const existingFileName = row.cells[0].textContent;  
-                    const existingBaseName = existingFileName.replace(/\s\(\d+\)\.\w+$/, "").replace(/\.[^/.]+$/, ""); // Extract base name from existing file name
-                    const existingExtension = existingFileName.split('.').pop(); // Get the existing file extension
-
-                    // Check if the existing file name matches the base name and extension
-                    if (existingBaseName === baseName && existingExtension === extension) {  
-                        const match = existingFileName.match(/\s\((\d+)\)\.\w+$/); // Check for existing count (like "email (1).png")  
-                        if (match) {  
-                            const existingCount = parseInt(match[1]); // Extract existing count  
-                            count = Math.max(count, existingCount + 1); // Increment count for the new upload  
-                        } else {
-                            count = 1; // If exact match found, set count to 1  
-                        }  
-                    } else if (existingBaseName === baseName && existingExtension !== extension) {
-                        // If the base name matches but the extension is different, do not increment the count
-                        count = 0; // Reset count for different extension
-                    }
-                });  
-
-                // Create new file name with count if necessary  
-                const newFileName = count > 0 ? `${baseName} (${count}).${extension}` : fileName;  
-
-                // Add a new row to the table  
-                const row = document.createElement("tr");  
-                row.innerHTML = `  
-                    <td>${newFileName}</td>  
-                    <td>${formatFileSize(fileObj.file.size)}</td>  
-                    <td>${new Date().toLocaleString()}</td>  
-                `;  
-                uploadedFilesTable.appendChild(row);  
-            });  
 
             // Remove files from the list and reset the selection
             fileList.innerHTML = "";

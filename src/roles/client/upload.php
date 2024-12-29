@@ -21,35 +21,58 @@ function encryptAESKey($aesKey, $publicKeyPath) {
     return $encryptedKey;
 }
 
+// Handle duplicate file names
+function getUniqueFileName($directory, $fileName) {
+    $filePath = $directory . $fileName;
+    $fileInfo = pathinfo($fileName);
+    $baseName = $fileInfo['filename'];
+    $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';
+    $counter = 1;
+
+    // Check if the file already exists and generate a unique name
+    while (file_exists($filePath)) {
+        $filePath = $directory . $baseName . " ($counter)" . $extension;
+        $fileName = $baseName . " ($counter)" . $extension;
+        $counter++;
+    }
+
+    return $fileName;
+}
+
 // Save encrypted file and metadata
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $file = $_FILES['file'];
-    $filePath = $uploadDir . basename($file['name']);
-    move_uploaded_file($file['tmp_name'], $filePath);
+    $uniqueFileName = getUniqueFileName($uploadDir, basename($file['name']));
+    $filePath = $uploadDir . $uniqueFileName;
 
-    // Generate AES key and IV
-    $aesKey = generateAESKey();
-    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+    // Move uploaded file to the unique file path
+    if (move_uploaded_file($file['tmp_name'], $filePath)) {
+        // Generate AES key and IV
+        $aesKey = generateAESKey();
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 
-    // Encrypt the file
-    $encryptedData = encryptFile($filePath, $aesKey, $iv);
-    $encryptedFilePath = $uploadDir . basename($file['name']) . '.enc';
-    file_put_contents($encryptedFilePath, $encryptedData);
+        // Encrypt the file
+        $encryptedData = encryptFile($filePath, $aesKey, $iv);
+        $encryptedFilePath = $filePath . '.enc';
+        file_put_contents($encryptedFilePath, $encryptedData);
 
-    // Encrypt AES key using RSA public key
-    $publicKeyPath = 'keys/public_key.pem'; // Path to RSA public key
-    $encryptedAESKey = encryptAESKey($aesKey, $publicKeyPath);
+        // Encrypt AES key using RSA public key
+        $publicKeyPath = 'keys/public_key.pem'; // Path to RSA public key
+        $encryptedAESKey = encryptAESKey($aesKey, $publicKeyPath);
 
-    // Save metadata
-    $metadata = [
-        'iv' => base64_encode($iv),
-        'encrypted_key' => base64_encode($encryptedAESKey),
-        'file_name' => basename($file['name']),
-        'upload_time' => date('Y-m-d H:i:s'),
-    ];
-    file_put_contents($encryptedFilePath . '.meta', json_encode($metadata));
+        // Save metadata
+        $metadata = [
+            'iv' => base64_encode($iv),
+            'encrypted_key' => base64_encode($encryptedAESKey),
+            'file_name' => $uniqueFileName,
+            'upload_time' => date('Y-m-d H:i:s'),
+        ];
+        file_put_contents($encryptedFilePath . '.meta', json_encode($metadata));
 
-    echo json_encode(['status' => 'success', 'message' => 'File encrypted and stored successfully.']);
+        echo json_encode(['status' => 'success', 'message' => 'File encrypted and stored successfully.', 'file_name' => $uniqueFileName]);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to move uploaded file.']);
+    }
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
 }
