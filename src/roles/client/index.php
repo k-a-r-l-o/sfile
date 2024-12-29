@@ -317,16 +317,6 @@
                     if (fileObj.canceled) {
                         clearInterval(interval);
                         progressBarFill.style.width = "0%"; // Reset progress bar
-                        // Remove file from the DOM and list
-                        const listItem = fileObj.progressBar.closest(".file-item");
-                        if (listItem) {
-                            listItem.remove(); // Remove the file item from the DOM
-                        }
-                        uploadedFiles = uploadedFiles.filter((f) => f !== fileObj); // Remove from the list
-                        allFiles.delete(fileObj.file.name); // Remove from the set
-                        updateFileCountIndicator(); // Update file count indicator
-
-                        reject(new Error(`Upload for ${fileObj.file.name} was canceled.`));
                         return;
                     }
                     progress += Math.random() * uploadSpeed; // Increment progress
@@ -364,10 +354,15 @@
                 const removeButton = listItem.querySelector(".remove-btn");
                 removeButton.addEventListener("click", () => {
                     const fileObj = uploadedFiles.find((f) => f.file === file);
-                    if (fileObj && fileObj.uploading) {
+                    if (fileObj) {
                         fileObj.canceled = true;
+
+                        // Abort the upload request if it's in progress
+                        if (fileObj.controller) {
+                            fileObj.controller.abort(); // Abort the fetch request if uploading
+                        }
+
                         showModal(`Upload for ${file.name} has been canceled.`);
-                    } else {
                         // Remove file from list if not uploading
                         fileList.removeChild(listItem);
                         uploadedFiles = uploadedFiles.filter((f) => f.file !== file);
@@ -449,7 +444,8 @@
                             uploadedFileNames.set(originalFileName, 0); // First occurrence
                         }
                         const finalFileName = result.fileName;
-                        // Add file with unique name to the table
+
+                        // Add the file(s) to the table
                         const row = document.createElement("tr");
                         row.innerHTML = `
                             <td>${fileName}</td>
@@ -464,12 +460,6 @@
                     console.error('Upload failed:', error);
                 }
             }
-
-            // Remove files from the list and reset the selection
-            fileList.innerHTML = "";
-            uploadedFiles = [];
-            allFiles.clear();
-            updateFileCountIndicator();
 
         });
 
