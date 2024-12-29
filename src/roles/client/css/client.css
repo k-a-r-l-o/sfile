@@ -559,6 +559,10 @@ p {
   display: block;
 }
 
+.alert-btn {  
+  transition: opacity 0.5s;  
+}
+
 .alert-modal-content {
   background-color: #fff;
   margin: 15% auto;
@@ -592,7 +596,7 @@ p {
 
 .alert-modal-content .alert-btn {
   display: block;
-  width: 40%;
+  width: 45%;
   background-color: #007bff; 
   color: #fff;
   border: none;
@@ -604,6 +608,18 @@ p {
   margin: auto;
   text-align: center;
   transition: background-color 0.3s ease;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between; 
+}
+
+.button-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .alert-modal-content .alert-btn:hover {
