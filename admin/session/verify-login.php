@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config/database.php';
+require_once '../../config/database.php';
 
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
@@ -31,17 +31,18 @@ if (isset($_GET['token'])) {
             // Store user details in session
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['role'] = $user['user_role'];
+            $_SESSION['token'] = $token;
 
             // Redirect based on role
-            header("Location: ../src/roles/" . ($_SESSION['role'] === 'Administrator' ? "admin/" : "client/"));
+            header("Location: ../verification-success");
             exit();
         } else {
-            echo "Invalid or expired token.";
+            header("Location: ../token-expired");
         }
     } catch (PDOException $e) {
         error_log("Verification error: " . $e->getMessage());
-        echo "An error occurred. Please try again later.";
+        header("Location: ../token-expired");
     }
 } else {
-    echo "No token provided.";
+    header("Location: ../token-expired");
 }

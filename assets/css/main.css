@@ -2044,8 +2044,195 @@ section,
 }
 
 /*--------------------------------------------------------------
-# Starter Section Section
+# Login Section
 --------------------------------------------------------------*/
-.starter-section {
-  /* Add your styles here */
+.login {
+  width: 100%;
+  min-height: calc(100vh - 100px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 0 60px 0;
+  overflow: hidden;
+}
+
+.login .login-box {
+  background-color: var(--surface-color);
+  box-shadow: 0px 5px 90px 0px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  padding: 60px 30px;
+  text-align: center;
+  transition: 0.3s;
+  border-radius: 5px;
+}
+
+.login .container {
+  position: relative;
+  z-index: 3;
+}
+
+.login h3 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 72px;
+}
+
+.login .btn-signin {
+  color: var(--contrast-color);
+  background: var(--accent-color);
+  border: 0;
+  font-weight: 600;
+  width: 100%;
+  padding: 10px 30px;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+
+.login .btn-signin:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 20%);
+}
+
+.login .notification {
+  display: none;
+  align-items: center;
+  padding: 10px 15px;
+  border: 1px solid #f5c2c7;
+  background-color: #f8d7da;
+  color: #842029;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login .notification .message {
+  flex-grow: 1;
+}
+
+.login .notification .close-btn {
+  background: none;
+  border: none;
+  color: #842029;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  top: 10px;
+  right: 10px;
+}
+
+.login .notification .close-btn:hover {
+  color: #721c24;
+}
+
+.login .php-email-form .input-group input,
+.login .php-email-form span {
+  font-size: 14px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  color: var(--default-color);
+  border-color: color-mix(in srgb, var(--default-color), transparent 80%);
+}
+
+.login .php-email-form input:focus {
+  border-color: var(--accent-color);
+}
+
+.login .php-email-form .input-group input::placeholder {
+  color: color-mix(in srgb, var(--default-color), transparent 10%);
+}
+
+/*--------------------------------------------------------------
+# sent Section
+--------------------------------------------------------------*/
+.sent {
+  width: 100%;
+  min-height: calc(100vh - 100px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 0 60px 0;
+  overflow: hidden;
+}
+
+.sent .sent-box {
+  background-color: var(--surface-color);
+  box-shadow: 0px 5px 90px 0px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  padding: 60px 30px;
+  text-align: center;
+  transition: 0.3s;
+  border-radius: 5px;
+}
+
+.sent .container {
+  position: relative;
+  z-index: 3;
+}
+
+.sent h3 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 72px;
+}
+
+.sent .btn-primary {
+  color: var(--contrast-color);
+  background: var(--accent-color);
+  border: 0;
+  font-weight: 600;
+  width: 100%;
+  padding: 10px 30px;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+
+.sent .btn-primary:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 20%);
+}
+
+.sent .btn-cancel {
+  color: var(--accent-color);
+  border: 0;
+  font-weight: 600;
+  width: 100%;
+  padding: 10px 30px;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+
+.sent .btn-cancel:hover {
+  background: color-mix(in srgb, var(--heading-color), transparent 20%);
+  color: var(--contrast-color);
+}
+
+.icon-wrapper {
+  background-color: #b8d5e9;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  display: fselex;
+  justify-content: center;
+  align-items: center;
+  color: #3498db;
+}
+
+.icon {
+  margin-top: 12px;
+  font-size: 34px;
+}
+
+.success {
+  background-color: #e6f7e6;
+  color: #28a745;
+}
+
+.expired {
+  background-color: #f5c6cb;
+  color: #e74c3c;
 }
