@@ -58,6 +58,14 @@
         </a>
 
         <nav id="navmenu" class="navmenu">
+          <ul>
+            <li>
+              <a href="../index.html"
+                ><i class="fas fa-arrow-left flex-shrink-0"></i>l Back to
+                Home<br
+              /></a>
+            </li>
+          </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
       </div>
@@ -188,6 +196,9 @@
             break;
           case "missing_fields":
             message = "Please fill in all required fields.";
+            break;
+          case "session_expired":
+            message = "Your session has expired. Please signin again.";
             break;
           default:
             message = "An unknown error occurred. Please try again.";
