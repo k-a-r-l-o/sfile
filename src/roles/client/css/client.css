@@ -460,7 +460,7 @@ body {
 }
 
 .upload-btn {
-  background-color: #050deb;
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -470,7 +470,7 @@ body {
 }
 
 .upload-btn:hover {
-  background-color: #0309b3;
+  background-color: #1158a3;
 }
 
 h3 {
@@ -559,6 +559,10 @@ p {
   display: block;
 }
 
+.alert-btn {  
+  transition: opacity 0.5s;  
+}
+
 .alert-modal-content {
   background-color: #fff;
   margin: 15% auto;
@@ -569,7 +573,14 @@ p {
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   animation: slideIn 0.3s ease-out;
+  text-align: center;
 }
+
+.modal-icon {  
+  font-size: 40px; 
+  margin-bottom: 15px;  
+  color: #1158a3; 
+}  
 
 .alert-modal-content h2 {
   font-size: 24px;
@@ -581,13 +592,12 @@ p {
 .alert-modal-content p {
   font-size: 16px;
   color: #555;
-  text-align: center;
 }
 
 .alert-modal-content .alert-btn {
   display: block;
-  width: 30%;
-  background-color: #4CAF50;
+  width: 45%;
+  background-color: #007bff; 
   color: #fff;
   border: none;
   padding: 10px;
@@ -600,8 +610,20 @@ p {
   transition: background-color 0.3s ease;
 }
 
+.button-container {
+  display: flex;
+  justify-content: space-between; 
+}
+
+.button-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
 .alert-modal-content .alert-btn:hover {
-  background-color: #45a049;
+  background-color: #1158a3;
 }
 
 .close-modal {
@@ -634,7 +656,6 @@ p {
 /* ===================== Table styling for My Files ===================== */
 .client-table {
   background-color: white;
-  padding: 5px;
   border-radius: 20px;
   position: relative;
   display: flex;
@@ -648,8 +669,13 @@ p {
 /* Wrapper for horizontal scrolling */
 .client-table-wrapper {
   width: 100%;
-  overflow-x: auto; 
+  overflow-x: auto;  
+  scrollbar-width: none;
 }
+
+&::-webkit-scrollbar {  
+  display: none;  
+}  
 
 /* Ensure the table is wider than its container if necessary */
 .client-table table {
@@ -661,7 +687,7 @@ p {
 }
 
 .client-table th, .client-table td {
-  padding: 15px;
+  padding: 25px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
@@ -751,6 +777,12 @@ p {
 /* Ensure dropdown-menu is hidden when modal is visible */
 .modal.show ~ .dropdown-menu {
   display: none !important;
+}
+
+#no-match-message {
+  text-align: center;
+  font-style: italic;
+  font-size: 14px;
 }
 
 /* ===================== Profile Setting ===================== */
@@ -1025,6 +1057,16 @@ h3 {
   .toggle {
     font-size: 1.2rem; /* Smallest toggle icon */
   }
+
+  /* Wrapper for horizontal scrolling */
+  .client-table-wrapper {
+    width: 100%;
+    overflow-x: auto; 
+  }
+
+  .client-table th, .client-table td {
+    padding: 10px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1074,6 +1116,16 @@ h3 {
     width: 50px;
     height: 50px;
     font-size: 1.5rem; /* Smaller toggle icon */
+  }
+
+  /* Wrapper for horizontal scrolling */
+  .client-table-wrapper {
+    width: 100%;
+    overflow-x: auto; 
+  }
+
+  .client-table th, .client-table td {
+    padding: 10px;
   }
 }
 
@@ -1158,6 +1210,16 @@ h3 {
   .client-table {
     padding: 10px; /* Adjust padding for smaller screens */
   }
+
+  /* Wrapper for horizontal scrolling */
+  .client-table-wrapper {
+    width: 100%;
+    overflow-x: auto; 
+  }
+
+  .client-table th, .client-table td {
+    padding: 10px;
+  }
 }
 
 /* Responsive Design: Stacking label and button vertically on small screens */
@@ -1165,6 +1227,16 @@ h3 {
   .change-password {
       flex-direction: column; /* Stack label and button vertically */
       align-items: flex-start; /* Align them to the left */
+  }
+
+  /* Wrapper for horizontal scrolling */
+  .client-table-wrapper {
+    width: 100%;
+    overflow-x: auto; 
+  }
+
+  .client-table th, .client-table td {
+    padding: 10px;
   }
 }
 
@@ -1184,5 +1256,15 @@ h3 {
 
   .client-table {
       margin-top: 15px;
+  }
+
+  /* Wrapper for horizontal scrolling */
+  .client-table-wrapper {
+    width: 100%;
+    overflow-x: auto; 
+  }
+
+  .client-table th, .client-table td {
+    padding: 10px;
   }
 }
