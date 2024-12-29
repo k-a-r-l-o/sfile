@@ -499,14 +499,7 @@
             uploadedFiles = [];
             allFiles.clear();
             updateFileCountIndicator();
-            // Remove files from the list and reset the selection  
-            fileList.innerHTML = "";  
-            uploadedFiles = [];  
-            allFiles.clear();  
-            updateFileCountIndicator();  
 
-            // Show success modal  
-            showModal("Files uploaded successfully!");  
         });
 
         // Function to format file size in KB, MB, or GB
