@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ]);
 
                     if (sendLoginVerificationEmail($email, $tokenPlain)) {
-                        header("Location: verification-link-sent?email=$email");
+                        header("Location: ../verification-link-sent?email=$email");
                         exit;
                     } else {
                         header("Location: ../login?error=email_failed");
