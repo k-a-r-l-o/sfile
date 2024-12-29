@@ -395,12 +395,6 @@
                 showModal("Please select at least one file to upload.");
                 return;
             }
-        // Upload Files Button Event  
-        uploadButton.addEventListener("click", async () => {  
-            if (uploadedFiles.length === 0) {  
-                showModal("Please select at least one file to upload.");  
-                return;  
-            }  
 
             // Simulate file upload and progress bar completion
             for (const fileObj of [...uploadedFiles]) {
