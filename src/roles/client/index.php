@@ -204,46 +204,6 @@
             return progressBar;
         }
 
-        // Function to handle file validation and preparation
-        function handleFiles(files) {
-            for (let file of files) {
-                if (allFiles.has(file.name)) {
-                    showModal(`You have already selected the file: ${file.name}`);
-                    return;
-                }
-                allFiles.add(file.name); // Add to the set to track already selected files
-
-                if (uploadedFiles.length + 1 > limitfile) {
-                    showModal(`You can upload a maximum of ${limitfile} files.`);
-                    return;
-                }
-
-                const listItem = document.createElement("li");
-                listItem.className = "file-item";
-                listItem.innerHTML = `
-                    <span class="file-name">${file.name}</span>
-                    <span class="file-size">${formatFileSize(file.size)}</span>
-                    <div class="file-progress"></div>
-                    <button class="remove-btn">X</button>
-                `;
-
-                const progressBar = createProgressBar();
-                listItem.querySelector(".file-progress").appendChild(progressBar);
-
-                const removeButton = listItem.querySelector(".remove-btn");
-                removeButton.addEventListener("click", () => {
-                    fileList.removeChild(listItem);
-                    uploadedFiles = uploadedFiles.filter((f) => f.file !== file);
-                    allFiles.delete(file.name); // Remove from set
-                    updateFileCountIndicator();
-                });
-
-                fileList.appendChild(listItem);
-                uploadedFiles.push({ file, progressBar });
-                updateFileCountIndicator();
-            }
-        }
-
         // Update the file count indicator
         function updateFileCountIndicator() {
             fileCountIndicator.textContent = `${uploadedFiles.length}/${limitfile} Files`;
@@ -271,36 +231,7 @@
             fileInput.value = ""; // Reset input
         });
 
-        // Simulate Progress Bar for Each File Upload
-        async function simulateFileUpload(fileObj) {
-            const progressBarFill = fileObj.progressBar.querySelector(".file-progress-fill");
-            const fileSize = fileObj.file.size; // Get file size in bytes
-
-            let uploadSpeed = 1; // Default upload speed (1% per interval)
-
-            // Adjust upload speed based on file size
-            if (fileSize < 1024 * 1024) { // Small file (KB)
-                uploadSpeed = 10; // Faster upload speed for smaller files
-            } else if (fileSize < 1024 * 1024 * 10) { // Medium file (less than 10MB)
-                uploadSpeed = 5; // Moderate upload speed for medium-sized files
-            } else { // Larger files (MB and GB)
-                uploadSpeed = 2; // Slower upload speed for larger files
-            }
-
-            return new Promise((resolve) => {
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += Math.random() * uploadSpeed; // Increment progress
-                    progressBarFill.style.width = `${Math.min(progress, 100)}%`; // Update progress
-
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        resolve();
-                    }
-                }, 300); // Simulate upload every 300ms
-            });
-        }
-
+        
         // Function to show the modal
         function showModal(message) {
             const modal = document.getElementById('alert-modal');
@@ -341,37 +272,164 @@
             }, 3000); // Close after 3 seconds
         }
 
+        // Simulate Progress Bar for Each File Upload
+        async function simulateFileUpload(fileObj) {
+            const progressBarFill = fileObj.progressBar.querySelector(".file-progress-fill");
+            const fileSize = fileObj.file.size; // Get file size in bytes
+
+            let uploadSpeed = 1; // Default upload speed (1% per interval)
+
+            // Adjust upload speed based on file size
+            if (fileSize < 1024 * 1024) { // Small file (KB)
+                uploadSpeed = 10; // Faster upload speed for smaller files
+            } else if (fileSize < 1024 * 1024 * 10) { // Medium file (less than 10MB)
+                uploadSpeed = 5; // Moderate upload speed for medium-sized files
+            } else { // Larger files (MB and GB)
+                uploadSpeed = 2; // Slower upload speed for larger files
+            }
+
+            return new Promise((resolve) => {
+                let progress = 0;
+                const interval = setInterval(() => {
+                    if (fileObj.canceled) {
+                        clearInterval(interval);
+                        progressBarFill.style.width = "0%"; // Reset progress bar
+                        // Remove file from the DOM and list
+                        const listItem = fileObj.progressBar.closest(".file-item");
+                        if (listItem) {
+                            listItem.remove(); // Remove the file item from the DOM
+                        }
+                        uploadedFiles = uploadedFiles.filter((f) => f !== fileObj); // Remove from the list
+                        allFiles.delete(fileObj.file.name); // Remove from the set
+                        updateFileCountIndicator(); // Update file count indicator
+
+                        reject(new Error(`Upload for ${fileObj.file.name} was canceled.`));
+                        return;
+                    }
+                    progress += Math.random() * uploadSpeed; // Increment progress
+                    progressBarFill.style.width = `${Math.min(progress, 100)}%`; // Update progress
+
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        resolve();
+                    }
+                }, 300); // Simulate upload every 300ms
+            });
+        }
+
+        // Function to handle file validation and preparation
+        function handleFiles(files) {
+            for (let file of files) {
+                if (allFiles.has(file.name)) {
+                    showModal(`You have already selected the file: ${file.name}`);
+                    return;
+                }
+                allFiles.add(file.name); // Add to the set to track already selected files
+
+                if (uploadedFiles.length + 1 > limitfile) {
+                    showModal(`You can upload a maximum of ${limitfile} files.`);
+                    return;
+                }
+
+                const listItem = document.createElement("li");
+                listItem.className = "file-item";
+                listItem.innerHTML = `
+                    <span class="file-name">${file.name}</span>
+                    <span class="file-size">${formatFileSize(file.size)}</span>
+                    <div class="file-progress"></div>
+                    <button class="remove-btn">X</button>
+                `;
+
+                const progressBar = createProgressBar();
+                listItem.querySelector(".file-progress").appendChild(progressBar);
+
+                const removeButton = listItem.querySelector(".remove-btn");
+                removeButton.addEventListener("click", () => {
+                    const fileObj = uploadedFiles.find((f) => f.file === file);
+                    if (fileObj && fileObj.uploading) {
+                        fileObj.canceled = true;
+                        showModal(`Upload for ${file.name} has been canceled.`);
+                    } else {
+                        // Remove file from list if not uploading
+                        fileList.removeChild(listItem);
+                        uploadedFiles = uploadedFiles.filter((f) => f.file !== file);
+                        allFiles.delete(file.name); // Remove from set
+                        updateFileCountIndicator();
+                    }
+                });
+
+                fileList.appendChild(listItem);
+                uploadedFiles.push({ file, progressBar, active: true, uploading: false, canceled: false });
+                updateFileCountIndicator();
+            }
+        }
+
         // Upload Files Button Event
         uploadButton.addEventListener("click", async () => {
+            let successfulUploads = 0;
+
             if (uploadedFiles.length === 0) {
                 showModal("Please select at least one file to upload.");
                 return;
             }
 
             // Simulate file upload and progress bar completion
-            for (const fileObj of uploadedFiles) {
-                await simulateFileUpload(fileObj);
-            }
+            for (const fileObj of [...uploadedFiles]) {
+                if (!fileObj.active || fileObj.canceled) {
+                    continue; // Skip inactive files
+                }
 
-            // Add uploaded file to the table
-            uploadedFiles.forEach((fileObj) => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${fileObj.file.name}</td>
-                    <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
-                    <td>${new Date().toLocaleString()}</td>
-                `;
-                uploadedFilesTable.appendChild(row);
-            });
+                fileObj.uploading = true;
+                
+                try {
+                    await simulateFileUpload(fileObj);
+
+                    if (fileObj.canceled) {
+                        console.log(`Upload for ${fileObj.file.name} was canceled.`);
+                        continue; // Skip saving canceled files
+                    }
+
+                    const formData = new FormData();
+                    formData.append('file', fileObj.file);
+
+                    const response = await fetch('upload.php', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        successfulUploads++;
+                        showModal(`${successfulUploads} file(s) uploaded successfully!`);
+                        // Remove file from the DOM and list
+                        const listItem = fileObj.progressBar.closest(".file-item");
+                        if (listItem) {
+                            listItem.remove(); // Remove the file item from the DOM
+                        }
+                        uploadedFiles = uploadedFiles.filter((f) => f !== fileObj); // Remove from the list
+                        allFiles.delete(fileObj.file.name); // Remove from the set
+                        updateFileCountIndicator(); // Update file count indicator
+
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${fileObj.file.name}</td>
+                            <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
+                            <td>${new Date().toLocaleString()}</td>     
+                        `;
+                        uploadedFilesTable.appendChild(row);
+                    } else {
+                        console.error('Error:', result.message);
+                    }
+                } catch (error) {
+                    console.error('Upload failed:', error);
+                }
+            }
 
             // Remove files from the list and reset the selection
             fileList.innerHTML = "";
             uploadedFiles = [];
             allFiles.clear();
             updateFileCountIndicator();
-
-            // Show success modal
-            showModal("Files uploaded successfully!");
         });
 
         // Function to format file size in KB, MB, or GB
