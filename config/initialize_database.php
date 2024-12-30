@@ -43,6 +43,7 @@ try {
         user_email VARCHAR(255) NOT NULL,
         user_role VARCHAR(50) NOT NULL,
         user_img_url VARCHAR(255),
+        user_public_key VARCHAR(255) NULL,
         user_status TINYINT(1) DEFAULT 1
     ) AUTO_INCREMENT=2024000;");
     error_log('Table tb_admin_userdetails created successfully.');
@@ -62,6 +63,7 @@ try {
         user_email VARCHAR(255) NOT NULL,
         user_role VARCHAR(50) NOT NULL,
         user_img_url VARCHAR(255),
+        user_public_key VARCHAR(255) NULL,
         user_status TINYINT(1) DEFAULT 1
     );");
     error_log('Table tb_client_userdetails created successfully.');
@@ -301,6 +303,48 @@ foreach ($client_users as $client_users) {
         echo "<h2 style='color: red;'>Error logging action: " . $e->getMessage() . "</h2>";
         exit;
     }
+}
+
+// Create `tb_files` table
+try {
+    echo "<h2>Creating table tb_files...</h2>";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS tb_files (
+        file_id INT AUTO_INCREMENT PRIMARY KEY,
+        owner_id INT NOT NULL,
+        encrypted_key VARCHAR(255) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        size VARCHAR(50) NOT NULL,
+        path VARCHAR(255) NOT NULL,
+        upload_date DATETIME NOT NULL,
+        status TINYINT(1) DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (owner_id) REFERENCES tb_client_userdetails(user_id) ON DELETE CASCADE
+    );");
+    error_log('Table tb_files created successfully.');
+} catch (PDOException $e) {
+    error_log("Error creating table tb_files: " . $e->getMessage());
+    echo "<h2 style='color: red;'>Error creating table tb_files: " . $e->getMessage() . "</h2>";
+    exit;
+}
+
+// Create `tb_shared_files` table
+try {
+    echo "<h2>Creating table tb_shared_files...</h2>";
+    $pdo->exec("CREATE TABLE IF NOT EXISTS tb_shared_files (
+        file_id INT NOT NULL,
+        shared_to INT NOT NULL,
+        encrypted_key VARCHAR(255) NOT NULL,
+        shared_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (file_id, shared_to),
+        FOREIGN KEY (file_id) REFERENCES tb_files(file_id) ON DELETE CASCADE,
+        FOREIGN KEY (shared_to) REFERENCES tb_client_userdetails(user_id) ON DELETE CASCADE
+    );");
+    error_log('Table tb_shared_files created successfully.');
+} catch (PDOException $e) {
+    error_log("Error creating table tb_shared_files: " . $e->getMessage());
+    echo "<h2 style='color: red;'>Error creating table tb_shared_files: " . $e->getMessage() . "</h2>";
+    exit;
 }
 
 // Close the connection
