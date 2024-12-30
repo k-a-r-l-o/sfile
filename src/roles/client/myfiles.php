@@ -128,7 +128,6 @@
                                 <th>Filename</th>
                                 <th>Date & Time Uploaded</th>
                                 <th>File Size</th>
-                                <th>Owner</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -137,7 +136,6 @@
                                 <td>data.csv</td>
                                 <td>2024-12-10 11:00 AM</td>
                                 <td>16 KB</td>
-                                <td>me</td>
                                 <td>
                                     <div class="action-menu">
                                         <button class="action-btn" onclick="toggleDropdown(event)">
@@ -157,7 +155,6 @@
                                 <td>report.pdf</td>
                                 <td>2024-12-12 10:30 AM</td>
                                 <td>146 KB</td>
-                                <td>me</td>
                                 <td>
                                     <div class="action-menu">
                                         <button class="action-btn" onclick="toggleDropdown(event)">
@@ -177,7 +174,6 @@
                                 <td>draft.docx</td>
                                 <td>2024-12-05 09:15 AM</td>
                                 <td>18 KB</td>
-                                <td>me</td>
                                 <td>
                                     <div class="action-menu">
                                         <button class="action-btn" onclick="toggleDropdown(event)">
