@@ -1,27 +1,36 @@
 <?php
-// Upload directory
-$uploadDir = 'uploads/';
+// Start session
+session_start();
 
-// Generate AES-256 key
-function generateAESKey() {
-    return openssl_random_pseudo_bytes(32); // 256-bit key
+if (!isset($_SESSION['client_user_id'])) {
+    header('Location: login.php');
+    exit;
 }
 
-// Encrypt file using AES-256
+require_once __DIR__ . '/../../../config/config.php';
+
+// Constants
+$uploadDir = 'uploads/';
+$userId = $_SESSION['client_user_id'];
+
+try {
+    // Initialize PDO connection
+    $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die(json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $e->getMessage()]));
+}
+
+// Helper Functions
+function generateAESKey() {
+    return openssl_random_pseudo_bytes(32);
+}
+
 function encryptFile($filePath, $aesKey, $iv) {
     $fileData = file_get_contents($filePath);
-    $encryptedData = openssl_encrypt($fileData, 'aes-256-cbc', $aesKey, OPENSSL_RAW_DATA, $iv);
-    return $encryptedData;
+    return openssl_encrypt($fileData, 'aes-256-cbc', $aesKey, OPENSSL_RAW_DATA, $iv);
 }
 
-// Encrypt AES key using RSA-2048
-function encryptAESKey($aesKey, $publicKeyPath) {
-    $publicKey = file_get_contents($publicKeyPath);
-    openssl_public_encrypt($aesKey, $encryptedKey, $publicKey);
-    return $encryptedKey;
-}
-
-// Handle duplicate file names
 function getUniqueFileName($directory, $fileName) {
     $filePath = $directory . $fileName;
     $fileInfo = pathinfo($fileName);
@@ -29,7 +38,6 @@ function getUniqueFileName($directory, $fileName) {
     $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';
     $counter = 1;
 
-    // Check if the file already exists and generate a unique name
     while (file_exists($filePath)) {
         $filePath = $directory . $baseName . " ($counter)" . $extension;
         $fileName = $baseName . " ($counter)" . $extension;
@@ -39,39 +47,102 @@ function getUniqueFileName($directory, $fileName) {
     return $fileName;
 }
 
-// Save encrypted file and metadata
+function formatFileSize($bytes) {
+    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    $i = 0;
+    while ($bytes >= 1024 && $i < count($units) - 1) {
+        $bytes /= 1024;
+        $i++;
+    }
+    return round($bytes, 2) . ' ' . $units[$i];
+}
+
+function generateUserRSAKeys($userId) {
+    $seed = hash('sha256', $userId, true);
+    srand(hexdec(substr(bin2hex($seed), 0, 8)));
+
+    $config = [
+        "private_key_bits" => 2048,
+        "private_key_type" => OPENSSL_KEYTYPE_RSA,
+    ];
+
+    $privateKeyResource = openssl_pkey_new($config);
+    openssl_pkey_export($privateKeyResource, $privateKey);
+
+    $publicKeyDetails = openssl_pkey_get_details($privateKeyResource);
+    $publicKey = $publicKeyDetails['key'];
+
+    $secureKeyDir = __DIR__ . '/../../src/roles/client/keys/';
+    if (!is_dir($secureKeyDir)) {
+        mkdir($secureKeyDir, 0700, true);
+    }
+
+    file_put_contents($secureKeyDir . 'private_key_' . $userId . '.pem', $privateKey);
+    file_put_contents($secureKeyDir . 'public_key_' . $userId . '.pem', $publicKey);
+
+    return ['private_key' => $privateKey, 'public_key' => $publicKey];
+}
+
+function encryptAESKeyWithPublicKey($aesKey, $publicKey) {
+    $publicKeyResource = openssl_pkey_get_public($publicKey);
+    $encryptedAESKey = '';
+    if (openssl_public_encrypt($aesKey, $encryptedAESKey, $publicKeyResource)) {
+        return $encryptedAESKey;
+    }
+    return false;
+}
+
+// Main Logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $file = $_FILES['file'];
+
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        die(json_encode(['status' => 'error', 'message' => 'File upload error.']));
+    }
+
     $uniqueFileName = getUniqueFileName($uploadDir, basename($file['name']));
     $filePath = $uploadDir . $uniqueFileName;
 
-    // Move uploaded file to the unique file path
-    if (move_uploaded_file($file['tmp_name'], $filePath)) {
-        // Generate AES key and IV
-        $aesKey = generateAESKey();
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+    if (!move_uploaded_file($file['tmp_name'], $filePath)) {
+        die(json_encode(['status' => 'error', 'message' => 'Failed to move uploaded file.']));
+    }
 
-        // Encrypt the file
-        $encryptedData = encryptFile($filePath, $aesKey, $iv);
-        $encryptedFilePath = $filePath . '.enc';
-        file_put_contents($encryptedFilePath, $encryptedData);
+    $aesKey = generateAESKey();
+    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+    $encryptedData = encryptFile($filePath, $aesKey, $iv);
+    $encryptedFilePath = $filePath . '.enc';
 
-        // Encrypt AES key using RSA public key
-        $publicKeyPath = 'keys/public_key.pem'; // Path to RSA public key
-        $encryptedAESKey = encryptAESKey($aesKey, $publicKeyPath);
+    file_put_contents($encryptedFilePath, $encryptedData);
 
-        // Save metadata
-        $metadata = [
-            'iv' => base64_encode($iv),
-            'encrypted_key' => base64_encode($encryptedAESKey),
-            'file_name' => $uniqueFileName,
-            'upload_time' => date('Y-m-d H:i:s'),
-        ];
-        file_put_contents($encryptedFilePath . '.meta', json_encode($metadata));
+    $keys = generateUserRSAKeys($userId);
+    $encryptedAESKey = encryptAESKeyWithPublicKey($aesKey, $keys['public_key']);
 
+    if (!$encryptedAESKey) {
+        die(json_encode(['status' => 'error', 'message' => 'Failed to encrypt AES key.']));
+    }
+
+    $metadata = [
+        'iv' => base64_encode($iv),
+        'encrypted_key' => base64_encode($encryptedAESKey),
+        'file_name' => $uniqueFileName,
+        'upload_time' => date('Y-m-d H:i:s'),
+    ];
+    file_put_contents($encryptedFilePath . '.meta', json_encode($metadata));
+
+    $formattedSize = formatFileSize($file['size']);
+
+    try {
+        $stmt = $pdo->prepare("INSERT INTO tb_client_uploaded_files (user_id, file_name, file_size, upload_date, file_status) VALUES (:user_id, :file_name, :file_size, :upload_date, :file_status)");
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':file_name' => $uniqueFileName,
+            ':file_size' => $formattedSize,
+            ':upload_date' => date('Y-m-d H:i:s'),
+            ':file_status' => 1,
+        ]);
         echo json_encode(['status' => 'success', 'message' => 'File encrypted and stored successfully.', 'file_name' => $uniqueFileName]);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to move uploaded file.']);
+    } catch (PDOException $e) {
+        die(json_encode(['status' => 'error', 'message' => 'Failed to save file metadata: ' . $e->getMessage()]));
     }
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);

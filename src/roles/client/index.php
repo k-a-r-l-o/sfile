@@ -360,6 +360,18 @@
 
         // Function to add a file to the list  
         function addFileToList(file) {  
+            // Allowed file types
+            const allowedExtensions = ['pdf', 'docx', 'xlsx', 'xls', 'txt', 'ppt', 'pptx', 'png', 'jpg', 'jpeg'];
+
+            // Extract the file extension
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+
+            // Check if the file type is allowed
+            if (!allowedExtensions.includes(fileExtension)) {
+                showModal('Only PDF, DOCX, Excel, TXT, PPTX/PPT, PNG, and JPG/JPEG files are allowed.', 'error');
+                return;
+            }
+
             if (uploadedFiles.length + 1 > limitfile) {  
                 showModal(`You can upload a maximum of ${limitfile} files.`, 'warning');  
                 return;  
