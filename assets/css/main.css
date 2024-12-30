@@ -2049,6 +2049,7 @@ section,
 .login {
   width: 100%;
   min-height: calc(100vh - 100px);
+  max-height: calc(100vh - 100px);
   position: relative;
   display: flex;
   align-items: center;
@@ -2145,11 +2146,11 @@ section,
   color: color-mix(in srgb, var(--default-color), transparent 10%);
 }
 
-.login .label-left{
+.login .label-left {
   text-align: left;
 }
 
-.login .label-right{
+.login .label-right {
   text-align: right;
 }
 
