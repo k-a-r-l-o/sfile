@@ -61,70 +61,62 @@
         </a>
 
         <nav id="navmenu" class="navmenu">
-          <ul>
-            <li>
-              <a href="../../index.html"
-                ><i class="fas fa-arrow-left flex-shrink-0"></i>l Back to
-                Home<br
-              /></a>
-            </li>
-          </ul>
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
       </div>
     </header>
 
-    <header id="header" class="header d-flex align-items-center sticky-top">
-      <div
-        class="container-fluid container-l position-relative d-flex align-items-center"
+    <main class="main vh-100">
+      <section
+        id="main-wrapper"
+        class="main-wrapper section vh-100 light-background"
       >
-        <a
-          href="../../index.html"
-          class="logo d-flex align-items-center me-auto"
-        >
-          <!-- Uncomment the line below if you also wish to use an image logo -->
-          <img src="../../assets/img/logo.png" alt="SecureFile" />
-          <h1 class="sitename">Secure</h1>
-          <h1 class="accented">File</h1>
-        </a>
-      </div>
-    </header>
-
-    <main class="main">
-      <!-- sent Section -->
-      <section id="sent" class="sent section light-background">
-        <div class="container">
-          <div class="row align-items-center justify-content-center">
-            <div
-              class="col-lg-4 col-md-6"
-              data-aos="fade-up"
-              data-aos-delay="100"
-            >
-              <div class="sent-box item-cyan position-relative">
-                <div class="icon-wrapper expired">
-                  <i class="fas fa-exclamation icon flex-shrink-0"></i>
-                </div>
-                <h3 class="title">Verification Link Expired</h3>
-                <p>
-                  Your email verification link has expired. Please signin again
-                  to request a new verification email.
-                </p>
-                <div>
-                  <button
-                    type="button"
-                    onclick="window.location.href='login'"
-                    class="btn-cancel"
+        <div class="container-fluid vh-100">
+          <div class="row gy-4">
+            <!-- Sidebar Section -->
+            <div class="col-lg-3 sidebar vh-100">
+              <a
+                href="../../index.html"
+                class="logo d-flex align-items-center me-auto"
+              >
+                <!-- Uncomment the line below if you also wish to use an image logo -->
+                <img src="../../assets/img/logo.png" alt="SecureFile" />
+                <h1 class="sitename">Secure</h1>
+                <h1 class="accented">File</h1>
+              </a>
+              <ul class="sidebar-nav flex-grow-1">
+                <li>
+                  <a href="#dashboard"
+                    ><i class="fas fa-tachometer-alt"></i> Dashboard</a
                   >
-                    Signin Again
-                  </button>
-                </div>
+                </li>
+                <li>
+                  <a href="#profile"><i class="fas fa-user"></i> Profile</a>
+                </li>
+                <li>
+                  <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
+                </li>
+              </ul>
+              <ul class="sidebar-nav flex-grow-0">
+                <li>
+                  <a href="#logout"
+                    ><i class="fas fa-sign-out-alt"></i> Logout</a
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <!-- Main Content Section -->
+            <div class="col-lg-9 main-content vh-100">
+              <div class="row gy-4">
+                <div class="col-lg-10">search</div>
+                <div class="col-lg-2">profile</div>
               </div>
+              <div class="main-content-wrapper">content</div>
             </div>
           </div>
-          <!-- End Service Item -->
         </div>
       </section>
-      <!-- login Section -->
     </main>
 
     <!-- Scroll Top -->
