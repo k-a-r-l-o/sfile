@@ -2145,8 +2145,16 @@ section,
   color: color-mix(in srgb, var(--default-color), transparent 10%);
 }
 
+.login .label-left{
+  text-align: left;
+}
+
+.login .label-right{
+  text-align: right;
+}
+
 /*--------------------------------------------------------------
-# sent Section
+# Sent Section
 --------------------------------------------------------------*/
 .sent {
   width: 100%;
