@@ -9,7 +9,7 @@ if (isset($_GET['token'])) {
         $db = new Database();
         $conn = $db->getConnection();
 
-        // Join tb_admin_logindetails and tb_admin_userdetails to retrieve role and other details
+        // Join tb_client_logindetails and tb_client_userdetails to retrieve role and other details
         $stmt = $conn->prepare(
             "SELECT l.user_id, u.user_role, l.token, l.token_expiration 
              FROM tb_client_logindetails l

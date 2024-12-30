@@ -29,9 +29,9 @@ if (isset($_GET['token'])) {
             $clearTokenStmt->execute([':user_id' => $user['user_id']]);
 
             // Store user details in session
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['role'] = $user['user_role'];
-            $_SESSION['token'] = $token;
+            $_SESSION['admin_user_id'] = $user['user_id'];
+            $_SESSION['admin_role'] = $user['user_role'];
+            $_SESSION['admin_token'] = $token;
 
             // Redirect based on role
             header("Location: ../verification-success");

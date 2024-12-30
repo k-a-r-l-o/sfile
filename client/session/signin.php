@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $tokenExpiration = date('Y-m-d H:i:s', time() + 600);
 
                     $updateTokenStmt = $conn->prepare(
-                        "UPDATE tb_admin_logindetails 
+                        "UPDATE tb_client_logindetails 
                          SET token = :token, token_expiration = :expiration 
                          WHERE user_id = :user_id"
                     );
