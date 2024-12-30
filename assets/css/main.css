@@ -2049,7 +2049,6 @@ section,
 .login {
   width: 100%;
   min-height: calc(100vh - 100px);
-  height: calc(100vh - 100px);
   position: relative;
   display: flex;
   align-items: center;
@@ -2244,4 +2243,11 @@ section,
 .expired {
   background-color: #f5c6cb;
   color: #e74c3c;
+}
+
+/*--------------------------------------------------------------
+# Others
+--------------------------------------------------------------*/
+.display-none {
+  display: none;
 }

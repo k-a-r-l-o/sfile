@@ -20,11 +20,11 @@
 
     <!-- Vendor CSS Files -->
     <link
-      href="../assets/vendor/bootstrap/css/bootstrap.min.css"
+      href="../../aassets/vendor/bootstrap/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link
-      href="../assets/vendor/bootstrap-icons/bootstrap-icons.css"
+      href="../a../assets/vendor/bootstrap-icons/bootstrap-icons.css"
       rel="stylesheet"
     />
     <link
@@ -75,13 +75,12 @@
       <div
         class="container-fluid container-l position-relative d-flex align-items-center"
       >
-        <a href="../index.html" class="logo d-flex align-items-center me-auto">
-          <!-- Uncomment the line below if you also wish to use an image logo -->
-          <img src="../assets/img/logo.png" alt="SecureFile" />
-          <h1 class="sitename">Secure</h1>
-          <h1 class="accented">File</h1>
-        </a>
-      </div>
+      <a href="../index.html" class="logo d-flex align-items-center me-auto">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <img src="../assets/img/logo.png" alt="SecureFile" />
+        <h1 class="sitename">Secure</h1>
+        <h1 class="accented">File</h1>
+      </a></div>
     </header>
 
     <main class="main">
@@ -95,18 +94,21 @@
               data-aos-delay="100"
             >
               <div class="sent-box item-cyan position-relative">
-                <div class="icon-wrapper success">
-                  <i class="fas fa-check icon flex-shrink-0"></i>
+                <div class="icon-wrapper expired">
+                  <i class="fas fa-exclamation icon flex-shrink-0"></i>
                 </div>
-                <h3 class="title">Verification Success</h3>
-                <p>Thank you for verifying your identity.</p>
+                <h3 class="title">Verification Link Expired</h3>
+                <p>
+                  Your email verification link has expired. Please signin again
+                  to request a new verification email.
+                </p>
                 <div>
                   <button
                     type="button"
-                    onclick="window.location.href='../src/roles/admin/'"
-                    class="btn-primary"
+                    onclick="window.location.href='login'"
+                    class="btn-cancel"
                   >
-                    Continue to Dashboard
+                    Signin Again
                   </button>
                 </div>
               </div>
