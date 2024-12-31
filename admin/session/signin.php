@@ -31,7 +31,7 @@ function sendLoginVerificationEmail($email, $token)
         </head>
 
         <body style=\"font-family: 'Roboto', Arial, sans-serif; margin: 0; padding: 0;\">
-            <div style=\"min-width: 600px; margin: auto; padding: 20px; background: #f9f9f9;\">
+            <div style=\"width: 75%; margin: auto; padding: 20px; background: #f9f9f9;\">
             <main>
                 <section style=\"background: #ffffff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\">
                 <div style=\"text-align: center;\">
