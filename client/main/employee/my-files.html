@@ -7,9 +7,13 @@
     <link
       rel="shortcut icon"
       type="image/png"
-      href="../../assets/img/logo.png"
+      href="../../../assets/img/logo.png"
     />
-    <link rel="stylesheet" href="../../assets/css/styles.min.css" />
+    <link rel="stylesheet" href="../../../assets/css/styles.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tabler-icons@1.30.1/dist/tabler-icons.min.css"
+    />
   </head>
 
   <body>
@@ -31,7 +35,7 @@
             class="brand-logo d-flex align-items-center justify-content-between"
           >
             <a href="./index.html" class="text-nowrap logo-img">
-              <img src="../../assets/img/light-logo-admin.svg" alt="" />
+              <img src="../../../assets/img/light-logo-employee.svg" alt="" />
             </a>
             <div
               class="close-btn d-xl-none d-block sidebartoggler cursor-pointer"
@@ -59,40 +63,25 @@
                 </a>
               </li>
               <li class="sidebar-item">
-                <a class="sidebar-link" href="./logs" aria-expanded="false">
+                <a class="sidebar-link" href="./upload-files" aria-expanded="false">
+                  <span>
+                    <iconify-icon
+                      icon="solar:upload-minimalistic-bold-duotone"
+                      class="fs-6"
+                    ></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Upload Files</span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="./my-files" aria-expanded="false">
                   <span>
                     <iconify-icon
                       icon="solar:layers-minimalistic-bold-duotone"
                       class="fs-6"
                     ></iconify-icon>
                   </span>
-                  <span class="hide-menu">Activity Logs</span>
-                </a>
-              </li>
-              <li class="nav-small-cap">
-                <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
-                <span class="hide-menu">User Management</span>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="./admin" aria-expanded="false">
-                  <span>
-                    <iconify-icon
-                      icon="solar:user-rounded-bold-duotone"
-                      class="fs-6"
-                    ></iconify-icon>
-                  </span>
-                  <span class="hide-menu">Administrators</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a class="sidebar-link" href="./client" aria-expanded="false">
-                  <span>
-                    <iconify-icon
-                      icon="solar:user-rounded-bold"
-                      class="fs-6"
-                    ></iconify-icon>
-                  </span>
-                  <span class="hide-menu">Clients</span>
+                  <span class="hide-menu">My Files</span>
                 </a>
               </li>
             </ul>
@@ -134,7 +123,7 @@
                     aria-expanded="false"
                   >
                     <img
-                      src="../../assets/images/profile/user-1.jpg"
+                      src="../../../assets/images/profile/user-1.jpg"
                       alt=""
                       width="35"
                       height="35"
@@ -154,7 +143,7 @@
                         <p class="mb-0 fs-3">My Profile</p>
                       </a>
                       <a
-                      href="../session/signout.php"
+                        href="../../session/signout.php"
                         class="btn btn-outline-primary mx-3 mt-2 d-block"
                         >Logout</a
                       >
@@ -166,19 +155,12 @@
           </nav>
         </header>
         <!--  Header End -->
-        <!-- Table of Activity Logs -->
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
               <div class="row">
-                <h3 class="col-lg-12">Activity Logs</h3>
+                <h3 class="col-lg-12">My Files</h3>
                 <div class="col-sm-8 text-start">
-                  <!-- <button
-                    onclick="window.location.href='manage/add-client'"
-                    type="button"
-                    class="btn btn-success my-2 fs-3"
-                  > Export
-                  </button> -->
                 </div>
                 <div class="col-sm-4 text-end">
                   <form method="get" onsubmit="return false;" class="mb-2">
@@ -187,8 +169,8 @@
                       class="form-control fs-3"
                       name="search"
                       id="search"
-                      onchange="applyFilters()"
-                      placeholder="Search User"
+                      oninput="applyFilters()"
+                      placeholder="Search File"
                     />
                   </form>
                 </div>
@@ -223,31 +205,35 @@
                     <div class="col-lg-6 text-end">
                       <form method="get" onsubmit="return false;" class="my-2">
                         <select
-                          title="Filter by Role"
-                          name="role-filter"
-                          id="role-filter"
+                          title="Sort By"
+                          name="sort-by"
+                          id="sort-by"
                           class="form-select text-start"
                           onchange="applyFilters()"
                         >
-                          <option value="">All Roles</option>
-                          <option value="Admin">Administrator</option>
-                          <option value="Head">Head</option>
-                          <option value="Employee">Employee</option>
+                          <option value="">Sort By</option>
+                          <option value="Ascending">Filename (A-Z)</option>
+                          <option value="Descending">Filename (Z-A)</option>
+                          <option value="Oldest">Date (Oldest)</option>
+                          <option value="Newest">Date (Newest)</option>
+                          <option value="Smallest">File Size (Smallest)</option>
+                          <option value="Largest">File Size (Largest)</option>
                         </select>
                       </form>
                     </div>
                     <div class="col-lg-6 text-end">
                       <form method="get" onsubmit="return false;" class="my-2">
                         <select
-                          title="Filter by Status"
-                          name="status-filter"
-                          id="status-filter"
+                          title="Filter by Time"
+                          name="time-filter"
+                          id="time-filter"
                           class="form-select text-start"
                           onchange="applyFilters()"
                         >
-                          <option value="">All Status</option>
-                          <option value="Online">Online</option>
-                          <option value="Offline">Offline</option>
+                          <option value="">All Time</option>
+                          <option value="Week">This Week</option>
+                          <option value="Month">This Month</option>
+                          <option value="Year">This Year</option>
                         </select>
                       </form>
                     </div>
@@ -259,49 +245,18 @@
               <div class="col-lg-12">
                 <div class="table-responsive my-2">
                   <table class="table text-nowrap align-middle mb-0">
-                    <thead>  
-                      <tr class="border-2 border-bottom border-primary border-0">  
-                          <th scope="col" class="ps-0">Log ID</th>  
-                          <th scope="col" class="ps-0">Name</th>  
-                          <th scope="col" class="ps-0">Email Address</th>  
-                          <th scope="col" class="ps-0">Date</th>  
-                          <th scope="col" class="ps-0">Status</th>  
-                          <th scope="col" class="ps-0">Action</th>  
-                      </tr>  
-                    </thead>  
-                    <tbody class="table-group-divider">  
-                        <tr>  
-                            <th scope="row" class="ps-0">2024000</th>  
-                            <td class="ps-0">Karl Cornejo</td>  
-                            <td class="ps-0">kocornejo00294@usep.edu.ph</td>  
-                            <td class="ps-0">December 31, 2024</td>  
-                            <td class="ps-0">Online</td>  
-                            <td class="ps-0">Successfully Login</td>  
-                        </tr>  
-                        <tr>  
-                            <th scope="row" class="ps-0">2024001</th>  
-                            <td class="ps-0">Debbie Michelle Gerodias</td>  
-                            <td class="ps-0">kocornejo00294@usep.edu.ph</td>  
-                            <td class="ps-0">December 31, 2024</td>  
-                            <td class="ps-0">Online</td>  
-                            <td class="ps-0">Successfully Login</td>  
-                        </tr>  
-                        <tr>  
-                            <th scope="row" class="ps-0">2024002</th>  
-                            <td class="ps-0">Precious Lyn Suico</td>  
-                            <td class="ps-0">plmsuico00102@usep.edu.ph</td>  
-                            <td class="ps-0">December 31, 2024</td>  
-                            <td class="ps-0">Online</td>  
-                            <td class="ps-0">Successfully Login</td>  
-                        </tr>  
-                        <tr>  
-                            <th scope="row" class="ps-0">2024003</th>  
-                            <td class="ps-0">Christeline Jane Tabacon</td>  
-                            <td class="ps-0">cjmtabacon00103@usep.edu.ph</td>  
-                            <td class="ps-0">December 31, 2024</td>  
-                            <td class="ps-0">Online</td>  
-                            <td class="ps-0">Successfully Login</td>  
-                        </tr>  
+                    <thead>
+                      <tr
+                        class="border-2 border-bottom border-primary border-0"
+                      >
+                        <th scope="col" class="ps-0">Filename</th>
+                        <th scope="col" class="ps-0">File Size</th>
+                        <th scope="col" class="ps-0">Date & Time Upload</th>
+                        <th scope="col" class="ps-0">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider" id="tableBody">
+                      <!-- Table rows will be populated dynamically -->
                     </tbody>
                   </table>
                 </div>
@@ -370,25 +325,144 @@
               </div>
             </div>
           </div>
-          <div class="text-end mt-3">  
-            <button
-              onclick="window.location.href='manage/add-client'"
-              type="button"
-              class="btn btn-success my-2 fs-3"
-              > Export
-            </button> 
-          </div>
         </div>
-        
       </div>
     </div>
-    <script src="../../assets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="../../assets/libs/simplebar/dist/simplebar.js"></script>
-    <script src="../../assets/js/sidebarmenu.js"></script>
-    <script src="../../assets/js/app.min.js"></script>
-    <script src="../../assets/js/dashboard.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const tableBody = document.getElementById("tableBody");
+        const currentPageElementshow = document.getElementById("currentPageshow");
+        const currentPageElement = document.getElementById("currentPage");
+        const totalPagesElement = document.getElementById("totalPages");
+
+        const limitFilter = document.getElementById("limit-filter");
+        const sortFilter = document.getElementById("sort-by"); // Sort By
+        const byTimeFilter = document.getElementById("time-filter"); // Filter by Time
+        const searchFilter = document.getElementById("search");
+
+        let currentPage = 1;
+        let limit = parseInt(limitFilter.value);
+        let sortBy = sortFilter.value; // Sort By dropdown
+        let timeFilter = byTimeFilter.value; // Filter by Time dropdown
+        let search = searchFilter.value;
+
+        // Fetch data and populate table - temp palang ning php niya
+        function fetchData() {
+          const url = new URL("./client.php", window.location.href);
+          url.searchParams.append("page", currentPage);
+          url.searchParams.append("limit", limit);
+          if (sortBy) url.searchParams.append("sortBy", sortBy);
+          if (timeFilter) url.searchParams.append("timeFilter", timeFilter);
+          if (search) url.searchParams.append("search", search);
+
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              populateTable(data.data);
+              updatePagination(data.pagination);
+            })
+            .catch((error) => console.error("Error fetching data:", error));
+        }
+
+        // Populate table rows
+        function populateTable(files) {
+          tableBody.innerHTML = ""; // Clear existing rows
+          files.forEach((file) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${file.filename}</td>
+              <td>${file.file_size}</td>
+              <td>${file.upload_date}</td>
+              <td>
+                <div class="dropdown">
+                  <button
+                    class="btn btn-secondary btn-sm dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton${file.id}"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    Actions
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${file.id}">
+                    <li><a class="dropdown-item" href="#" onclick="viewFile('${file.id}')">View</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="downloadFile('${file.id}')">Download</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="shareFile('${file.id}')">Share</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="renameFile('${file.id}')">Rename</a></li>
+                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteFile('${file.id}')">Delete</a></li>
+                  </ul>
+                </div>
+              </td>
+            `;
+            tableBody.appendChild(row);
+          });
+        }
+
+        // Update pagination
+        function updatePagination(pagination) {
+          currentPageElementshow.textContent = pagination.current_page;
+          currentPageElement.value = pagination.current_page;
+          totalPagesElement.textContent = pagination.total_pages;
+          currentPageElement.max = pagination.total_pages;
+
+          document.getElementById("prevButton").disabled =
+            pagination.current_page <= 1;
+          document.getElementById("nextButton").disabled =
+            pagination.current_page >= pagination.total_pages;
+        }
+
+        // Apply filters
+        function applyFilters() {
+          limit = parseInt(limitFilter.value);
+          sortBy = sortFilter.value; // Sort By dropdown
+          timeFilter = byTimeFilter.value; // Filter by Time dropdown
+          search = searchFilter.value.trim(); // Search input
+          currentPage = 1; // Reset to first page on filter change
+          fetchData();
+        }
+
+        // Navigate pages
+        function navigatePage(direction) {
+          if (direction === "prev" && currentPage > 1) {
+            currentPage--;
+          } else if (direction === "next") {
+            currentPage++;
+          } else if (direction === "custom") {
+            currentPage = parseInt(currentPageElement.value);
+            if (currentPage > parseInt(totalPagesElement.textContent)) {
+              return;
+            }
+          }
+          fetchData();
+        }
+
+        // Event listeners for filters and pagination
+        limitFilter.addEventListener("change", applyFilters);
+        sortFilter.addEventListener("change", applyFilters);
+        byTimeFilter.addEventListener("change", applyFilters);
+        searchFilter.addEventListener("input", applyFilters); // Trigger search on input
+        document
+          .getElementById("prevButton")
+          .addEventListener("click", () => navigatePage("prev"));
+        document
+          .getElementById("nextButton")
+          .addEventListener("click", () => navigatePage("next"));
+        document
+          .getElementById("goButton")
+          .addEventListener("click", () => navigatePage("custom"));
+
+        // Initial fetch
+        fetchData();
+      });
+    </script>
+
+    <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="../../../assets/libs/simplebar/dist/simplebar.js"></script>
+    <script src="../../../assets/js/sidebarmenu.js"></script>
+    <script src="../../../assets/js/app.min.js"></script>
+    <script src="../../../assets/js/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   </body>
 </html>
