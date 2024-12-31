@@ -81,7 +81,7 @@ try {
     $pdo->exec("CREATE TABLE IF NOT EXISTS tb_admin_logindetails (
         user_id INT AUTO_INCREMENT PRIMARY KEY,
         password VARCHAR(255) NOT NULL,
-        user_status VARCHAR(255) NULL,
+        user_status VARCHAR(255) NULL DEFAULT 'Offline',
         user_log VARCHAR(255) NULL,
         token VARCHAR(255) NULL,
         verified TINYINT(1) DEFAULT 0,
@@ -101,7 +101,7 @@ try {
     $pdo->exec("CREATE TABLE IF NOT EXISTS tb_client_logindetails (
         user_id INT AUTO_INCREMENT PRIMARY KEY,
         password VARCHAR(255) NOT NULL,
-        user_status VARCHAR(255) NULL,
+        user_status VARCHAR(255) NULL DEFAULT 'Offline',
         user_log VARCHAR(255) NULL,
         token VARCHAR(255) NULL,
         verified TINYINT(1) DEFAULT 0,

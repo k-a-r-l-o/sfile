@@ -171,93 +171,296 @@
         </header>
         <!--  Header End -->
         <div class="container-fluid">
-          <div class="row">
-            <h3 class="col-lg-8">Administrators</h3>
-            <div class="col-lg-4 text-end">
-              <form class="mb-2">
-                <input
-                  type="search"
-                  class="form-control"
-                  name="searchadmin"
-                  id="searchadmin"
-                  placeholder="Search User"
-                />
-              </form>
-            </div>
-            <div class="col-lg-10 text-start">
-              <button onclick="window.location.href='manage/add-admin'" type="button" class="btn btn-primary mt-2 mb-2 fs-3">
-                <i class="ti ti-plus"></i> New Administrator
-              </button>
-            </div>
-            <div class="col-lg-2 text-end">
-              <form class="mt-2 mb-2">
-                <select
-                  title="Filter by Status"
-                  name="status-filter"
-                  id="status-filter"
-                  class="form-select text-start"
-                  onchange="applyStatusFilter()"
-                >
-                  <option value="">All Status</option>
-                  <option value="Online">Online</option>
-                  <option value="Offline">Offline</option>
-                </select>
-              </form>
-            </div>
-            <!-- Table -->
-            <div class="col-lg-12">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">User Accounts</h5>
-                  <div class="table-responsive">
-                    <table class="table text-nowrap align-middle mb-0">
-                      <thead>
-                        <tr
-                          class="border-2 border-bottom border-primary border-0"
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <h3 class="col-lg-12">Administrators</h3>
+                <div class="col-sm-8 text-start">
+                  <button
+                    onclick="window.location.href='manage/add-admin'"
+                    type="button"
+                    class="btn btn-primary my-2 fs-3"
+                  >
+                    <i class="ti ti-plus"></i> New Administrator
+                  </button>
+                </div>
+                <div class="col-sm-4 text-end">
+                  <form method="get" onsubmit="return false;" class="mb-2">
+                    <input
+                      type="search"
+                      class="form-control fs-3"
+                      name="search"
+                      id="search"
+                      onchange="applyFilters()"
+                      placeholder="Search User"
+                    />
+                  </form>
+                </div>
+              </div>
+
+              <div class="row justify-content-between">
+                <div class="col-sm-3 text-end">
+                  <form
+                    method="get"
+                    onsubmit="return false;"
+                    class="d-flex my-2 align-items-center"
+                  >
+                    <label for="limit-filter" class="form-label mb-0 me-2"
+                      >Show</label
+                    >
+                    <select
+                      title="Limit"
+                      name="limit-filter"
+                      id="limit-filter"
+                      class="form-select text-start mx-2"
+                      onchange="applyFilters()"
+                    >
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                    </select>
+                    <p class="mb-0 ms-0">entries.</p>
+                  </form>
+                </div>
+                <div class="col-sm-4 text-end">
+                  <div class="row">
+                    <div class="col-lg-6 text-end">
+                      <form
+                        method="get"
+                        onsubmit="return false;"
+                        class="my-2 d-none"
+                      >
+                        <select
+                          title="Filter by Role"
+                          name="role-filter"
+                          id="role-filter"
+                          class="form-select text-start"
+                          onchange="applyFilters()"
                         >
-                          <th scope="col" class="ps-0">ID</th>
-                          <th scope="col" class="ps-0">Name</th>
-                          <th scope="col" class="ps-0">Email Address</th>
-                          <th scope="col" class="ps-0">Status</th>
-                          <th scope="col" class="ps-0">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody class="table-group-divider">
-                        <tr>
-                          <th scope="row" class="ps-0">2024000</th>
-                          <td class="ps-0">Karl Cornejo</td>
-                          <td class="ps-0">kocornejo00294@usep.edu.ph</td>
-                          <td class="ps-0">Online</td>
-                          <td class="ps-0">
-                            <button
-                              type="button"
-                              class="btn btn-sm btn-icon text-primary"
-                              title="Edit"
-                            >
-                              <i class="ti ti-edit fs-4"></i>
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-sm btn-icon text-danger"
-                              title="Delete"
-                            >
-                              <i class="ti ti-trash fs-4"></i>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                          <option value="">Administrator</option>
+                        </select>
+                      </form>
+                    </div>
+                    <div class="col-lg-6 text-end">
+                      <form method="get" onsubmit="return false;" class="my-2">
+                        <select
+                          title="Filter by Status"
+                          name="status-filter"
+                          id="status-filter"
+                          class="form-select text-start"
+                          onchange="applyFilters()"
+                        >
+                          <option value="">All Status</option>
+                          <option value="Online">Online</option>
+                          <option value="Offline">Offline</option>
+                        </select>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Card for Activity Logs Navigation -->
-            <div class="col-lg-4"></div>
+              <!-- Table -->
+              <div class="col-lg-12">
+                <div class="table-responsive my-2">
+                  <table class="table text-nowrap align-middle mb-0">
+                    <thead>
+                      <tr
+                        class="border-2 border-bottom border-primary border-0"
+                      >
+                        <th scope="col" class="ps-0">ID</th>
+                        <th scope="col" class="ps-0">Name</th>
+                        <th scope="col" class="ps-0">Email Address</th>
+                        <th scope="col" class="ps-0">Status</th>
+                        <th scope="col" class="ps-0">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-group-divider" id="tableBody">
+                      <!-- Table rows will be populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="row text-center align-items-center">
+                <div class="col-sm-2 px-1">
+                  <form
+                    method="get"
+                    onsubmit="return false;"
+                    class="d-flex my-2 align-items-center"
+                  >
+                    <label for="currentPage" class="form-label mb-0 me-2"
+                      >Go to page:</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control text-center"
+                      name="currentPage"
+                      id="currentPage"
+                      value="1"
+                      min="1"
+                      onchange="navigatePage('custom')"
+                      required
+                    />
+                    <button
+                      type="submit"
+                      class="btn btn-dark ms-2"
+                      id="goButton"
+                      onclick="navigatePage('custom')"
+                    >
+                      Go
+                    </button>
+                  </form>
+                </div>
+                <div class="col-sm-2 px-1"></div>
+                <div class="col-sm-4 px-1 align-items-center">
+                  <p class="mb-0 ms-0">
+                    Page <strong id="currentPageshow">1</strong> of
+                    <strong id="totalPages">1</strong>
+                  </p>
+                </div>
+                <div
+                  class="col-sm-4 d-flex align-items-center justify-content-end px-1"
+                >
+                  <!-- Previous Button -->
+                  <button
+                    type="button"
+                    class="btn btn-dark me-2"
+                    id="prevButton"
+                    onclick="navigatePage('prev')"
+                  >
+                    Prev
+                  </button>
+
+                  <!-- Next Button -->
+                  <button
+                    type="button"
+                    class="btn btn-dark ms-2"
+                    id="nextButton"
+                    onclick="navigatePage('next')"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const tableBody = document.getElementById("tableBody");
+        const currentPageElementshow =
+          document.getElementById("currentPageshow");
+        const currentPageElement = document.getElementById("currentPage");
+        const totalPagesElement = document.getElementById("totalPages");
+
+        const limitFilter = document.getElementById("limit-filter");
+        const roleFilter = document.getElementById("role-filter");
+        const statusFilter = document.getElementById("status-filter");
+        const searchFilter = document.getElementById("search");
+
+        let currentPage = 1;
+        let limit = parseInt(limitFilter.value);
+        let role = roleFilter.value;
+        let status = statusFilter.value;
+        let search = searchFilter.value;
+
+        // Fetch data and populate table
+        function fetchData() {
+          const url = new URL("./admin.php", window.location.href);
+          url.searchParams.append("page", currentPage);
+          url.searchParams.append("limit", limit);
+          if (role) url.searchParams.append("role", role);
+          if (status) url.searchParams.append("status", status);
+          if (search) url.searchParams.append("search", search);
+
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              populateTable(data.data);
+              updatePagination(data.pagination);
+            })
+            .catch((error) => console.error("Error fetching data:", error));
+        }
+
+        // Populate table rows
+        function populateTable(users) {
+          tableBody.innerHTML = ""; // Clear existing rows
+          users.forEach((user) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${user.user_id}</td>
+              <td>${user.user_fname} ${user.user_lname}</td>
+              <td>${user.user_email}</td>
+              <td>${user.user_status}</td>
+              <td>
+                <button class="btn btn-primary btn-sm">Edit</button>
+                <button class="btn btn-danger btn-sm">Delete</button>
+              </td>
+            `;
+            tableBody.appendChild(row);
+          });
+        }
+
+        // Update pagination
+        function updatePagination(pagination) {
+          currentPageElementshow.textContent = pagination.current_page;
+          currentPageElement.value = pagination.current_page;
+          totalPagesElement.textContent = pagination.total_pages;
+          currentPageElement.max = pagination.total_pages;
+
+          document.getElementById("prevButton").disabled =
+            pagination.current_page <= 1;
+          document.getElementById("nextButton").disabled =
+            pagination.current_page >= pagination.total_pages;
+        }
+
+        // Apply filters
+        function applyFilters() {
+          limit = parseInt(limitFilter.value);
+          role = roleFilter.value;
+          status = statusFilter.value;
+          search = searchFilter.value;
+          currentPage = 1; // Reset to first page on filter change
+          fetchData();
+        }
+
+        // Navigate pages
+        function navigatePage(direction) {
+          if (direction === "prev" && currentPage > 1) {
+            currentPage--;
+          } else if (direction === "next") {
+            currentPage++;
+          } else if (direction === "custom") {
+            currentPage = currentPageElement.value;
+            if (currentPage > totalPagesElement.textContent) {
+              return;
+            }
+          }
+          fetchData();
+        }
+
+        // Event listeners for filters and pagination
+        limitFilter.addEventListener("change", applyFilters);
+        roleFilter.addEventListener("change", applyFilters);
+        statusFilter.addEventListener("change", applyFilters);
+        searchFilter.addEventListener("change", applyFilters);
+        document
+          .getElementById("prevButton")
+          .addEventListener("click", () => navigatePage("prev"));
+        document
+          .getElementById("nextButton")
+          .addEventListener("click", () => navigatePage("next"));
+        document
+          .getElementById("goButton")
+          .addEventListener("click", () => navigatePage("custom"));
+        // Initial fetch
+        fetchData();
+      });
+    </script>
+
     <script src="../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
