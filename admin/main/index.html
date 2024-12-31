@@ -2,243 +2,280 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SecureFile</title>
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-
-    <!-- Favicons -->
-    <link href="../../assets/img/favicon.png" rel="icon" />
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
+      rel="shortcut icon"
+      type="image/png"
+      href="../../assets/img/logo.png"
     />
-
-    <!-- Vendor CSS Files -->
-    <link
-      href="../../assets/vendor/bootstrap/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
-    <link href="../../assets/vendor/aos/aos.css" rel="stylesheet" />
-    <link
-      href="../../assets/vendor/glightbox/css/glightbox.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="../../assets/vendor/swiper/swiper-bundle.min.css"
-      rel="stylesheet"
-    />
-
-    <!-- Main CSS File -->
-    <link href="../../assets/css/main.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/styles.min.css" />
   </head>
 
-  <body class="starter-page-page">
-    <header id="header" class="display-none">
-      <div
-        class="container-fluid container-l position-relative d-flex align-items-center"
-      >
-        <a
-          href="../../index.html"
-          class="logo d-flex align-items-center me-auto"
-        >
-          <!-- Uncomment the line below if you also wish to use an image logo -->
-          <img src="../../assets/img/logo.png" alt="SecureFile" />
-          <h1 class="sitename">Secure</h1>
-          <h1 class="accented">File</h1>
-          <h1 class="accented">Administrator</h1>
-        </a>
-
-        <nav id="navmenu" class="navmenu">
-          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-        </nav>
-      </div>
-    </header>
-
-    <main class="main vh-100">
-      <section
-        id="main-wrapper"
-        class="main-wrapper section vh-100 light-background"
-      >
-        <div class="container-fluid vh-100">
-          <div class="row gy-4">
-            <!-- Add a hamburger menu button -->
-            <button id="sidebar-toggle" class="hamburger-menu d-lg-none">
-              <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Sidebar Section -->
-            <div class="col-lg-3 sidebar vh-100">
-              <a
-                href="../../index.html"
-                class="logo d-flex align-items-center me-auto"
-              >  
-                <img src="../../assets/img/logo.png" alt="SecureFile" />  
-                <span><h1 class="sitename accented">SecureFile</h1>  
-                  <span class="role">Administrator</span></span>
-              </a> 
-              <ul class="sidebar-nav flex-grow-1 dark-bakground">
-                <li>
-                  <a href="#profile" class="active"><i class="fas fa-shapes"></i> Dashboard </a>
-                </li>
-                <li class="dropdown" id="user-management">  
-                  <a href="#user-management" id="user-management-toggle" class="dropdown-toggle">  
-                    <i class="fas fa-user"></i> User Management </a>  
-                  <ul class="dropdown-menu" id="user-management-menu">  
-                    <li><a href="#admin"> Administrator </a></li>  
-                    <li><a href="#users"> Head & Employee </a></li>  
-                  </ul>  
-                </li>  
-                <li id="activity-logs" class="activity-logs">  
-                  <a href="#activitylogs"><i class="fas fa-chart-line"></i> Activity Logs</a>  
-                </li>
-              </ul>
-              <ul class="sidebar-nav flex-grow-0">
-                <li>
-                  <a href="#logout"
-                    ><i class="fas fa-sign-out-alt"></i> Logout </a>
+  <body>
+    <!--  Body Wrapper -->
+    <div
+      class="page-wrapper"
+      id="main-wrapper"
+      data-layout="vertical"
+      data-navbarbg="skin6"
+      data-sidebartype="full"
+      data-sidebar-position="fixed"
+      data-header-position="fixed"
+    >
+      <!-- Sidebar Start -->
+      <aside class="left-sidebar">
+        <!-- Sidebar scroll-->
+        <div>
+          <div
+            class="brand-logo d-flex align-items-center justify-content-between"
+          >
+            <a href="./index.html" class="text-nowrap logo-img">
+              <img src="../../assets/img/light-logo.svg" alt="" />
+            </a>
+            <div
+              class="close-btn d-xl-none d-block sidebartoggler cursor-pointer"
+              id="sidebarCollapse"
+            >
+              <i class="ti ti-x fs-8"></i>
+            </div>
+          </div>
+          <!-- Sidebar navigation-->
+          <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+            <ul id="sidebarnav">
+              <li class="nav-small-cap">
+                <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
+                <span class="hide-menu">Home</span>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="./" aria-expanded="false">
+                  <span>
+                    <iconify-icon
+                      icon="solar:home-smile-bold-duotone"
+                      class="fs-6"
+                    ></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Dashboard</span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="./logs" aria-expanded="false">
+                  <span>
+                    <iconify-icon
+                      icon="solar:layers-minimalistic-bold-duotone"
+                      class="fs-6"
+                    ></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Activity Logs</span>
+                </a>
+              </li>
+              <li class="nav-small-cap">
+                <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
+                <span class="hide-menu">User Management</span>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="./admin" aria-expanded="false">
+                  <span>
+                    <iconify-icon
+                      icon="solar:user-rounded-bold-duotone"
+                      class="fs-6"
+                    ></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Administrators</span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="./client" aria-expanded="false">
+                  <span>
+                    <iconify-icon
+                      icon="solar:user-rounded-bold"
+                      class="fs-6"
+                    ></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Clients</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <!-- End Sidebar navigation -->
+        </div>
+        <!-- End Sidebar scroll-->
+      </aside>
+      <!--  Sidebar End -->
+      <!--  Main wrapper -->
+      <div class="body-wrapper">
+        <!--  Header Start -->
+        <header class="app-header">
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <ul class="navbar-nav">
+              <li class="nav-item d-block d-xl-none">
+                <a
+                  class="nav-link sidebartoggler nav-icon-hover"
+                  id="headerCollapse"
+                  href="javascript:void(0)"
+                >
+                  <i class="ti ti-menu-2"></i>
+                </a>
+              </li>
+            </ul>
+            <div
+              class="navbar-collapse justify-content-end px-0"
+              id="navbarNav"
+            >
+              <ul
+                class="navbar-nav flex-row ms-auto align-items-center justify-content-end"
+              >
+                <li class="nav-item dropdown">
+                  <a
+                    class="nav-link nav-icon-hover"
+                    href="javascript:void(0)"
+                    id="drop2"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <img
+                      src="../../assets/images/profile/user-1.jpg"
+                      alt=""
+                      width="35"
+                      height="35"
+                      class="rounded-circle"
+                    />
+                  </a>
+                  <div
+                    class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
+                    aria-labelledby="drop2"
+                  >
+                    <div class="message-body">
+                      <a
+                        href="javascript:void(0)"
+                        class="d-flex align-items-center gap-2 dropdown-item"
+                      >
+                        <i class="ti ti-user fs-6"></i>
+                        <p class="mb-0 fs-3">My Profile</p>
+                      </a>
+                      <a
+                        href="./authentication-login.html"
+                        class="btn btn-outline-primary mx-3 mt-2 d-block"
+                        >Logout</a
+                      >
+                    </div>
+                  </div>
                 </li>
               </ul>
             </div>
-
-            <!-- Main Content Section -->  
-            <div class="col-lg-9 main-content vh-100">  
-              <div class="row gy-4">  
-                <div class="col-lg-10">  
-                  <div class="search-bar">  
-                    <i class="fas fa-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>  
-                    <input  
-                      type="text"  
-                      class="form-control"  
-                      placeholder="Search"  
-                      aria-label="Search"  
-                    />  
-                  </div>  
-                </div>  
-                <div class="col-lg-2">  
-                  <div class="dropdown">  
-                    <button  
-                      class="btn dropdown-toggle p-0"  
-                      type="button"  
-                      id="profileDropdown"  
-                      data-bs-toggle="dropdown"  
-                      aria-expanded="false"  
-                    >  
-                      <img  
-                        src="../../../assets/img/team/team-1.png"  
-                        alt="Profile Picture"  
-                        class="rounded-circle"  
-                        style="width: 40px; height: 40px;"  
-                      /> Karl Cornejo
-                    </button>  
-                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">    
-                      <li><a class="dropdown-item" href="#accountSettings">Profile Settings</a></li> 
-                      <li><a class="dropdown-item" href="#logout">Logout</a></li>  
-                    </ul>  
-                  </div>  
-                </div>  
-              </div>  
-              <div class="main-content-wrapper">
-                <h2>Welcome to the SecureFile Dashboard</h2>
-                <p>This is your central hub for managing users, monitoring activity logs, and accessing administrative tools.</p>
-                <div class="dashboard-stats">
-                  <div class="stat-item">
-                    <h3>Users</h3>
-                    <p>120 Active Users</p>
-                  </div>
-                  <div class="stat-item">
-                    <h3>Activity Logs</h3>
-                    <p>350 Logs Recorded</p>
-                  </div>
+          </nav>
+        </header>
+        <!--  Header End -->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body text-center">
+                  <img
+                    src="../../assets/images/backgrounds/product-tip.png"
+                    alt="image"
+                    class="img-fluid"
+                    width="205"
+                  />
+                  <h4 class="mt-9">Welcome to SecureFile</h4>
+                  <p class="card-subtitle mt-2 mb-3">
+                    Your files, your security. Access with confidence.
+                  </p>
                 </div>
-              </div>  
+              </div>
             </div>
-
+            <div class="col-lg-4">
+              <div class="card overflow-hidden hover-img">
+                <div class="position-relative">
+                  <a href="./admin">
+                    <img
+                      src="../../assets/images/blog/blog-img1.jpg"
+                      class="card-img-top"
+                      alt="matdash-img"
+                    />
+                    <span
+                      class="badge text-bg-light text-dark fs-2 lh-sm mb-9 me-9 py-1 px-2 fw-semibold position-absolute bottom-0 end-0"
+                      >Go to Manage Administrators</span
+                    >
+                  </a>
+                </div>
+                <div class="card-body p-4">
+                  <span class="badge text-bg-light fs-2 py-1 px-2 lh-sm mt-3"
+                    >User Management</span
+                  >
+                  <a
+                    class="d-block my-4 fs-5 text-dark fw-semibold link-primary"
+                    href="./admin"
+                    >Manage Aministrators</a
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card overflow-hidden hover-img">
+                <div class="position-relative">
+                  <a href="./client">
+                    <img
+                      src="../../assets/images/blog/blog-img2.jpg"
+                      class="card-img-top"
+                      alt="matdash-img"
+                    />
+                    <span
+                      class="badge text-bg-light text-dark fs-2 lh-sm mb-9 me-9 py-1 px-2 fw-semibold position-absolute bottom-0 end-0"
+                      >Go to Manage Clients</span
+                    >
+                  </a>
+                </div>
+                <div class="card-body p-4">
+                  <span class="badge text-bg-light fs-2 py-1 px-2 lh-sm mt-3"
+                    >User Management</span
+                  >
+                  <a
+                    class="d-block my-4 fs-5 text-dark fw-semibold link-primary"
+                    href="./admin"
+                    >Manage Clients</a
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card overflow-hidden hover-img">
+                <div class="position-relative">
+                  <a href="./logs">
+                    <img
+                      src="../../assets/images/blog/blog-img3.jpg"
+                      class="card-img-top"
+                      alt="matdash-img"
+                    />
+                    <span
+                      class="badge text-bg-light text-dark fs-2 lh-sm mb-9 me-9 py-1 px-2 fw-semibold position-absolute bottom-0 end-0"
+                      >Go to Activity Logs</span
+                    >
+                  </a>
+                </div>
+                <div class="card-body p-4">
+                  <span class="badge text-bg-light fs-2 py-1 px-2 lh-sm mt-3"
+                    >Home</span
+                  >
+                  <a
+                    class="d-block my-4 fs-5 text-dark fw-semibold link-primary"
+                    href="./admin"
+                    >See Activity Logs</a
+                  >
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
-    </main>
-
-    <!-- Scroll Top -->
-    <a
-      href="#"
-      id="scroll-top"
-      class="scroll-top d-flex align-items-center justify-content-center"
-      ><i class="bi bi-arrow-up-short"></i
-    ></a>
-
-    <!-- Preloader -->
-    <div id="preloader"></div>
-
-    <!-- Vendor JS Files -->
-    <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/vendor/php-email-form/validate.js"></script>
-    <script src="../../assets/vendor/aos/aos.js"></script>
-    <script src="../../assets/vendor/purecounter/purecounter_vanilla.js"></script>
-    <script src="../../assets/vendor/glightbox/js/glightbox.min.js"></script>
-    <script src="../../assets/vendor/swiper/swiper-bundle.min.js"></script>
-    <script src="../../assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-    <script src="../../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Main JS File -->
-    <script src="../../assets/js/main.js"></script>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebar = document.getElementById('sidebar');
-
-        sidebarToggle.addEventListener('click', function () {
-          sidebar.classList.toggle('show');
-        });
-
-        // Optional: Close the sidebar when clicking outside of it
-        document.addEventListener('click', function (event) {
-          if (!sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
-            sidebar.classList.remove('show');
-          }
-        });
-      });
-
-      document.addEventListener('DOMContentLoaded', function() {  
-        const userManagementToggle = document.getElementById('user-management-toggle');  
-        const userManagementMenu = document.getElementById('user-management-menu');  
-        const activityLogs = document.getElementById('activity-logs');  
-
-        userManagementToggle.addEventListener('click', function(event) {  
-          event.preventDefault(); // Prevent default link behavior  
-          const isVisible = userManagementMenu.classList.toggle('show'); // Toggle dropdown visibility  
-
-          // Adjust the margin of Activity Logs depending on dropdown visibility  
-          if (isVisible) {  
-            activityLogs.classList.add('shifted'); // Add shifted class  
-          } else {  
-            activityLogs.classList.remove('shifted'); // Remove shifted class  
-          }  
-        });  
-
-        // Close dropdown if clicked outside  
-        document.addEventListener('click', function(event) {  
-          if (!userManagementToggle.contains(event.target) && !userManagementMenu.contains(event.target)) {  
-            userManagementMenu.classList.remove('show'); // Hide the dropdown  
-            activityLogs.classList.remove('shifted'); // Close activity logs margin  
-          }  
-        });  
-      });
-    </script>
-
+      </div>
+    </div>
+    <script src="../../assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="../../assets/libs/simplebar/dist/simplebar.js"></script>
+    <script src="../../assets/js/sidebarmenu.js"></script>
+    <script src="../../assets/js/app.min.js"></script>
+    <script src="../../assets/js/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   </body>
 </html>
