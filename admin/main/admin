@@ -10,6 +10,7 @@
       href="../../assets/img/logo.png"
     />
     <link rel="stylesheet" href="../../assets/css/styles.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabler-icons@1.30.1/dist/tabler-icons.min.css">
   </head>
 
   <body>
@@ -172,16 +173,14 @@
               <div class="col-lg-12">  
                   <div class="card">  
                       <div class="card-body">  
-                          <h5 class="card-title">Activity Logs</h5>  
+                          <h5 class="card-title">Administrators Management</h5>  
                           <div class="table-responsive">  
                               <table class="table text-nowrap align-middle mb-0">  
                                   <thead>  
                                       <tr class="border-2 border-bottom border-primary border-0">  
-                                          <th scope="col" class="ps-0">ID</th>  
+                                          <th scope="col" class="ps-0">User ID</th>  
                                           <th scope="col" class="ps-0">Name</th>  
-                                          <th scope="col" class="ps-0">Email Address</th>  
-                                          <th scope="col" class="ps-0">Date</th>  
-                                          <th scope="col" class="ps-0">Status</th>  
+                                          <th scope="col" class="ps-0">Email Address</th> 
                                           <th scope="col" class="ps-0">Action</th>  
                                       </tr>  
                                   </thead>  
@@ -190,44 +189,64 @@
                                           <th scope="row" class="ps-0">2024000</th>  
                                           <td class="ps-0">Karl Cornejo</td>  
                                           <td class="ps-0">kocornejo00294@usep.edu.ph</td>  
-                                          <td class="ps-0">December 31, 2024</td>  
-                                          <td class="ps-0">Online</td>  
-                                          <td class="ps-0">Successfully Login</td>  
+                                          <td class="ps-0">  
+                                              <button type="button" class="btn btn-sm btn-icon text-primary" title="Edit">  
+                                                  <i class="ti ti-edit icon-large"></i>  
+                                              </button>  
+                                              <button type="button" class="btn btn-sm btn-icon text-danger" title="Delete">  
+                                                  <i class="ti ti-trash icon-large"></i> 
+                                              </button>  
+                                          </td>    
                                       </tr>  
                                       <tr>  
                                           <th scope="row" class="ps-0">2024001</th>  
                                           <td class="ps-0">Debbie Michelle Gerodias</td>  
                                           <td class="ps-0">kocornejo00294@usep.edu.ph</td>  
-                                          <td class="ps-0">December 31, 2024</td>  
-                                          <td class="ps-0">Online</td>  
-                                          <td class="ps-0">Successfully Login</td>  
+                                          <td class="ps-0">  
+                                              <button type="button" class="btn btn-sm btn-icon text-primary" title="Edit">  
+                                                  <i class="ti ti-edit icon-large"></i>  
+                                              </button>  
+                                              <button type="button" class="btn btn-sm btn-icon text-danger" title="Delete">  
+                                                  <i class="ti ti-trash icon-large"></i>   
+                                              </button>  
+                                          </td>   
                                       </tr>  
                                       <tr>  
                                           <th scope="row" class="ps-0">2024002</th>  
                                           <td class="ps-0">Precious Lyn Suico</td>  
                                           <td class="ps-0">plmsuico00102@usep.edu.ph</td>  
-                                          <td class="ps-0">December 31, 2024</td>  
-                                          <td class="ps-0">Online</td>  
-                                          <td class="ps-0">Successfully Login</td>  
+                                          <td class="ps-0">  
+                                              <button type="button" class="btn btn-sm btn-icon text-primary" title="Edit">  
+                                                  <i class="ti ti-edit icon-large"></i>   
+                                              </button>  
+                                              <button type="button" class="btn btn-sm btn-icon text-danger" title="Delete">  
+                                                  <i class="ti ti-trash icon-large"></i>  
+                                              </button>  
+                                          </td>    
                                       </tr>  
                                       <tr>  
                                           <th scope="row" class="ps-0">2024003</th>  
                                           <td class="ps-0">Christeline Jane Tabacon</td>  
                                           <td class="ps-0">cjmtabacon00103@usep.edu.ph</td>  
-                                          <td class="ps-0">December 31, 2024</td>  
-                                          <td class="ps-0">Online</td>  
-                                          <td class="ps-0">Successfully Login</td>  
+                                          <td class="ps-0">  
+                                              <button type="button" class="btn btn-sm btn-icon text-primary" title="Edit">  
+                                                  <i class="ti ti-edit icon-large"></i>  
+                                              </button>  
+                                              <button type="button" class="btn btn-sm btn-icon text-danger" title="Delete">  
+                                                  <i class="ti ti-trash icon-large"></i> 
+                                              </button>  
+                                          </td>   
                                       </tr>  
                                   </tbody>  
                               </table>  
                           </div>    
                       </div>  
                   </div>  
-                  <!-- Buttons Alignment -->  
                   <div class="text-end mt-3">  
-                    <button type="button" class="btn btn-success m-1">Export</button>  
-                    <button type="button" class="btn btn-danger m-1">Print</button>  
-                  </div>
+                    <button type="button" class="btn btn-primary m-1">  
+                        <i class="ti ti-plus"></i> Add Administrators  
+                    </button>   
+                  </div>  
               </div>  
 
               <!-- Card for Activity Logs Navigation -->  

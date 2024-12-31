@@ -177,7 +177,7 @@
                               <table class="table text-nowrap align-middle mb-0">  
                                   <thead>  
                                       <tr class="border-2 border-bottom border-primary border-0">  
-                                          <th scope="col" class="ps-0">ID</th>  
+                                          <th scope="col" class="ps-0">Log ID</th>  
                                           <th scope="col" class="ps-0">Name</th>  
                                           <th scope="col" class="ps-0">Email Address</th>  
                                           <th scope="col" class="ps-0">Date</th>  
@@ -223,11 +223,10 @@
                           </div>    
                       </div>  
                   </div>  
-                  <!-- Buttons Alignment -->  
                   <div class="text-end mt-3">  
                     <button type="button" class="btn btn-success m-1">Export</button>  
                     <button type="button" class="btn btn-danger m-1">Print</button>  
-                  </div>
+                </div>  
               </div>  
 
               <!-- Card for Activity Logs Navigation -->  
