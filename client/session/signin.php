@@ -22,25 +22,55 @@ function sendLoginVerificationEmail($email, $token)
         $mail->addAddress($email);
         $mail->isHTML(true);
         $mail->Subject = 'SECUREFILE - Verify Your Login';
-        $mail->Body = "
-            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px;'>
-                <div style='background-color: white; padding: 20px; text-align: center; border-bottom: 1px solid #ddd;'>
-                    <img src='https://sfile.site/assets/img/logo.png' alt='SECUREFILE' style='max-width: 100px;'>
+        $mail->Body = "<!DOCTYPE html>
+        <html lang=\"en\">
+        <head>
+            <meta charset=\"utf-8\" />
+            <meta content=\"width=device-width, initial-scale=1.0\" name=\"viewport\" />
+            <title>SecureFile</title>
+        </head>
+
+        <body style=\"font-family: 'Roboto', Arial, sans-serif; margin: 0; padding: 0;\">
+            <div style=\"width: 100%; margin: auto; padding: 20px; background: #f9f9f9;\">
+            <main>
+                <section style=\"background: #ffffff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\">
+                <div style=\"text-align: center;\">
+                    <img
+                    src='https://sfile.site/assets/img/light-logo.png'
+                    alt='SecureFile'
+                    style=\"width: 50%; max-width: 150px; margin-bottom: 20px;\"
+                    />
+                    <h3 style=\"margin: 0 0 10px; font-size: 24px; color: #333;\">Verify Your Login Attempt</h3>
+                    <p style=\"color: #666; font-size: 14px; line-height: 1.6;\">
+                    We noticed a login attempt to your account. For your security,
+                    please verify it by clicking the button below:
+                    </p>
+
+                    <a href='https://sfile.site/client/session/verify-login.php?token=$token'
+                    style=\"display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007bff; color: #ffffff; text-decoration: none; border-radius: 5px; font-size: 16px;\"
+                    >
+                    Verify Login
+                    </a>
+
+                    <p style=\"margin-top: 20px; font-size: 14px; color: #666; line-height: 1.6;\">
+                    This link will expire in <strong>10 minutes</strong>. If you
+                    didn't attempt to log in, please secure your account by
+                    changing your password immediately.
+                    </p>
                 </div>
-                <div style='padding: 20px;'>
-                    <h2 style='color: #333; text-align: center;'>Verify Your Login Attempt</h2>
-                    <p style='color: #555; text-align: center;  text-decoration: none;'>We noticed a login attempt for your <strong>SECUREFILE</strong> account with an email of <strong>$email</strong>. For your security, please verify it by clicking the button below:</p>
-                    <div style='text-align: center; margin: 20px 0;'>
-                        <a href='https://sfile.site/client/session/verify-login.php?token=$token' style='text-decoration: none; background-color: #050deb; color: #fff; padding: 12px 20px; border-radius: 5px; font-weight: bold; font-size: 14px;'>Verify Login</a>
-                    </div>
-                    <br/>
-                    <p style='color: #555; text-align: center;'>This link will expire in <strong>10 minutes</strong>. If you didn’t attempt to log in, please secure your account by changing your password immediately.</p>
-                    <br/>
-                    <p style='font-size: 12px; text-align: center; color: #888; max-width: 600px;'>You received this email because a login attempt was made for your account at SECUREFILE. If you didn’t request this, please ignore this email.</p>
-                </div>
+                </section>
+
+                <footer style=\"text-align: center; margin-top: 20px; font-size: 12px; color: #999;\">
+                <p>
+                    You received this email because a login attempt was made for your
+                    account at SECUREFILE. If you didn't request this, please ignore
+                    this email.
+                </p>
+                </footer>
+            </main>
             </div>
-            
-        ";
+        </body>
+        </html>";
 
         $mail->send();
         return true;
