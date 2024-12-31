@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -71,59 +71,47 @@
       </div>
     </header>
 
-    <header id="header" class="header d-flex align-items-center sticky-top">
-      <div
-        class="container-fluid container-l position-relative d-flex align-items-center"
-      >
-      <a href="../index.html" class="logo d-flex align-items-center me-auto">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <img src="../assets/img/logo.png" alt="SecureFile" />
-        <h1 class="sitename">Secure</h1>
-        <h1 class="accented">File</h1>
-      </a></div>
-    </header>
-
     <main class="main">
       <!-- sent Section -->
       <section id="sent" class="sent section light-background">
         <div class="container">
           <div class="row align-items-center justify-content-center">
             <div
-              class="col-lg-4 col-md-6"
+              class="col-lg-5 col-md-6 text-center"
               data-aos="fade-up"
               data-aos-delay="100"
             >
               <div class="sent-box item-cyan position-relative">
-                <div class="icon-wrapper">
-                  <i class="fas fa-check icon flex-shrink-0"></i>
-                </div>
-                <h3 class="title">Verification Link Sent</h3>
+                <img
+                  class="w-50 img-fluid mb-3"
+                  src="../assets/img/light-logo.svg"
+                  alt="SecureFile"
+                />
+                <h3 class="title">Verify Your Login Attempt</h3>
                 <p>
-                  We've sent an email to <strong id="email">your email</strong>.
-                  Please check your inbox to verify your identity.
+                  We noticed a login attempt to your account. For your security,
+                  please verify it by clicking the button below:
                 </p>
                 <div>
-                  <a href="https://mail.google.com/">
+                  <a href="">
                     <button type="button" class="btn-primary">
-                      See My Email
+                      Verify Login
                     </button></a
                   >
                 </div>
                 <br />
                 <p>
-                  Can't find the email? Check your <strong>spam</strong> folder,
-                  or click the button below to signin again.
+                  This link will expire in <strong>10 minutes</strong>. If you
+                  didn't attempt to log in, please secure your account by
+                  changing your password immediately.
                 </p>
-                <div>
-                  <button
-                    type="button"
-                    onclick="window.location.href='login'"
-                    class="btn-cancel"
-                  >
-                    Signin Again
-                  </button>
-                </div>
               </div>
+              <br />
+              <p class="text-center fs-12 color-gray">
+                You received this email because a login attempt was made for
+                your account at SECUREFILE. If you didn't request this, please
+                ignore this email.
+              </p>
             </div>
           </div>
           <!-- End Service Item -->
@@ -131,16 +119,6 @@
       </section>
       <!-- login Section -->
     </main>
-
-    <script>
-      // Parse query parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get("email");
-      if (email) {
-        const emailElement = document.getElementById("email");
-        emailElement.textContent = email;
-      }
-    </script>
 
     <!-- Scroll Top -->
     <a
