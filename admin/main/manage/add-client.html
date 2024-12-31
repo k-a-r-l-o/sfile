@@ -7,9 +7,9 @@
     <link
       rel="shortcut icon"
       type="image/png"
-      href="../../assets/img/logo.png"
+      href="../../../assets/img/logo.png"
     />
-    <link rel="stylesheet" href="../../assets/css/styles.min.css" />
+    <link rel="stylesheet" href="../../../assets/css/styles.min.css" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/tabler-icons@1.30.1/dist/tabler-icons.min.css"
@@ -34,8 +34,8 @@
           <div
             class="brand-logo d-flex align-items-center justify-content-between"
           >
-            <a href="./index.html" class="text-nowrap logo-img">
-              <img src="../../assets/img/light-logo-admin.svg" alt="" />
+            <a href="../index.html" class="text-nowrap logo-img">
+              <img src="../../../assets/img/light-logo-admin.svg" alt="" />
             </a>
             <div
               class="close-btn d-xl-none d-block sidebartoggler cursor-pointer"
@@ -52,7 +52,7 @@
                 <span class="hide-menu">Home</span>
               </li>
               <li class="sidebar-item">
-                <a class="sidebar-link" href="./" aria-expanded="false">
+                <a class="sidebar-link" href="../" aria-expanded="false">
                   <span>
                     <iconify-icon
                       icon="solar:home-smile-bold-duotone"
@@ -63,7 +63,7 @@
                 </a>
               </li>
               <li class="sidebar-item">
-                <a class="sidebar-link" href="./logs" aria-expanded="false">
+                <a class="sidebar-link" href="../logs" aria-expanded="false">
                   <span>
                     <iconify-icon
                       icon="solar:layers-minimalistic-bold-duotone"
@@ -78,7 +78,7 @@
                 <span class="hide-menu">User Management</span>
               </li>
               <li class="sidebar-item">
-                <a class="sidebar-link" href="./admin" aria-expanded="false">
+                <a class="sidebar-link" href="../admin" aria-expanded="false">
                   <span>
                     <iconify-icon
                       icon="solar:user-rounded-bold-duotone"
@@ -89,7 +89,7 @@
                 </a>
               </li>
               <li class="sidebar-item">
-                <a class="sidebar-link" href="./client" aria-expanded="false">
+                <a class="sidebar-link" href="../client" aria-expanded="false">
                   <span>
                     <iconify-icon
                       icon="solar:user-rounded-bold"
@@ -138,7 +138,7 @@
                     aria-expanded="false"
                   >
                     <img
-                      src="../../assets/images/profile/user-1.jpg"
+                      src="../../../assets/images/profile/user-1.jpg"
                       alt=""
                       width="35"
                       height="35"
@@ -158,7 +158,7 @@
                         <p class="mb-0 fs-3">My Profile</p>
                       </a>
                       <a
-                        href="../session/signout.php"
+                        href="../../../session/signout.php"
                         class="btn btn-outline-primary mx-3 mt-2 d-block"
                         >Logout</a
                       >
@@ -172,81 +172,74 @@
         <!--  Header End -->
         <div class="container-fluid">
           <div class="row">
-            <h3 class="col-lg-8">Administrators</h3>
-            <div class="col-lg-4 text-end">
-              <form class="mb-2">
-                <input
-                  type="search"
-                  class="form-control"
-                  name="searchadmin"
-                  id="searchadmin"
-                  placeholder="Search User"
-                />
-              </form>
-            </div>
-            <div class="col-lg-10 text-start">
-              <button onclick="window.location.href='manage/add-admin'" type="button" class="btn btn-primary mt-2 mb-2 fs-3">
-                <i class="ti ti-plus"></i> New Administrator
-              </button>
-            </div>
-            <div class="col-lg-2 text-end">
-              <form class="mt-2 mb-2">
-                <select
-                  title="Filter by Status"
-                  name="status-filter"
-                  id="status-filter"
-                  class="form-select text-start"
-                  onchange="applyStatusFilter()"
-                >
-                  <option value="">All Status</option>
-                  <option value="Online">Online</option>
-                  <option value="Offline">Offline</option>
-                </select>
-              </form>
-            </div>
-            <!-- Table -->
+            <h3 class="col-lg-8">Adding New Client</h3>
+
+            <!-- Form -->
             <div class="col-lg-12">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title">User Accounts</h5>
-                  <div class="table-responsive">
-                    <table class="table text-nowrap align-middle mb-0">
-                      <thead>
-                        <tr
-                          class="border-2 border-bottom border-primary border-0"
-                        >
-                          <th scope="col" class="ps-0">ID</th>
-                          <th scope="col" class="ps-0">Name</th>
-                          <th scope="col" class="ps-0">Email Address</th>
-                          <th scope="col" class="ps-0">Status</th>
-                          <th scope="col" class="ps-0">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody class="table-group-divider">
-                        <tr>
-                          <th scope="row" class="ps-0">2024000</th>
-                          <td class="ps-0">Karl Cornejo</td>
-                          <td class="ps-0">kocornejo00294@usep.edu.ph</td>
-                          <td class="ps-0">Online</td>
-                          <td class="ps-0">
-                            <button
-                              type="button"
-                              class="btn btn-sm btn-icon text-primary"
-                              title="Edit"
-                            >
-                              <i class="ti ti-edit fs-4"></i>
-                            </button>
-                            <button
-                              type="button"
-                              class="btn btn-sm btn-icon text-danger"
-                              title="Delete"
-                            >
-                              <i class="ti ti-trash fs-4"></i>
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <h5 class="card-title fw-semibold mb-4">
+                    User's Information
+                  </h5>
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="alert d-none" id="error" role="alert">
+                        An unknown error occurred. Please try again.
+                      </div>
+                      <form action="add-client.php" method="POST">
+                        <div class="mb-3">
+                          <label for="email" class="form-label"
+                            >Email Address</label
+                          >
+                          <input
+                            type="email"
+                            class="form-control"
+                            name="email"
+                            id="email"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label for="firstname" class="form-label"
+                            >First Name</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="firstname"
+                            id="firstname"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label for="lastname" class="form-label"
+                            >Last Name</label
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="lastname"
+                            id="lastname"
+                            required
+                          />
+                        </div>
+                        <div class="mb-3">
+                          <label for="role" class="form-label">Role</label>
+                          <select
+                            title="Role"
+                            name="role"
+                            id="role"
+                            class="form-select"
+                          >
+                            <option value="Head">Head</option>
+                            <option value="Employee">Employee</option>
+                          </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                          Submit
+                        </button>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -258,13 +251,54 @@
         </div>
       </div>
     </div>
-    <script src="../../assets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="../../assets/libs/simplebar/dist/simplebar.js"></script>
-    <script src="../../assets/js/sidebarmenu.js"></script>
-    <script src="../../assets/js/app.min.js"></script>
-    <script src="../../assets/js/dashboard.js"></script>
+    <script>
+      // Parse query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+
+      if (error) {
+        const messagetext = document.getElementById("error");
+        let message = "";
+
+        // Map error types to messages
+        switch (error) {
+          case "none":
+            message = "User successfully added.";
+            break;
+          case "email_exists":
+            message = "The email is already in use. Please use another email.";
+            break;
+          case "server_error":
+            message =
+              "An error occurred on the server. Please try again later.";
+            break;
+          case "missing_fields":
+            message = "Please fill in all required fields.";
+            break;
+          default:
+            message = "An unknown error occurred. Please try again.";
+        }
+
+        // Update the alert with the message and show it
+        messagetext.textContent = message;
+        messagetext.classList.remove("d-none");
+
+        // Remove previous alert classes and apply the correct one
+        if (error === "none") {
+          messagetext.classList.add("alert-success");
+        } else {
+          messagetext.classList.add("alert-danger");
+        }
+      }
+    </script>
+
+    <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="../../../assets/libs/simplebar/dist/simplebar.js"></script>
+    <script src="../../../assets/js/sidebarmenu.js"></script>
+    <script src="../../../assets/js/app.min.js"></script>
+    <script src="../../../assets/js/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   </body>
 </html>

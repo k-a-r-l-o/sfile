@@ -44,7 +44,8 @@ try {
         user_role VARCHAR(50) NOT NULL,
         user_img_url VARCHAR(255),
         user_public_key VARCHAR(255) NULL,
-        user_status TINYINT(1) DEFAULT 1
+        user_status TINYINT(1) DEFAULT 1,
+        INDEX idx_user_email (user_email)
     ) AUTO_INCREMENT=2024000;");
     error_log('Table tb_admin_userdetails created successfully.');
 } catch (PDOException $e) {
@@ -64,7 +65,8 @@ try {
         user_role VARCHAR(50) NOT NULL,
         user_img_url VARCHAR(255),
         user_public_key VARCHAR(255) NULL,
-        user_status TINYINT(1) DEFAULT 1
+        user_status TINYINT(1) DEFAULT 1,
+        INDEX idx_user_email (user_email)
     );");
     error_log('Table tb_client_userdetails created successfully.');
 } catch (PDOException $e) {
@@ -207,7 +209,7 @@ foreach ($users as $user) {
         $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
         $logStmt->execute([
             ':doer' => 'System',
-            ':action' => "User {$user['user_fname']} {$user['user_lname']} added"
+            ':action' => "Administrator user {$user['user_id']} added successfully."
         ]);
         error_log("Log for user {$user['user_fname']} {$user['user_lname']} added successfully.");
     } catch (PDOException $e) {
@@ -295,7 +297,7 @@ foreach ($client_users as $client_users) {
         $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
         $logStmt->execute([
             ':doer' => 'System',
-            ':action' => "User {$client_users['user_fname']} {$client_users['user_lname']} added"
+            ':action' => "Client user {$user['user_id']} added successfully."
         ]);
         error_log("Log for user {$client_users['user_fname']} {$client_users['user_lname']} added successfully.");
     } catch (PDOException $e) {
