@@ -785,6 +785,72 @@ p {
   font-size: 14px;
 }
 
+.storage-indicator {  
+  padding: 15px;   
+  font-family: Arial, sans-serif;  
+  color: #333;  
+  width: 95%;
+  margin: 325px auto;
+}  
+
+.storage-header {  
+  display: flex;  
+  align-items: center; 
+  font-size: 16px; 
+}  
+
+.storage-icon {  
+  font-size: 20px; 
+  margin-right: 8px; 
+  color: #007bff; 
+}
+
+.storage-status {  
+  font-weight: bold; 
+}  
+
+.progress-bar {  
+  background-color: #ccc; 
+  border-radius: 4px; 
+  height: 8px;  
+  margin: 8px 0; 
+  overflow: hidden; 
+}  
+
+.progress {  
+  height: 8px;  
+  transition: width 0.3s ease;  
+}  
+
+.storage-usage {  
+  font-size: 14px;
+  color: #666; 
+}
+
+.file-count {  
+  font-size: 14px;  
+  color: #666;
+  margin-top: 4px; 
+} 
+
+.storage-status-indicator {
+  padding: 15px; 
+  width: 92%;
+  margin: 0 auto;
+}
+
+.storage-status-indicator .storage-text {
+  font-size: 15px;
+  color: #333; 
+  margin-bottom: 5px; 
+}
+
+.storage-status-indicator .progress-bar {
+  height: 20px;
+  background-color: #4caf50;
+  border-radius: 5px;
+  transition: width 0.3s;
+}
 /* ===================== Profile Setting ===================== */
 .profile-settings {
   max-width: 90%;
