@@ -2,7 +2,7 @@
 session_start(); // Start the session
 require_once 'config/database.php';
 
-if (isset($_SESSION['user_id'])) {
+if (isset($_SESSION['client_user_id'])) {
     try {
         $db = new Database();
         $conn = $db->getConnection();
