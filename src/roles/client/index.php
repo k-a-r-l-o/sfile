@@ -69,6 +69,19 @@
                     </a>
                 </li>
             </ul>
+
+            <div class="storage-indicator" id="storage-indicator">  
+                <div class="storage-header">  
+                <span class="storage-icon"><i class="fas fa-hdd"></i></span>
+                    <span class="storage-status">Storage (0% full)</span>  
+                </div>  
+                <div class="progress-bar">  
+                    <div class="progress" style="width: 0%;"></div>  
+                </div>  
+                <span class="storage-usage">0.00 GB of 2 GB used</span><br>  
+                <span class="file-count" id="file-count">Total Files: 0</span>   
+            </div>
+
         </div>
 
         <!-- ========================= Main ==================== -->
