@@ -58,6 +58,7 @@
           <img src="../../assets/img/logo.png" alt="SecureFile" />
           <h1 class="sitename">Secure</h1>
           <h1 class="accented">File</h1>
+          <h1 class="accented">Administrator</h1>
         </a>
 
         <nav id="navmenu" class="navmenu">
@@ -73,47 +74,98 @@
       >
         <div class="container-fluid vh-100">
           <div class="row gy-4">
+            <!-- Add a hamburger menu button -->
+            <button id="sidebar-toggle" class="hamburger-menu d-lg-none">
+              <i class="fas fa-bars"></i>
+            </button>
+
             <!-- Sidebar Section -->
             <div class="col-lg-3 sidebar vh-100">
               <a
                 href="../../index.html"
                 class="logo d-flex align-items-center me-auto"
-              >
-                <!-- Uncomment the line below if you also wish to use an image logo -->
-                <img src="../../assets/img/logo.png" alt="SecureFile" />
-                <h1 class="sitename">Secure</h1>
-                <h1 class="accented">File</h1>
-              </a>
-              <ul class="sidebar-nav flex-grow-1">
+              >  
+                <img src="../../assets/img/logo.png" alt="SecureFile" />  
+                <span><h1 class="sitename accented">SecureFile</h1>  
+                  <span class="role">Administrator</span></span>
+              </a> 
+              <ul class="sidebar-nav flex-grow-1 dark-bakground">
                 <li>
-                  <a href="#dashboard"
-                    ><i class="fas fa-tachometer-alt"></i> Dashboard</a
-                  >
+                  <a href="#profile" class="active"><i class="fas fa-shapes"></i> Dashboard </a>
                 </li>
-                <li>
-                  <a href="#profile"><i class="fas fa-user"></i> Profile</a>
-                </li>
-                <li>
-                  <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
+                <li class="dropdown" id="user-management">  
+                  <a href="#user-management" id="user-management-toggle" class="dropdown-toggle">  
+                    <i class="fas fa-user"></i> User Management </a>  
+                  <ul class="dropdown-menu" id="user-management-menu">  
+                    <li><a href="#admin"> Administrator </a></li>  
+                    <li><a href="#users"> Head & Employee </a></li>  
+                  </ul>  
+                </li>  
+                <li id="activity-logs" class="activity-logs">  
+                  <a href="#activitylogs"><i class="fas fa-chart-line"></i> Activity Logs</a>  
                 </li>
               </ul>
               <ul class="sidebar-nav flex-grow-0">
                 <li>
                   <a href="#logout"
-                    ><i class="fas fa-sign-out-alt"></i> Logout</a
-                  >
+                    ><i class="fas fa-sign-out-alt"></i> Logout </a>
                 </li>
               </ul>
             </div>
 
-            <!-- Main Content Section -->
-            <div class="col-lg-9 main-content vh-100">
-              <div class="row gy-4">
-                <div class="col-lg-10">search</div>
-                <div class="col-lg-2">profile</div>
-              </div>
-              <div class="main-content-wrapper">content</div>
+            <!-- Main Content Section -->  
+            <div class="col-lg-9 main-content vh-100">  
+              <div class="row gy-4">  
+                <div class="col-lg-10">  
+                  <div class="search-bar">  
+                    <i class="fas fa-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>  
+                    <input  
+                      type="text"  
+                      class="form-control"  
+                      placeholder="Search"  
+                      aria-label="Search"  
+                    />  
+                  </div>  
+                </div>  
+                <div class="col-lg-2">  
+                  <div class="dropdown">  
+                    <button  
+                      class="btn dropdown-toggle p-0"  
+                      type="button"  
+                      id="profileDropdown"  
+                      data-bs-toggle="dropdown"  
+                      aria-expanded="false"  
+                    >  
+                      <img  
+                        src="../../../assets/img/team/team-1.png"  
+                        alt="Profile Picture"  
+                        class="rounded-circle"  
+                        style="width: 40px; height: 40px;"  
+                      /> Karl Cornejo
+                    </button>  
+                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">    
+                      <li><a class="dropdown-item" href="#accountSettings">Profile Settings</a></li> 
+                      <li><a class="dropdown-item" href="#logout">Logout</a></li>  
+                    </ul>  
+                  </div>  
+                </div>  
+              </div>  
+              <div class="main-content-wrapper">
+                <h2>Welcome to the SecureFile Dashboard</h2>
+                <p>This is your central hub for managing users, monitoring activity logs, and accessing administrative tools.</p>
+                <div class="dashboard-stats">
+                  <div class="stat-item">
+                    <h3>Users</h3>
+                    <p>120 Active Users</p>
+                  </div>
+                  <div class="stat-item">
+                    <h3>Activity Logs</h3>
+                    <p>350 Logs Recorded</p>
+                  </div>
+                </div>
+              </div>  
             </div>
+
           </div>
         </div>
       </section>
@@ -139,8 +191,54 @@
     <script src="../../assets/vendor/swiper/swiper-bundle.min.js"></script>
     <script src="../../assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
     <script src="../../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
     <!-- Main JS File -->
     <script src="../../assets/js/main.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        sidebarToggle.addEventListener('click', function () {
+          sidebar.classList.toggle('show');
+        });
+
+        // Optional: Close the sidebar when clicking outside of it
+        document.addEventListener('click', function (event) {
+          if (!sidebar.contains(event.target) && !sidebarToggle.contains(event.target)) {
+            sidebar.classList.remove('show');
+          }
+        });
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {  
+        const userManagementToggle = document.getElementById('user-management-toggle');  
+        const userManagementMenu = document.getElementById('user-management-menu');  
+        const activityLogs = document.getElementById('activity-logs');  
+
+        userManagementToggle.addEventListener('click', function(event) {  
+          event.preventDefault(); // Prevent default link behavior  
+          const isVisible = userManagementMenu.classList.toggle('show'); // Toggle dropdown visibility  
+
+          // Adjust the margin of Activity Logs depending on dropdown visibility  
+          if (isVisible) {  
+            activityLogs.classList.add('shifted'); // Add shifted class  
+          } else {  
+            activityLogs.classList.remove('shifted'); // Remove shifted class  
+          }  
+        });  
+
+        // Close dropdown if clicked outside  
+        document.addEventListener('click', function(event) {  
+          if (!userManagementToggle.contains(event.target) && !userManagementMenu.contains(event.target)) {  
+            userManagementMenu.classList.remove('show'); // Hide the dropdown  
+            activityLogs.classList.remove('shifted'); // Close activity logs margin  
+          }  
+        });  
+      });
+    </script>
+
   </body>
 </html>
