@@ -13,7 +13,7 @@ if (isset($_SESSION['client_user_id'])) {
              SET user_status = 'Offline' 
              WHERE user_id = :user_id"
         );
-        $updateStatusStmt->execute([':user_id' => $_SESSION['user_id']]);
+        $updateStatusStmt->execute([':user_id' => $_SESSION['client_user_id']]);
     } catch (PDOException $e) {
         error_log("Signout error: " . $e->getMessage());
         // Optionally, you can show a message or log this for further review
