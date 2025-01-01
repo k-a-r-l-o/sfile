@@ -17551,27 +17551,46 @@ body {
   height: 100vh;
 }
 
-.drop-zone {  
-  border: 2px dashed #007bff;  
-  border-radius: 5px;  
-  padding: 40px;  
-  text-align: center;  
-  transition: background-color 0.3s;  
-}  
-
-.drop-zone.hover {  
-  background-color: #f0f8ff;  
-}  
-
-#selectedFilesList {  
-  max-height: 200px; 
-  overflow-y: auto;   
+.drop-zone {
+  border: 2px dashed #007bff;
+  border-radius: 5px;
+  padding: 40px;
+  text-align: center;
+  transition: background-color 0.3s;
 }
 
-.file-display {  
-  background-color: #f9f9f9;  
-  border: 1px solid #ddd;  
-  padding: 10px;  
-  border-radius: 5px;  
-  margin-bottom: 10px;  
-}  
+.drop-zone.hover {
+  background-color: #f0f8ff;
+}
+
+#selectedFilesList {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.file-display {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Skeleton loader animation */
+.skeleton-loader {
+  height: 20px;
+  width: 100%;
+  background: linear-gradient(90deg, #f8f9fa 25%, #e9ecef 50%, #f8f9fa 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
