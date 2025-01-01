@@ -51,19 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Fetch the current user's email and role for logging purposes
         $doerUserId = $_SESSION['admin_user_id'];
-        $userStmt = $pdo->prepare("SELECT user_email, user_role FROM tb_client_userdetails WHERE user_id = :user_id");
+        $userStmt = $pdo->prepare("SELECT user_email, user_role FROM tb_admin_userdetails WHERE user_id = :user_id");
         $userStmt->bindParam(':user_id', $doerUserId);
         $userStmt->execute();
         $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
-
-        $logEmail = $userDetails['user_email'] ?? 'Unknown';
         $logRole = $userDetails['user_role'] ?? 'Unknown';
 
         // Log the edit action
-        $logAction = "$role user $Id updated name successfully.";
+        $logAction = "$role user $Id updated successfully.";
         $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
         $logStmt->execute([
-            ':doer' => $logEmail,
+            ':doer' => $doerUserId,
             ':role' => $logRole,
             ':action' => $logAction
         ]);

@@ -501,19 +501,7 @@
         fetchData();
       });
 
-      function deleteAdmin(id) {
-        if (confirm("Are you sure you want to delete this user "+id+"?")) {
-          const url = new URL("./admin.php", window.location.href);
-          url.searchParams.append("delete", id);
-          fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-              alert(data.message);
-              window.location.reload();
-            })
-            .catch((error) => console.error("Error fetching data:", error));
-        }
-      }
+      function deleteAdmin(id) {}
     </script>
 
     <script src="../../assets/libs/jquery/dist/jquery.min.js"></script>

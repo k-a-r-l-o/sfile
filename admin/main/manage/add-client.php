@@ -70,8 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userStmt->bindParam(':user_id', $doerUserId);
         $userStmt->execute();
         $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
-
-        $logEmail = $userDetails['user_email'] ?? 'Unknown';
         $logRole = $userDetails['user_role'] ?? 'Unknown';
 
         // Log the user addition
@@ -81,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (:doer, :role, :action)
         ");
         $logStmt->execute([
-            ':doer' => $logEmail,
+            ':doer' => $doerUserId,
             ':role' => $logRole,
             ':action' => $logAction
         ]);

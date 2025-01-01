@@ -53,15 +53,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userStmt->bindParam(':user_id', $doerUserId);
         $userStmt->execute();
         $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
-
-        $logEmail = $userDetails['user_email'] ?? 'Unknown';
         $logRole = $userDetails['user_role'] ?? 'Unknown';
 
         // Log the edit action
-        $logAction = "Administrator user $Id updated name successfully.";
+        $logAction = "Administrator user $Id updated successfully.";
         $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
         $logStmt->execute([
-            ':doer' => $logEmail,
+            ':doer' => $doerUserId,
             ':role' => $logRole,
             ':action' => $logAction
         ]);

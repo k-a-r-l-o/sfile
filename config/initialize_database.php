@@ -403,7 +403,7 @@ try {
         ON 
             tb_logs.doer = tb_client_userdetails.user_id
         WHERE 
-            tb_logs.role IN ('Head', 'Client')
+            tb_logs.role IN ('Head', 'Employee')
     ");
     error_log('View view_client_activity_logs created successfully.');
 } catch (PDOException $e) {
