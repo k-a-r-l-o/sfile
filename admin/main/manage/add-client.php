@@ -60,18 +60,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Commit the transaction
         $pdo->commit();
 
-        // Fetch the current user's email
-        $doerUserId = $_SESSION['client_user_id'];
-        $userStmt = $pdo->prepare("SELECT user_email FROM tb_client_userdetails WHERE user_id = :user_id");
+        // Fetch the current user's email and role
+        $doerUserId = $_SESSION['admin_user_id'];
+        $userStmt = $pdo->prepare("
+            SELECT user_email, user_role 
+            FROM tb_admin_userdetails 
+            WHERE user_id = :user_id
+        ");
         $userStmt->bindParam(':user_id', $doerUserId);
         $userStmt->execute();
-        $logEmail = $userStmt->fetchColumn() ?: 'Unknown';
+        $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
+
+        $logEmail = $userDetails['user_email'] ?? 'Unknown';
+        $logRole = $userDetails['user_role'] ?? 'Unknown';
 
         // Log the user addition
-        $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
+        $logAction = "$role user $user_id added successfully.";
+        $logStmt = $pdo->prepare("
+            INSERT INTO tb_logs (doer, role, log_action) 
+            VALUES (:doer, :role, :action)
+        ");
         $logStmt->execute([
             ':doer' => $logEmail,
-            ':action' => "$role user $user_id added successfully."
+            ':role' => $logRole,
+            ':action' => $logAction
         ]);
 
         // Return success response

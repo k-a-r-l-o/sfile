@@ -122,6 +122,7 @@ try {
         log_id INT AUTO_INCREMENT PRIMARY KEY,
         log_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         doer VARCHAR(255) NOT NULL,
+        role VARCHAR(50) NOT NULL,
         log_action VARCHAR(255) NOT NULL
     );");
     error_log('Table tb_logs created successfully.');
@@ -206,9 +207,10 @@ foreach ($users as $user) {
     // Log the action
     try {
         echo "<h2>Logging action for user: {$user['user_fname']} {$user['user_lname']}...</h2>";
-        $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
+        $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
         $logStmt->execute([
             ':doer' => 'System',
+            ':role' => 'System',
             ':action' => "Administrator user {$user['user_id']} added successfully."
         ]);
         error_log("Log for user {$user['user_fname']} {$user['user_lname']} added successfully.");
@@ -294,9 +296,10 @@ foreach ($client_users as $client_users) {
     // Log the action
     try {
         echo "<h2>Logging action for user: {$client_users['user_fname']} {$client_users['user_lname']}...</h2>";
-        $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
+        $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
         $logStmt->execute([
             ':doer' => 'System',
+            ':role' => 'System',
             ':action' => "Client user {$user['user_id']} added successfully."
         ]);
         error_log("Log for user {$client_users['user_fname']} {$client_users['user_lname']} added successfully.");
@@ -346,6 +349,90 @@ try {
 } catch (PDOException $e) {
     error_log("Error creating table tb_shared_files: " . $e->getMessage());
     echo "<h2 style='color: red;'>Error creating table tb_shared_files: " . $e->getMessage() . "</h2>";
+    exit;
+}
+
+try {
+    echo "<h2>Creating view view_admin_activity_logs...</h2>";
+    $pdo->exec("
+        CREATE VIEW view_admin_activity_logs AS
+        SELECT 
+            tb_logs.log_id AS `log_id`,
+            CONCAT(
+                COALESCE(tb_admin_userdetails.user_fname, ''), ' ', 
+                COALESCE(tb_admin_userdetails.user_lname, '')
+            ) AS `name`,
+            tb_admin_userdetails.user_email AS `email_address`,
+            tb_logs.log_date AS `date_time`,
+            tb_logs.role AS `role`,
+            tb_logs.log_action AS `activity`
+        FROM 
+            tb_logs
+        JOIN 
+            tb_admin_userdetails 
+        ON 
+            tb_logs.doer = tb_admin_userdetails.user_id
+        WHERE 
+            tb_logs.role = 'Administrator'
+    ");
+    error_log('View view_admin_activity_logs created successfully.');
+} catch (PDOException $e) {
+    error_log("Error creating view view_admin_activity_logs: " . $e->getMessage());
+    echo "<h2 style='color: red;'>Error creating view view_admin_activity_logs: " . $e->getMessage() . "</h2>";
+    exit;
+}
+
+try {
+    echo "<h2>Creating view view_client_activity_logs...</h2>";
+    $pdo->exec("
+        CREATE VIEW view_client_activity_logs AS
+        SELECT 
+            tb_logs.log_id AS `log_id`,
+            CONCAT(
+                COALESCE(tb_client_userdetails.user_fname, ''), ' ', 
+                COALESCE(tb_client_userdetails.user_lname, '')
+            ) AS `name`,
+            tb_client_userdetails.user_email AS `email_address`,
+            tb_logs.log_date AS `date_time`,
+            tb_logs.role AS `role`,
+            tb_logs.log_action AS `activity`
+        FROM 
+            tb_logs
+        JOIN 
+            tb_client_userdetails 
+        ON 
+            tb_logs.doer = tb_client_userdetails.user_id
+        WHERE 
+            tb_logs.role IN ('Head', 'Client')
+    ");
+    error_log('View view_client_activity_logs created successfully.');
+} catch (PDOException $e) {
+    error_log("Error creating view view_client_activity_logs: " . $e->getMessage());
+    echo "<h2 style='color: red;'>Error creating view view_client_activity_logs: " . $e->getMessage() . "</h2>";
+    exit;
+}
+
+
+try {
+    echo "<h2>Creating view view_system_generated_logs...</h2>";
+    $pdo->exec("
+        CREATE VIEW view_system_generated_logs AS
+        SELECT 
+            tb_logs.log_id AS `log_id`,
+            tb_logs.role AS `name`,
+            'N/A' AS `email_address`,
+            tb_logs.log_date AS `date_time`,
+            tb_logs.role AS `role`,
+            tb_logs.log_action AS `activity`    
+        FROM 
+            tb_logs
+        WHERE 
+            tb_logs.role NOT IN ('Administrator', 'Head', 'Employee')
+    ");
+    error_log('View view_system_generated_logs created successfully.');
+} catch (PDOException $e) {
+    error_log("Error creating view view_system_generated_logs: " . $e->getMessage());
+    echo "<h2 style='color: red;'>Error creating view view_system_generated_logs: " . $e->getMessage() . "</h2>";
     exit;
 }
 

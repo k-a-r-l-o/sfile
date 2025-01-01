@@ -10,10 +10,6 @@
       href="../../assets/img/logo.png"
     />
     <link rel="stylesheet" href="../../assets/css/styles.min.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/tabler-icons@1.30.1/dist/tabler-icons.min.css"
-    />
   </head>
 
   <body>
@@ -158,7 +154,7 @@
                         <p class="mb-0 fs-3">My Profile</p>
                       </a>
                       <a
-                        href="../session/signout.php"
+                      href="../session/signout.php"
                         class="btn btn-outline-primary mx-3 mt-2 d-block"
                         >Logout</a
                       >
@@ -170,19 +166,19 @@
           </nav>
         </header>
         <!--  Header End -->
+        <!-- Table of Activity Logs -->
         <div class="container-fluid">
           <div class="card">
             <div class="card-body">
               <div class="row">
                 <h3 class="col-lg-12">Activity Logs</h3>
                 <div class="col-sm-8 text-start">
-                  <button
+                  <!-- <button
                     onclick="window.location.href='manage/add-client'"
                     type="button"
-                    class="btn btn-primary my-2 fs-3"
-                  >
-                    Export
-                  </button>
+                    class="btn btn-success my-2 fs-3"
+                  > Export
+                  </button> -->
                 </div>
                 <div class="col-sm-4 text-end">
                   <form method="get" onsubmit="return false;" class="mb-2">
@@ -192,7 +188,7 @@
                       name="search"
                       id="search"
                       onchange="applyFilters()"
-                      placeholder="Search Activity"
+                      placeholder="Search User"
                     />
                   </form>
                 </div>
@@ -243,16 +239,15 @@
                     <div class="col-lg-6 text-end">
                       <form method="get" onsubmit="return false;" class="my-2">
                         <select
-                          title="Filter by Time"
-                          name="time-filter"
-                          id="time-filter"
+                          title="Filter by Status"
+                          name="status-filter"
+                          id="status-filter"
                           class="form-select text-start"
                           onchange="applyFilters()"
                         >
-                          <option value="">All Time</option>
-                          <option value="Week">This Week</option>
-                          <option value="Month">This Month</option>
-                          <option value="Year">This Year</option>
+                          <option value="">All Status</option>
+                          <option value="Online">Online</option>
+                          <option value="Offline">Offline</option>
                         </select>
                       </form>
                     </div>
@@ -264,67 +259,49 @@
               <div class="col-lg-12">
                 <div class="table-responsive my-2">
                   <table class="table text-nowrap align-middle mb-0">
-                    <thead>
-                      <tr
-                        class="border-2 border-bottom border-primary border-0"
-                      >
-                        <th scope="col" class="ps-0">Log ID</th>
-                        <th scope="col" class="ps-0">Name</th>
-                        <th scope="col" class="ps-0">Email Address</th>
-                        <th scope="col" class="ps-0">Date & Time</th>
-                        <th scope="col" class="ps-0">Role</th>
-                        <th scope="col" class="ps-0">Activity</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-group-divider" id="tableBody">
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
+                    <thead>  
+                      <tr class="border-2 border-bottom border-primary border-0">  
+                          <th scope="col" class="ps-0">Log ID</th>  
+                          <th scope="col" class="ps-0">Name</th>  
+                          <th scope="col" class="ps-0">Email Address</th>  
+                          <th scope="col" class="ps-0">Date</th>  
+                          <th scope="col" class="ps-0">Status</th>  
+                          <th scope="col" class="ps-0">Action</th>  
+                      </tr>  
+                    </thead>  
+                    <tbody class="table-group-divider">  
+                        <tr>  
+                            <th scope="row" class="ps-0">2024000</th>  
+                            <td class="ps-0">Karl Cornejo</td>  
+                            <td class="ps-0">kocornejo00294@usep.edu.ph</td>  
+                            <td class="ps-0">December 31, 2024</td>  
+                            <td class="ps-0">Online</td>  
+                            <td class="ps-0">Successfully Login</td>  
+                        </tr>  
+                        <tr>  
+                            <th scope="row" class="ps-0">2024001</th>  
+                            <td class="ps-0">Debbie Michelle Gerodias</td>  
+                            <td class="ps-0">kocornejo00294@usep.edu.ph</td>  
+                            <td class="ps-0">December 31, 2024</td>  
+                            <td class="ps-0">Online</td>  
+                            <td class="ps-0">Successfully Login</td>  
+                        </tr>  
+                        <tr>  
+                            <th scope="row" class="ps-0">2024002</th>  
+                            <td class="ps-0">Precious Lyn Suico</td>  
+                            <td class="ps-0">plmsuico00102@usep.edu.ph</td>  
+                            <td class="ps-0">December 31, 2024</td>  
+                            <td class="ps-0">Online</td>  
+                            <td class="ps-0">Successfully Login</td>  
+                        </tr>  
+                        <tr>  
+                            <th scope="row" class="ps-0">2024003</th>  
+                            <td class="ps-0">Christeline Jane Tabacon</td>  
+                            <td class="ps-0">cjmtabacon00103@usep.edu.ph</td>  
+                            <td class="ps-0">December 31, 2024</td>  
+                            <td class="ps-0">Online</td>  
+                            <td class="ps-0">Successfully Login</td>  
+                        </tr>  
                     </tbody>
                   </table>
                 </div>
@@ -393,134 +370,18 @@
               </div>
             </div>
           </div>
+          <div class="text-end mt-3">  
+            <button
+              onclick="window.location.href='manage/add-client'"
+              type="button"
+              class="btn btn-success my-2 fs-3"
+              > Export
+            </button> 
+          </div>
         </div>
+        
       </div>
     </div>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const tableBody = document.getElementById("tableBody");
-        const currentPageElementshow =
-          document.getElementById("currentPageshow");
-        const currentPageElement = document.getElementById("currentPage");
-        const totalPagesElement = document.getElementById("totalPages");
-
-        const limitFilter = document.getElementById("limit-filter");
-        const roleFilter = document.getElementById("role-filter");
-        const timeFilter = document.getElementById("time-filter");
-        const searchFilter = document.getElementById("search");
-
-        let currentPage = 1;
-        let limit = parseInt(limitFilter.value);
-        let role = roleFilter.value;
-        let time = timeFilter.value;
-        let search = searchFilter.value;
-
-        // Fetch data and populate table
-        function fetchData() {
-          const url = new URL("./logs.php", window.location.href);
-          url.searchParams.append("page", currentPage);
-          url.searchParams.append("limit", limit);
-          if (role) url.searchParams.append("role", role);
-          if (time) url.searchParams.append("time", time);
-          if (search) url.searchParams.append("search", search);
-
-          fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-              populateTable(data.data);
-              updatePagination(data.pagination);
-            })
-            .catch((error) => console.error("Error fetching data:", error));
-        }
-
-        // Populate table rows
-        function populateTable(logs) {
-          tableBody.innerHTML = ""; // Clear existing rows
-          logs.forEach((log) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${log.log_id}</td>
-              <td>${log.name}</td>
-              <td>${log.email_address}</td>
-              <td>${formatDateTime(log.date_time)}</td>
-              <td>${log.role}</td>
-              <td>${log.activity}</td>
-            `;
-            tableBody.appendChild(row);
-          });
-        }
-
-        function formatDateTime(dateTime) {
-          const date = new Date(dateTime);
-          const options = {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: true,
-          };
-          return date.toLocaleString("en-US", options);
-        }
-
-        // Update pagination
-        function updatePagination(pagination) {
-          currentPageElementshow.textContent = pagination.current_page;
-          currentPageElement.value = pagination.current_page;
-          totalPagesElement.textContent = pagination.total_pages;
-          currentPageElement.max = pagination.total_pages;
-
-          document.getElementById("prevButton").disabled =
-            pagination.current_page <= 1;
-          document.getElementById("nextButton").disabled =
-            pagination.current_page >= pagination.total_pages;
-        }
-
-        // Apply filters
-        function applyFilters() {
-          limit = parseInt(limitFilter.value);
-          role = roleFilter.value;
-          time = timeFilter.value;
-          search = searchFilter.value;
-          currentPage = 1; // Reset to first page on filter change
-          fetchData();
-        }
-
-        // Navigate pages
-        function navigatePage(direction) {
-          if (direction === "prev" && currentPage > 1) {
-            currentPage--;
-          } else if (direction === "next") {
-            currentPage++;
-          } else if (direction === "custom") {
-            currentPage = currentPageElement.value;
-            if (currentPage > totalPagesElement.textContent) {
-              return;
-            }
-          }
-          fetchData();
-        }
-
-        // Event listeners for filters and pagination
-        limitFilter.addEventListener("change", applyFilters);
-        roleFilter.addEventListener("change", applyFilters);
-        timeFilter.addEventListener("change", applyFilters);
-        searchFilter.addEventListener("change", applyFilters);
-        document
-          .getElementById("prevButton")
-          .addEventListener("click", () => navigatePage("prev"));
-        document
-          .getElementById("nextButton")
-          .addEventListener("click", () => navigatePage("next"));
-        document
-          .getElementById("goButton")
-          .addEventListener("click", () => navigatePage("custom"));
-        // Initial fetch
-        fetchData();
-      });
-    </script>
-
     <script src="../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
