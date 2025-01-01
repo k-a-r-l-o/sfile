@@ -443,8 +443,8 @@
               <td>${user.user_role}</td>
               <td>${user.user_status}</td>
               <td>
-                <button class="btn btn-primary btn-sm">Edit</button>
-                <button class="btn btn-danger btn-sm">Delete</button>
+                <button onclick="window.location.href='manage/edit-client?id=${user.user_id}&fname=${user.user_fname}&lname=${user.user_lname}&email=${user.user_email}&role=${user.user_role}'" class="btn btn-primary btn-sm">Edit</button>
+                <button onclick="deleteClient('${user.user_id}')" class="btn btn-danger btn-sm">Delete</button>
               </td>
             `;
             tableBody.appendChild(row);
