@@ -38,7 +38,7 @@ if (isset($_GET['token'])) {
             $logRole = $user['user_role'];
 
             // Log the edit action
-            $logAction = "Successfully logged in.";
+            $logAction = "Signed in successfully.";
             $logStmt = $conn->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
             $logStmt->execute([
                 ':doer' => $doerUserId,

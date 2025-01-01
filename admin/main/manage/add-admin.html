@@ -286,7 +286,33 @@
         }
       }
     </script>
+    <script>
+      (function () {
+        const checkSession = () => {
+          fetch("../../session/sessioncheck.php", {
+            method: "GET",
+            credentials: "include", // Include cookies with the request
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (!data.sessionValid) {
+                // Redirect to the logout script if the session is invalid
+                window.location.href = "../../login?error=session_expired";
+              }
+            })
+            .catch((err) => {
+              console.error("Error checking session:", err);
+              // Handle fetch errors if needed
+            });
+        };
 
+        // Check the session every 5 minutes (300,000 milliseconds)
+        setInterval(checkSession, 300000);
+
+        // Also check the session immediately when the script is loaded
+        checkSession();
+      })();
+    </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
