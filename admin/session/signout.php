@@ -29,7 +29,7 @@ if (isset($_SESSION['admin_user_id'])) {
 
         // Log the user addition
         $logAction = "Signed out successfully.";
-        $logStmt = $pdo->prepare("
+        $logStmt = $conn->prepare("
             INSERT INTO tb_logs (doer, role, log_action) 
             VALUES (:doer, :role, :action)
         ");
