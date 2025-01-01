@@ -1,6 +1,6 @@
 <?php
 session_start(); // Start the session
-require_once 'config/database.php';
+require_once '../../config/database.php';
 
 if (isset($_SESSION['client_user_id'])) {
     try {
