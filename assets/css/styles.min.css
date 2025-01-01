@@ -17594,3 +17594,17 @@ body {
     background-position: -200% 0;
   }
 }
+
+.tab-button {  
+  border: none;  
+  background: none;  
+  padding: 10px 10px;  
+  cursor: pointer;  
+  color: #768b9e;  
+}  
+
+.tab-button.active {  
+  border-bottom: 2px solid #007bff;
+  font-weight: bold;  
+  color: #007bff;  
+}  
