@@ -23,7 +23,7 @@ if (isset($_GET['token'])) {
             // Clear token to prevent reuse
             $clearTokenStmt = $conn->prepare(
                 "UPDATE tb_client_logindetails 
-                 SET token = NULL, token_expiration = NULL, verified = 1, user_status = 'Online' 
+                 SET token = NULL, token_expiration = NULL, verified = 1, user_status = 'Online', user_log = NOW() 
                  WHERE user_id = :user_id"
             );
             $clearTokenStmt->execute([':user_id' => $user['user_id']]);

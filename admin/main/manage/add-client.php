@@ -106,13 +106,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userStmt = $pdo->prepare("SELECT user_email FROM tb_client_userdetails WHERE user_id = :user_id");
         $userStmt->bindParam(':user_id', $doerUserId);
         $userStmt->execute();
-        $logEmail = $userStmt->fetchColumn() ?: 'Unknown';
+        $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
+        $logRole = $userDetails['user_role'] ?? 'Unknown';
 
         // Log the user addition
-        $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, log_action) VALUES (:doer, :action)");
+        $logAction = "$role user $user_id added successfully.";
+        $logStmt = $pdo->prepare("
+            INSERT INTO tb_logs (doer, role, log_action) 
+            VALUES (:doer, :role, :action)
+        ");
         $logStmt->execute([
-            ':doer' => $logEmail,
-            ':action' => "$role user $user_id added successfully."
+            ':doer' => $doerUserId,
+            ':role' => $logRole,
+            ':action' => $logAction
         ]);
 
         // Return success response

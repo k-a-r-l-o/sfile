@@ -23,7 +23,7 @@ if (isset($_GET['token'])) {
             // Clear token to prevent reuse
             $clearTokenStmt = $conn->prepare(
                 "UPDATE tb_admin_logindetails 
-                 SET token = NULL, token_expiration = NULL, verified = 1, user_status = 'Online' 
+                 SET token = NULL, token_expiration = NULL, verified = 1, user_status = 'Online', user_log = NOW() 
                  WHERE user_id = :user_id"
             );
             $clearTokenStmt->execute([':user_id' => $user['user_id']]);
@@ -33,6 +33,18 @@ if (isset($_GET['token'])) {
             $_SESSION['admin_role'] = $user['user_role'];
             $_SESSION['admin_token'] = $token;
 
+            // Fetch the current user's email and role for logging purposes
+            $doerUserId = $_SESSION['admin_user_id'];
+            $logRole = $user['user_role'];
+
+            // Log the edit action
+            $logAction = "Signed in successfully.";
+            $logStmt = $conn->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
+            $logStmt->execute([
+                ':doer' => $doerUserId,
+                ':role' => $logRole,
+                ':action' => $logAction
+            ]);
             // Redirect based on role
             header("Location: ../verification-success");
             exit();

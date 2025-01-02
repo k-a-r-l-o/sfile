@@ -11,6 +11,7 @@ if (isset($_SESSION['client_user_id'])) {
         $updateStatusStmt = $conn->prepare(
             "UPDATE tb_client_logindetails 
              SET user_status = 'Offline' 
+                 user_log = NULL, 
              WHERE user_id = :user_id"
         );
         $updateStatusStmt->execute([':user_id' => $_SESSION['client_user_id']]);

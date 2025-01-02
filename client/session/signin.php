@@ -30,16 +30,18 @@ function sendLoginVerificationEmail($email, $token)
             <title>SecureFile</title>
         </head>
 
-        <body style=\"font-family: 'Roboto', Arial, sans-serif; margin: 0; padding: 0;\">
-            <div style=\"width: 75%; margin: auto; padding: 20px; background: #f9f9f9;\">
-            <main>
-                <section style=\"background: #ffffff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\">
-                <div style=\"text-align: center;\">
-                    <img
+        <body style=\"font-family: 'Roboto', Arial, sans-serif; max-width: 600px margin: 0; padding: 0;\">
+            <div style=\"max-width: 600px; border-radius: 10px; margin: auto; padding: 20px; background: #f9f9f9;\">
+                <img
                     src='https://sfile.site/assets/img/light-logo.png'
                     alt='SecureFile'
                     style=\"width: 50%; max-width: 150px; margin-bottom: 20px;\"
-                    />
+                />
+                <br />
+                <main>
+                <section style=\"background: #ffffff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);\">
+                <div style=\"text-align: center;\">
+                    
                     <h3 style=\"margin: 0 0 10px; font-size: 24px; color: #333;\">Verify Your Login Attempt</h3>
                     <p style=\"color: #666; font-size: 14px; line-height: 1.6;\">
                     We noticed a login attempt to your account. For your security,
