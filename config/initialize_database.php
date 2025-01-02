@@ -43,7 +43,6 @@ try {
         user_email VARCHAR(255) NOT NULL,
         user_role VARCHAR(50) NOT NULL,
         user_img_url VARCHAR(255),
-        user_public_key VARCHAR(255) NULL,
         user_status TINYINT(1) DEFAULT 1,
         INDEX idx_user_email (user_email)
     ) AUTO_INCREMENT=2024000;");
@@ -64,7 +63,6 @@ try {
         user_email VARCHAR(255) NOT NULL,
         user_role VARCHAR(50) NOT NULL,
         user_img_url VARCHAR(255),
-        user_public_key VARCHAR(255) NULL,
         user_status TINYINT(1) DEFAULT 1,
         INDEX idx_user_email (user_email)
     );");
@@ -317,10 +315,8 @@ try {
         file_id INT AUTO_INCREMENT PRIMARY KEY,
         owner_id INT NOT NULL,
         encrypted_key VARCHAR(255) NOT NULL,
-        name VARCHAR(255) NOT NULL,
+        name VARCHAR(100) NOT NULL UNIQUE,
         size VARCHAR(50) NOT NULL,
-        path VARCHAR(255) NOT NULL,
-        upload_date DATETIME NOT NULL,
         status TINYINT(1) DEFAULT 1,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
