@@ -26,6 +26,10 @@ if (isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_us
         }
     }
     echo json_encode(['sessionValid' => true]);
+    exit;
 } else {
     echo json_encode(['sessionValid' => false]);
+    exit;
 }
+header("Location: ../login");
+exit;

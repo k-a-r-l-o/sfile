@@ -26,6 +26,10 @@ if (isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client
         }
     }
     echo json_encode(['sessionValid' => true]);
+    exit;
 } else {
     echo json_encode(['sessionValid' => false]);
+    exit;
 }
+header("Location: ../login");
+exit;
