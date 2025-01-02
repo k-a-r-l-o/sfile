@@ -16,7 +16,7 @@ if (isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client
             $updateStatusStmt = $conn->prepare(
                 "UPDATE tb_client_logindetails 
              SET user_status = 'Online' 
-                 user_logout = NOW(),
+                 user_log = NOW(),
              WHERE user_id = :user_id"
             );
             $updateStatusStmt->execute([':user_id' => $_SESSION['client_user_id']]);
