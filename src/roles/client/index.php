@@ -487,7 +487,7 @@
                             method: 'POST',
                             body: formData,
                         });
-
+                        
                         const result = await response.json();
                         if (result.status === 'success') {
                             successfulUploads++;
@@ -535,7 +535,7 @@
                             reject(result.message); // Reject the promise if there's an error
                         }
                     } catch (error) {
-                        console.error('Upload failed:', error);
+                        console.error('Upload failed:', fileObj.file.name, error);
                         reject(error); // Reject the promise if there's an error
                     }
                 });
