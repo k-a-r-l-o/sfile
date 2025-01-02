@@ -10,7 +10,8 @@ if (isset($_SESSION['admin_user_id'])) {
         // Mark user as "Offline"
         $updateStatusStmt = $conn->prepare(
             "UPDATE tb_admin_logindetails 
-             SET user_status = 'Offline' 
+             SET user_status = 'Offline', 
+                 user_log = NULL, 
              WHERE user_id = :user_id"
         );
         $updateStatusStmt->execute([':user_id' => $_SESSION['admin_user_id']]);

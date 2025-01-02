@@ -10,6 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Database connection failed: " . $e->getMessage());
         echo "<h2 style='color: red;'>Database connection failed: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -21,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating database: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating database: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -31,6 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error selecting database: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error selecting database: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -51,6 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating table tb_admin_userdetails: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating table tb_admin_userdetails: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -71,6 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating table tb_client_userdetails: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating table tb_client_userdetails: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -81,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         user_id INT AUTO_INCREMENT PRIMARY KEY,
         password VARCHAR(255) NOT NULL,
         user_status VARCHAR(255) NULL DEFAULT 'Offline',
-        user_log VARCHAR(255) NULL,
+        user_log DATETIME NULL,
         token VARCHAR(255) NULL,
         verified TINYINT(1) DEFAULT 0,
         token_expiration DATETIME NULL,
@@ -91,6 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating table tb_admin_logindetails: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating table tb_admin_logindetails: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -101,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         user_id INT AUTO_INCREMENT PRIMARY KEY,
         password VARCHAR(255) NOT NULL,
         user_status VARCHAR(255) NULL DEFAULT 'Offline',
-        user_log VARCHAR(255) NULL,
+        user_log DATETIME NULL,
         token VARCHAR(255) NULL,
         verified TINYINT(1) DEFAULT 0,
         token_expiration DATETIME NULL, 
@@ -111,6 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating table tb_client_logindetails: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating table tb_client_logindetails: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -128,6 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating table tb_logs: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating table tb_logs: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -183,6 +199,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             error_log("Error inserting user {$user['user_fname']} {$user['user_lname']} into tb_admin_userdetails: " . $e->getMessage());
             echo "<h2 style='color: red;'>Error inserting user: " . $e->getMessage() . "</h2>";
+            $errortext = $e->getMessage();
+            header("Location: initialize_database?error=$errortext");
             exit;
         }
 
@@ -200,6 +218,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             error_log("Error inserting login details for user {$user['user_fname']} {$user['user_lname']}: " . $e->getMessage());
             echo "<h2 style='color: red;'>Error inserting login details: " . $e->getMessage() . "</h2>";
+            $errortext = $e->getMessage();
+            header("Location: initialize_database?error=$errortext");
             exit;
         }
 
@@ -216,6 +236,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             error_log("Error logging action for user {$user['user_fname']} {$user['user_lname']}: " . $e->getMessage());
             echo "<h2 style='color: red;'>Error logging action: " . $e->getMessage() . "</h2>";
+            $errortext = $e->getMessage();
+            header("Location: initialize_database?error=$errortext");
             exit;
         }
     }
@@ -272,6 +294,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             error_log("Error inserting user {$client_users['user_fname']} {$client_users['user_lname']} into tb_client_userdetails: " . $e->getMessage());
             echo "<h2 style='color: red;'>Error inserting user: " . $e->getMessage() . "</h2>";
+            $errortext = $e->getMessage();
+            header("Location: initialize_database?error=$errortext");
             exit;
         }
 
@@ -289,6 +313,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             error_log("Error inserting login details for user {$client_users['user_fname']} {$client_users['user_lname']}: " . $e->getMessage());
             echo "<h2 style='color: red;'>Error inserting login details: " . $e->getMessage() . "</h2>";
+            $errortext = $e->getMessage();
+            header("Location: initialize_database?error=$errortext");
             exit;
         }
 
@@ -305,6 +331,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             error_log("Error logging action for user {$client_users['user_fname']} {$client_users['user_lname']}: " . $e->getMessage());
             echo "<h2 style='color: red;'>Error logging action: " . $e->getMessage() . "</h2>";
+            $errortext = $e->getMessage();
+            header("Location: initialize_database?error=$errortext");
             exit;
         }
     }
@@ -327,6 +355,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating table tb_files: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating table tb_files: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -376,6 +406,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating view view_admin_activity_logs: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating view view_admin_activity_logs: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -406,6 +438,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating view view_client_activity_logs: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating view view_client_activity_logs: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -430,6 +464,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         error_log("Error creating view view_system_generated_logs: " . $e->getMessage());
         echo "<h2 style='color: red;'>Error creating view view_system_generated_logs: " . $e->getMessage() . "</h2>";
+        $errortext = $e->getMessage();
+        header("Location: initialize_database?error=$errortext");
         exit;
     }
 
@@ -439,6 +475,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Display success message
     echo "<h2 style='color: green;'>Database and tables created successfully!</h2>";
     header("Location: create-success");
+    exit;
+} else {
+    header("Location: initialize_database");
+    exit;
 }
-header("Location: initialize_database");
-exit;

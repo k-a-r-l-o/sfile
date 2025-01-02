@@ -99,6 +99,15 @@
                   <i class="fas fa-plus icon flex-shrink-0"></i>
                 </div>
                 <h3 class="title">Create Database?</h3>
+                <div id="notification" class="notification mb-3">
+                  <span id="message" class="message"></span>
+                  <button
+                    class="close-btn"
+                    onclick="this.parentElement.style.display='none';"
+                  >
+                    ✖
+                  </button>
+                </div>
                 <p>
                   By clicking <strong>"Create"</strong>, you will create a
                   database. If you already have a database, it will be
@@ -129,6 +138,18 @@
 
     <!-- Preloader -->
     <div id="preloader"></div>
+
+    <script>
+      // Parse query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+      if (error) {
+        const messagetext = document.getElementById("message");
+        const notification = document.getElementById("notification");
+        messagetext.textContent = error;
+        notification.style.display = "flex";
+      }
+    </script>
 
     <!-- Vendor JS Files -->
     <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
