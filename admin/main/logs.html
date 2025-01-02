@@ -176,12 +176,12 @@
               <div class="row">
                 <h3 class="col-lg-12">Activity Logs</h3>
                 <div class="col-sm-8 text-start">
-                  <button
-                    onclick="exportToCSV()"
-                    type="button"
-                    class="btn btn-primary my-2 fs-3"
-                  >
-                    Export as CSV
+                  <button  
+                    onclick="exportToCSV()"  
+                    type="button"  
+                    class="btn btn-primary my-2 fs-3"  
+                  >  
+                    Export as CSV  
                   </button>
                 </div>
                 <div class="col-sm-4 text-end">
@@ -523,7 +523,13 @@
 
         // Function to export table data as CSV  
         function exportToCSV() {  
+          console.log("Exporting to CSV..."); // Debug log  
           const rows = Array.from(document.querySelectorAll("#tableBody tr"));  
+          if (rows.length === 0) {  
+            console.log("No rows found!"); // Debug log  
+            return; // Exit if no rows  
+          }  
+          
           const csvContent = "data:text/csv;charset=utf-8,"   
             + rows.map(row => {  
                 const cols = Array.from(row.querySelectorAll("td"));  
@@ -538,8 +544,7 @@
 
           link.click(); // This will download the CSV file  
           document.body.removeChild(link); // Clean up  
-        }  
-        
+        }
       });
     </script>
     <script>
