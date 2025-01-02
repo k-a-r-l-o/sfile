@@ -256,7 +256,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>  
           </div>  
           <div class="modal-body">  
-            <p>Are you sure you want to add the following user?</p>  
+            <p>Are you sure you want to add the following administrator?</p>  
             <div>  
               <strong>Email:</strong> <span id="adminEmail"></span><br>  
               <strong>First Name:</strong> <span id="adminFirstName"></span><br>  
@@ -343,7 +343,9 @@
           const submitButton = document.getElementById('submitButton');  
           const addAdminModal = new bootstrap.Modal(document.getElementById('addAdminModal'));  
 
-          submitButton.addEventListener('click', function() {  
+          submitButton.addEventListener('click', function(event) {  
+              event.preventDefault(); // Prevent default form submission 
+
               const email = document.getElementById('email').value;  
               const firstName = document.getElementById('firstname').value;  
               const lastName = document.getElementById('lastname').value;  

@@ -242,7 +242,7 @@
                         >
                           Back
                         </button>
-                        <button type="button" class="btn btn-primary" id="save-changes-Button">
+                        <button type="button" class="btn btn-primary" id="saveChangesButton">
                           Save Changes
                         </button>
                       </form>
@@ -259,7 +259,7 @@
       </div>
     </div>
 
-    <!-- Confirm Edit Info of the user Modal -->  
+    <!-- Confirm Edit Info of the Admin Modal -->  
     <div class="modal fade" id="editAdminModal" tabindex="-1" aria-labelledby="editAdminModalLabel" aria-hidden="true">  
       <div class="modal-dialog">  
         <div class="modal-content">  
@@ -368,10 +368,12 @@
     </script>
     <script>  
       document.addEventListener('DOMContentLoaded', function () {  
-        const submitButton = document.getElementById('save-changes-Button');  
+        const saveChangesButton = document.getElementById('saveChangesButton');  
         const editAdminModal = new bootstrap.Modal(document.getElementById('editAdminModal'));  
     
-        submitButton.addEventListener('click', function() {  
+        saveChangesButton.addEventListener('click', function(event) { 
+          event.preventDefault(); // Prevent default form submission 
+0.
           const firstName = document.getElementById('firstname').value;  
           const lastName = document.getElementById('lastname').value;  
     
