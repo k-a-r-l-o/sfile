@@ -177,7 +177,7 @@
                 <h3 class="col-lg-12">Activity Logs</h3>
                 <div class="col-sm-8 text-start">
                   <button
-                    onclick="window.location.href='#'"
+                    onclick="exportToCSV()"
                     type="button"
                     class="btn btn-primary my-2 fs-3"
                   >
@@ -520,6 +520,26 @@
           .addEventListener("click", () => navigatePage("custom"));
         // Initial fetch
         fetchData();
+
+        // Function to export table data as CSV  
+        function exportToCSV() {  
+          const rows = Array.from(document.querySelectorAll("#tableBody tr"));  
+          const csvContent = "data:text/csv;charset=utf-8,"   
+            + rows.map(row => {  
+                const cols = Array.from(row.querySelectorAll("td"));  
+                return cols.map(col => col.textContent).join(",");  
+              }).join("\n");  
+
+          const encodedUri = encodeURI(csvContent);  
+          const link = document.createElement("a");  
+          link.setAttribute("href", encodedUri);  
+          link.setAttribute("download", "activity_logs.csv");  
+          document.body.appendChild(link); // Required for FF  
+
+          link.click(); // This will download the CSV file  
+          document.body.removeChild(link); // Clean up  
+        }  
+        
       });
     </script>
     <script>
