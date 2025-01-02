@@ -1,5 +1,7 @@
 <?php
+
 session_start();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Include database connection
     require_once '../../../config/config.php';
@@ -60,13 +62,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Commit the transaction
         $pdo->commit();
 
-        // Fetch the current user's email and role
-        $doerUserId = $_SESSION['admin_user_id'];
-        $userStmt = $pdo->prepare("
-            SELECT user_email, user_role 
-            FROM tb_admin_userdetails 
-            WHERE user_id = :user_id
-        ");
+        $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee"; // Absolute path
+        $folderName = $user_id; 
+        $newFolderPath = rtrim($folderPath, '/') . "/" . $folderName;
+
+        // Check if the folder exists, and create it if necessary
+        if (!file_exists($newFolderPath)) {
+            if (!mkdir($newFolderPath, 0755, true)) {
+                die("Failed to create folder '$newFolderPath'.");
+            }
+        }
+
+        $configargs = array(
+            "config" => __DIR__ . '/../../../security/openssl.cnf',
+            'private_key_bits' => 2048, // Key size: 2048 bits
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+        );
+        
+        $res = openssl_pkey_new($configargs);
+        if (!$res) {
+            die("Failed to generate keys: " . openssl_error_string());
+        }
+
+        // Generate the private key and encrypt it using the user's password
+        $privateKey = null;
+        $passphrase = $password;  // Use the generated password to encrypt the private key
+
+        // Encrypt the private key with the password (passphrase)
+        if (!openssl_pkey_export($res, $privateKey, $passphrase, $configargs)) {
+            die("Failed to export encrypted private key: " . openssl_error_string());
+        }
+        
+        // Extract the public key
+        $keyDetails = openssl_pkey_get_details($res);
+        $publicKey = $keyDetails["key"];
+
+        // Save the keys to the specific folder
+        file_put_contents("$newFolderPath/private_key.enc", $privateKey);
+        file_put_contents("$newFolderPath/public_key.pem", $publicKey);
+
+        // Fetch the current user's email
+        $doerUserId = $_SESSION['client_user_id'];
+        $userStmt = $pdo->prepare("SELECT user_email FROM tb_client_userdetails WHERE user_id = :user_id");
         $userStmt->bindParam(':user_id', $doerUserId);
         $userStmt->execute();
         $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
