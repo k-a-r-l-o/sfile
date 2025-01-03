@@ -242,7 +242,7 @@
                         >
                           Back
                         </button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="submitButton">
                           Submit
                         </button>
                       </form>
@@ -258,6 +258,31 @@
         </div>
       </div>
     </div>
+
+    <!-- Confirm Adding New Client Modal -->  
+    <div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">  
+      <div class="modal-dialog">  
+        <div class="modal-content">  
+          <div class="modal-header">  
+            <h5 class="modal-title" id="addClientModalLabel">Confirm Adding New Client</h5>  
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>  
+          </div>  
+          <div class="modal-body">  
+            <p>Are you sure you want to add the following client?</p>  
+            <div>  
+              <strong>Email:</strong> <span id="clientEmail"></span><br>  
+              <strong>First Name:</strong> <span id="clientFirstName"></span><br>  
+              <strong>Last Name:</strong> <span id="clientLastName"></span>  
+            </div>  
+          </div>  
+          <div class="modal-footer">  
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>  
+            <button type="button" class="btn btn-primary" id="confirmAddClient">Confirm</button>  
+          </div>  
+        </div>  
+      </div>  
+    </div>  
+
     <script>
       // Parse query parameters
       const urlParams = new URLSearchParams(window.location.search);
@@ -324,6 +349,30 @@
         // Also check the session immediately when the script is loaded
         checkSession();
       })();
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {  
+        const submitButton = document.getElementById('submitButton');  
+        const addClientModal = new bootstrap.Modal(document.getElementById('addClientModal'));  
+
+        submitButton.addEventListener('click', function(event) {  
+          event.preventDefault(); // Prevent default form submission  
+
+          const email = document.getElementById('email').value;  
+          const firstName = document.getElementById('firstname').value;  
+          const lastName = document.getElementById('lastname').value;  
+
+          document.getElementById('clientEmail').textContent = email;  
+          document.getElementById('clientFirstName').textContent = firstName;  
+          document.getElementById('clientLastName').textContent = lastName;  
+
+          addClientModal.show();  
+        });  
+
+        document.getElementById('confirmAddClient').addEventListener('click', function() {  
+          document.querySelector('form').submit();  
+        });  
+      });  
     </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
