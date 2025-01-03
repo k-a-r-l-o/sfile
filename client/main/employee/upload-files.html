@@ -10,6 +10,8 @@
       href="../../../assets/img/logo.png"
     />
     <link rel="stylesheet" href="../../../assets/css/styles.min.css" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
   </head>
 
   <body>
@@ -153,25 +155,21 @@
         <!--  Header End -->
         <div class="container-fluid">
           <div class="row">
-            <div class="col-lg-12">  
-              <div class="card">  
-                  <div class="card-body text-center">  
-                      <div class="drop-zone" id="drop-zone">  
-                          <p>Drag & drop files here or <span class="btn-link">click to upload</span></p>  
-                          <input type="file" id="fileElem" multiple accept="*/*" style="display:none;" />  
-                      </div>  
-                      <div class="mt-3">  
-                          <span id="fileCountIndicator">0/10 files selected</span>  
-                      </div>  
-                      <div id="selectedFilesList" class="mt-2"></div>  
-                      <button id="uploadBtn" class="btn btn-primary mt-3" onclick="uploadFiles()" disabled>Proceed to Upload</button>  
-                      <div class="progress mt-3" style="display:none;">  
-                          <div id="overallProgress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>  
-                      </div>  
-                  </div>  
-              </div>  
-            </div>  
-
+            <div class="col-lg-12">
+              <div class="card border-2">
+                <div class="card-body text-center">
+                  <div class="drag-area border-2 border-primary rounded p-4 text-center" id="drag-area">
+                      <p class="mb-0">Drag & Drop files here or click to upload</p>
+                      <input type="file" id="file-input" multiple style="display: none;">
+                  </div>
+                  
+                  <p id="file-count-indicator" class="mt-3">0/10 Files</p>
+                  <ul id="file-list" class="list-group mt-2"></ul>
+                  <button id="upload-btn" class="btn btn-success mb-3 mt-2">Proceed to Upload</button>
+                </div>
+              </div>
+            </div>
+            
             <div class="col-lg-12">
               <div class="card">
                 <div class="card-body">
@@ -194,20 +192,20 @@
                   </div>
     
                   <!-- Table -->  
-                  <div class="col-lg-12">  
+                  <div class="col-lg-12 client-table">  
                     <div class="table-responsive my-2">  
                         <table class="table text-nowrap align-middle mb-0" id="fileTable">  
                             <thead>  
                                 <tr class="border-2 border-bottom border-primary border-0">  
                                     <th scope="col" class="ps-0">Filename</th>  
-                                    <th scope="col" class="ps-0">File Size</th>  
+                                    <th scope="col" class="ps-0">File Size</th> 
+                                    <th scope="col" class="ps-0">Upload Date</th>  
                                 </tr>  
                             </thead>  
-                            <tbody class="table-group-divider" id="fileList"></tbody>  
+                            <tbody class="table-group-divider" id="uploaded-files-table"></tbody>  
                         </table>  
                     </div>  
                   </div> 
-                  
                 </div>
               </div>
             </div>
@@ -215,6 +213,29 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal for Alerts -->
+    <div class="modal fade" id="alert-modal" tabindex="-1" aria-labelledby="alert-modalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alert-modalLabel">Alert</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-icon">
+                    <i id="modal-icon" class="fas fa-info-circle"></i>
+                </div>
+                <p id="modal-message">This is a sample message.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="alert-cancel-btn" style="display: none;">Cancel</button>
+                <button type="button" class="btn btn-primary" id="alert-close-btn" data-bs-dismiss="modal">Okay</button>
+            </div>
+        </div>
+      </div>
+    </div>
+
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
@@ -225,178 +246,333 @@
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 
     <script>
-      const dropZone = document.getElementById('drop-zone');  
-      const fileInput = document.getElementById('fileElem');  
-      const uploadButton = document.getElementById('uploadBtn');  
-      const fileCountIndicator = document.getElementById('fileCountIndicator');  
-      const selectedFilesList = document.getElementById('selectedFilesList');  
-      const fileListDiv = document.getElementById('fileList');  
-      const overallProgressBar = document.getElementById('overallProgress');  
-      let filesArray = [];  
-      let totalFilesSize = 0;  
-      let totalUploadedSize = 0;  
+      document.addEventListener("DOMContentLoaded", () => {
+        const dragArea = document.getElementById("drag-area");  
+        const fileInput = document.getElementById("file-input");  
+        const fileList = document.getElementById("file-list");  
+        const uploadButton = document.getElementById("upload-btn");  
+        const uploadedFilesTable = document.getElementById("uploaded-files-table");  
+        const fileCountIndicator = document.getElementById("file-count-indicator");  
+        const limitfile = 10;  
+        let uploadedFiles = [];  
+        let allFiles = new Set();  
 
-      dropZone.addEventListener('click', () => {  
-          fileInput.click();  
-      });  
+        // Function to create a progress bar  
+        function createProgressBar() {  
+            const progressBar = document.createElement("div");  
+            progressBar.className = "file-progress-bar";  
+            progressBar.innerHTML = `<div class="file-progress-fill"></div>`;  
+            return progressBar;  
+        }  
 
-      dropZone.addEventListener('dragover', (event) => {  
-          event.preventDefault();  
-          dropZone.classList.add('hover');  
-      });  
+        // Update the file count indicator  
+        function updateFileCountIndicator() {  
+            fileCountIndicator.textContent = `${uploadedFiles.length}/${limitfile} Files`;  
+        }  
 
-      dropZone.addEventListener('dragleave', () => {  
-          dropZone.classList.remove('hover');  
-      });  
+        // Drag & Drop Events  
+        dragArea.addEventListener("click", () => fileInput.click());  
+        dragArea.addEventListener("dragover", (e) => {  
+            e.preventDefault();  
+            dragArea.classList.add("highlight");  
+        });  
+        dragArea.addEventListener("dragleave", () => {  
+            dragArea.classList.remove("highlight");  
+        });  
+        dragArea.addEventListener("drop", (e) => {  
+            e.preventDefault();  
+            dragArea.classList.remove("highlight");  
+            const files = e.dataTransfer.files;  
+            handleFiles(files);  
+        });  
 
-      dropZone.addEventListener('drop', (event) => {  
-          event.preventDefault();  
-          dropZone.classList.remove('hover');  
-          const files = event.dataTransfer.files;  
-          handleFiles(files);  
-      });  
+        // Function to show the modal with dynamic content
+        function showModal(message, type, showCancelButton = false) {
+            const modal = document.getElementById('alert-modal');
+            const modalMessage = document.getElementById('modal-message');
+            const modalIcon = document.getElementById('modal-icon');
+            const alertCloseButton = document.getElementById('alert-close-btn');
+            const cancelButton = document.getElementById('alert-cancel-btn');
 
-      fileInput.addEventListener('change', (event) => {  
-          const files = event.target.files;  
-          handleFiles(files);  
-      });  
+            modalMessage.textContent = message;
+            modalIcon.className = getIconByType(type);
+            cancelButton.style.display = showCancelButton ? 'block' : 'none';
 
-      function handleFiles(files) {  
-          for (let i = 0; i < files.length; i++) {  
-              if (filesArray.length < 10) {  
-                  filesArray.push(files[i]);  
-                  totalFilesSize += files[i].size; // Sum up the total file sizes for progress calculation  
-                  addFileToDisplay(files[i]);  
-              } else {  
-                  alert('You can only upload up to 10 files.');  
-                  break;  
-              }  
-          }  
-          updateFileCount();  
-      }  
+            $(modal).modal('show'); // Using Bootstrap's modal function to show the modal
 
-      function getFileSizeString(size) {  
-          if (size < 1024) return `${size} B`;  
-          else if (size < 1048576) return `${(size / 1024).toFixed(2)} KB`;  
-          else if (size < 1073741824) return `${(size / 1048576).toFixed(2)} MB`;  
-          else return `${(size / 1073741824).toFixed(2)} GB`;  
-      }  
+            alertCloseButton.onclick = () => $(modal).modal('hide');
+            if (showCancelButton) {
+                cancelButton.onclick = () => $(modal).modal('hide');
+            }
+        }
 
-      function addFileToDisplay(file) {  
-          const fileDisplay = document.createElement('div');  
-          fileDisplay.className = 'file-display d-flex align-items-center mb-2'; // Flex for alignment  
+        function getIconByType(type) {
+            switch (type) {
+                case 'success': return 'fas fa-check-circle';
+                case 'error': return 'fas fa-times-circle';
+                case 'warning': return 'fas fa-exclamation-triangle';
+                case 'info': return 'fas fa-info-circle';
+                default: return 'fas fa-info-circle';
+            }
+        }
 
-          // File name and size  
-          const fileInfo = document.createElement('span');  
-          fileInfo.className = 'me-2'; // Margin to the right  
-          fileInfo.innerHTML = `${file.name} <strong>${getFileSizeString(file.size)}</strong>`;  
-          fileDisplay.appendChild(fileInfo);  
+        // Function to handle file input changes
+        fileInput.addEventListener("change", () => {
+            handleFiles(fileInput.files);
+            fileInput.value = ""; // Reset input
+        });
 
-          // Progress bar  
-          const progressBarContainer = document.createElement('div');  
-          progressBarContainer.className = 'flex-grow-1'; // Take remaining space  
-          const progressBar = document.createElement('div');  
-          progressBar.className = 'progress';  
-          const progressBarFilled = document.createElement('div');  
-          progressBarFilled.className = 'progress-bar';  
-          progressBarFilled.style.width = '0%';  
-          progressBarFilled.setAttribute('aria-valuenow', 0);  
-          progressBar.appendChild(progressBarFilled);  
-          progressBarContainer.appendChild(progressBar);  
-          fileDisplay.appendChild(progressBarContainer);  
+        // Simulate Progress Bar for Each File Upload  
+        async function simulateFileUpload(fileObj) {  
+            const progressBarFill = fileObj.progressBar.querySelector(".file-progress-fill");  
+            const fileSize = fileObj.file.size; // Get file size in bytes  
 
-          // Remove button  
-          const removeButton = document.createElement('button');  
-          removeButton.className = 'btn btn-danger btn-sm';  
-          removeButton.innerHTML = 'X';  
-          removeButton.onclick = () => removeFile(file.name);  
-          fileDisplay.appendChild(removeButton);  
+            let uploadSpeed = 1; // Default upload speed (1% per interval)  
 
-          // Add to the selected files list  
-          selectedFilesList.appendChild(fileDisplay);  
-      }  
+            // Adjust upload speed based on file size  
+            if (fileSize < 1024 * 1024) { // Small file (KB)  
+                uploadSpeed = 10; // Faster upload speed for smaller files  
+            } else if (fileSize < 1024 * 1024 * 10) { // Medium file (less than 10MB)  
+                uploadSpeed = 5; // Moderate upload speed for medium-sized files  
+            } else { // Larger files (MB and GB)  
+                uploadSpeed = 2; // Slower upload speed for larger files  
+            }  
 
-      function removeFile(fileName) {  
-          const file = filesArray.find(f => f.name === fileName);  
-          if (file) {  
-              totalFilesSize -= file.size; // Deduct the size of the removed file from total  
-              filesArray = filesArray.filter(file => file.name !== fileName);  
-              updateFileCount();  
-              selectedFilesList.querySelectorAll('.file-display').forEach(el => {  
-                  if (el.querySelector('span').textContent.includes(fileName)) {  
-                      el.remove();  
-                  }  
-              });  
-          }  
-      }  
+            return new Promise((resolve) => {  
+                let progress = 0;  
+                const interval = setInterval(() => {  
+                    if (fileObj.canceled) {  
+                        clearInterval(interval);  
+                        progressBarFill.style.width = "0%"; // Reset progress bar  
+                        return;  
+                    }  
+                    progress += Math.random() * uploadSpeed; // Increment progress  
+                    progressBarFill.style.width = `${Math.min(progress, 100)}%`; // Update progress  
 
-      function updateFileCount() {  
-          fileCountIndicator.textContent = `${filesArray.length}/10 files selected`;  
-          uploadButton.disabled = filesArray.length === 0;  
-      }  
+                    if (progress >= 100) {  
+                        clearInterval(interval);  
+                        resolve(); // Resolve the promise when upload is complete  
+                    }  
+                }, 300); // Simulate upload every 300ms  
+            });  
+        }  
 
-      function uploadFiles() {  
-          // Reset progress for each upload  
-          totalUploadedSize = 0;  
-          overallProgressBar.style.width = '0%';  
-          overallProgressBar.textContent = '0%';  
-          document.querySelector('.progress').style.display = 'block'; // Show the overall progress bar  
+        // Function to handle file validation and preparation  
+        function handleFiles(files) {  
+            for (let file of files) {  
+                // Check for duplicate files in the uploaded files list  
+                const isDuplicateInList = uploadedFiles.some(uploadedFile => uploadedFile.file.name === file.name);  
+                
+                // Check for duplicates in the uploaded files table  
+                const isDuplicateInTable = Array.from(uploadedFilesTable.rows).some(row => {  
+                    return row.cells[0].textContent === file.name; // Assuming the first cell contains the file name  
+                });  
 
-          filesArray.forEach((file) => {  
-              const fileDisplay = Array.from(selectedFilesList.children).find(el => el.querySelector('span').textContent.includes(file.name));  
-              const progressBarFilled = fileDisplay.querySelector('.progress-bar');  
+                if (isDuplicateInList || isDuplicateInTable || allFiles.has(file.name)) {  
+                    // Show duplicate file modal  
+                    showDuplicateFileModal(file);  
+                    continue; // Skip adding the file until the user confirms  
+                }
 
-              // Append to fileList table  
-              const row = document.createElement('tr');  
-              row.innerHTML = `  
-                  <td class="ps-0">${file.name}</td>  
-                  <td class="ps-0">${getFileSizeString(file.size)}</td>  
-              `;  
-              fileListDiv.appendChild(row);  
+                // Add the file to the list if it's not a duplicate  
+                addFileToList(file);  
+            }  
+        }  
 
-              uploadFile(file, progressBarFilled);  
-          });  
+        // Function to add a file to the list  
+        function addFileToList(file) {  
+            // Allowed file types
+            const allowedExtensions = ['pdf', 'docx', 'xlsx', 'xls', 'txt', 'ppt', 'pptx', 'png', 'jpg', 'jpeg'];
 
-          // Clear the selected files list  
-          selectedFilesList.innerHTML = '';  
-          filesArray = []; // Clear the array for future uploads  
-          updateFileCount();  
-      }  
+            // Extract the file extension
+            const fileExtension = file.name.split('.').pop().toLowerCase();
 
-      function uploadFile(file, progressBar) {  
-          const xhr = new XMLHttpRequest();  
-          xhr.open('POST', '/upload', true); // Change '/upload' to your upload endpoint  
+            // Check if the file type is allowed
+            if (!allowedExtensions.includes(fileExtension)) {
+                showModal('Only PDF, DOCX, Excel, TXT, PPTX/PPT, PNG, and JPG/JPEG files are allowed.', 'error');
+                return;
+            }
 
-          xhr.upload.onloadstart = function () {  
-              progressBar.style.width = '0%';  
-          };  
+            if (uploadedFiles.length + 1 > limitfile) {  
+                showModal(`You can upload a maximum of ${limitfile} files.`, 'warning');  
+                return;  
+            }  
 
-          xhr.upload.onprogress = function (event) {  
-              if (event.lengthComputable) {  
-                  const percentComplete = (event.loaded / event.total) * 100;  
-                  progressBar.style.width = percentComplete + '%';  
-                  progressBar.setAttribute('aria-valuenow', percentComplete);  
+            const listItem = document.createElement("li");  
+            listItem.className = "file-item";  
+            listItem.innerHTML = `  
+                <span class="file-name">${file.name}</span>  
+                <span class="file-size">${formatFileSize(file.size)}</span>  
+                <div class="file-progress"></div>  
+                <button class="remove-btn">X</button>  
+            `;  
 
-                  // Update the overall progress  
-                  totalUploadedSize += event.loaded; // Track the total uploaded size  
-                  const overallPercentComplete = (totalUploadedSize / totalFilesSize) * 100;  
-                  overallProgressBar.style.width = overallPercentComplete + '%';  
-                  overallProgressBar.textContent = Math.round(overallPercentComplete) + '%'; // Update the text  
-              }  
-          };  
+            const progressBar = createProgressBar();  
+            listItem.querySelector(".file-progress").appendChild(progressBar);  
 
-          xhr.onload = function () {  
-              if (xhr.status === 200) {  
-                  console.log('Upload successful');  
-              } else {  
-                  console.error('Upload failed');  
-              }  
-          };  
+            const removeButton = listItem.querySelector(".remove-btn");  
+            removeButton.addEventListener("click", () => {  
+                const fileObj = uploadedFiles.find((f) => f.file === file);  
+                if (fileObj) {  
+                    fileObj.canceled = true;  
 
-          const formData = new FormData();  
-          formData.append('file', file);  
-          xhr.send(formData);  
-      }
+                    // Abort the upload request if it's in progress  
+                    if (fileObj.controller) {  
+                        fileObj.controller.abort(); // Abort the fetch request if uploading  
+                    }  
+
+                    showModal(`Upload for ${file.name} has been canceled.`, 'cancel');  
+                    // Remove file from list  
+                    fileList.removeChild(listItem);  
+                    uploadedFiles = uploadedFiles.filter((f) => f.file !== file);  
+                    allFiles.delete(file.name); // Remove from set  
+                    updateFileCountIndicator();  
+                }  
+            });  
+
+            fileList.appendChild(listItem);  
+            uploadedFiles.push({ file, progressBar, active: true, uploading: false, canceled: false });  
+            allFiles.add(file.name); // Add the file name to the set  
+            updateFileCountIndicator();  
+        }  
+
+        // Function to show the duplicate file modal  
+        function showDuplicateFileModal(file) {  
+            showModal(`The file "${file.name}" already exists. Are you sure you want to add it?`, 'info',true);  
+
+            const alertCloseButton = document.getElementById('alert-close-btn');  
+            const cancelButton = document.getElementById('alert-cancel-btn');  
+
+            // Handle "Okay" button click  
+            alertCloseButton.onclick = () => {  
+                addFileToList(file); // Add the file to the list  
+                const modal = document.getElementById('alert-modal');  
+                modal.classList.remove('show'); // Hide the modal  
+            };  
+
+            // Handle "Cancel" button click  
+            cancelButton.onclick = () => {  
+                const modal = document.getElementById('alert-modal');  
+                modal.classList.remove('show'); // Hide the modal  
+            };  
+        }  
+
+        let uploadedFileNames = new Map(); 
+
+        // Upload Files Button Event
+        uploadButton.addEventListener("click", async () => {
+            if (uploadedFiles.length === 0) {
+                showModal("Please select at least one file to upload.", 'info');
+                return;
+            }
+
+            let successfulUploads = 0;
+            const uploadPromises = []; // Array to store all upload promises
+
+            // Simulate file upload and progress bar completion
+            for (const fileObj of [...uploadedFiles]) {
+                if (!fileObj.active || fileObj.canceled) {
+                    continue; // Skip inactive or canceled files
+                }
+
+                fileObj.uploading = true;
+
+                // Create a promise for each file upload
+                const uploadPromise = new Promise(async (resolve, reject) => {
+                    try {
+                        await simulateFileUpload(fileObj);
+
+                        if (fileObj.canceled) {
+                            console.log(`Upload for ${fileObj.file.name} was canceled.`);
+                            resolve(); // Resolve the promise even if canceled
+                            return;
+                        }
+
+                        const formData = new FormData();
+                        formData.append('file', fileObj.file);
+
+                        const response = await fetch('upload.php', {
+                            method: 'POST',
+                            body: formData,
+                        });
+                        
+                        const result = await response.json();
+                        if (result.status === 'success') {
+                            successfulUploads++;
+
+                            // Remove file from the DOM and list
+                            const listItem = fileObj.progressBar.closest(".file-item");
+                            if (listItem) {
+                                listItem.remove(); // Remove the file item from the DOM
+                            }
+                            uploadedFiles = uploadedFiles.filter((f) => f !== fileObj); // Remove from the list
+                            allFiles.delete(fileObj.file.name); // Remove from the set
+                            updateFileCountIndicator(); // Update file count indicator
+
+                            // Handle duplicate filenames
+                            let originalFileName = fileObj.file.name;
+                            let fileName = originalFileName;
+                            if (uploadedFileNames.has(originalFileName)) {
+                                const count = uploadedFileNames.get(originalFileName) + 1;
+                                uploadedFileNames.set(originalFileName, count);
+                                const extIndex = fileName.lastIndexOf(".");
+                                if (extIndex !== -1) {
+                                    const namePart = fileName.substring(0, extIndex);
+                                    const extPart = fileName.substring(extIndex);
+                                    fileName = `${namePart} (${count})${extPart}`;
+                                } else {
+                                    fileName = `${fileName} (${count})`; // No extension case
+                                }
+                            } else {
+                                uploadedFileNames.set(originalFileName, 0); // First occurrence
+                            }
+                            const finalFileName = result.fileName;
+
+                            // Add the file(s) to the table
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${fileName}</td>
+                                <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
+                                <td>${new Date().toLocaleString()}</td>     
+                            `;
+                            uploadedFilesTable.appendChild(row);
+
+                            resolve(); // Resolve the promise after successful upload
+                        } else {
+                            console.error('Error:', result.message);
+                            reject(result.message); // Reject the promise if there's an error
+                        }
+                    } catch (error) {
+                        console.error('Upload failed:', fileObj.file.name, error);
+                        reject(error); // Reject the promise if there's an error
+                    }
+                });
+
+                uploadPromises.push(uploadPromise); // Add the promise to the array
+            }
+
+            // Wait for all uploads to complete
+            Promise.allSettled(uploadPromises).then((results) => {
+                // Show the modal after all uploads are complete
+                showModal(`${successfulUploads} file(s) uploaded successfully!`, 'success');
+            });
+        });
+
+        // Function to format file size in KB, MB, or GB
+        function formatFileSize(sizeInBytes) {
+            if (sizeInBytes < 1024) {
+                return `${sizeInBytes} B`;
+            } else if (sizeInBytes < 1048576) {
+                return (sizeInBytes / 1024).toFixed(2) + " KB";
+            } else if (sizeInBytes < 1073741824) {
+                return (sizeInBytes / 1048576).toFixed(2) + " MB";
+            } else {
+                return (sizeInBytes / 1073741824).toFixed(2) + " GB";
+            }
+        }
+
+      });
+
     </script>
   </body>
 </html>

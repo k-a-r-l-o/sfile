@@ -17551,29 +17551,59 @@ body {
   height: 100vh;
 }
 
-.drop-zone {
-  border: 2px dashed #007bff;
+.drag-area {
+  border: 2px dashed #cccccc;
+  cursor: pointer;
+}
+
+.drag-area.highlight {
+  border-color: #2aa4e2;
+  background-color: #f0faff;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background-color: #f7f7f7;
+  margin: 5px 0;
   border-radius: 5px;
-  padding: 40px;
-  text-align: center;
-  transition: background-color 0.3s;
 }
 
-.drop-zone.hover {
-  background-color: #f0f8ff;
+.file-progress {
+  flex-grow: 1;
+  margin: 0 10px;
 }
 
-#selectedFilesList {
-  max-height: 200px;
-  overflow-y: auto;
+.file-progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #ddd;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
 }
 
-.file-display {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
+.file-progress-fill {
+  width: 0;
+  height: 100%;
+  background-color: #007bff;
+  transition: width 0.3s ease;
+}
+
+.remove-btn {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
 }
 
 /* Skeleton loader animation */
