@@ -461,99 +461,105 @@
 
         // Upload Files Button Event
         uploadButton.addEventListener("click", async () => {
-            if (uploadedFiles.length === 0) {
-                showModal("Please select at least one file to upload.", 'info');
-                return;
-            }
+          if (uploadedFiles.length === 0) {
+              showModal("Please select at least one file to upload.", 'info');
+              return;
+          }
 
-            let successfulUploads = 0;
-            const uploadPromises = []; // Array to store all upload promises
+          let successfulUploads = 0;
+          const uploadPromises = []; // Array to store all upload promises
 
-            // Simulate file upload and progress bar completion
-            for (const fileObj of [...uploadedFiles]) {
-                if (!fileObj.active || fileObj.canceled) {
-                    continue; // Skip inactive or canceled files
-                }
+          // Simulate file upload and progress bar completion
+          for (const fileObj of [...uploadedFiles]) {
+              if (!fileObj.active || fileObj.canceled) {
+                  continue; // Skip inactive or canceled files
+              }
 
-                fileObj.uploading = true;
+              fileObj.uploading = true;
 
-                // Create a promise for each file upload
-                const uploadPromise = new Promise(async (resolve, reject) => {
-                    try {
-                        await simulateFileUpload(fileObj);
+              // Handle duplicate filenames before uploading
+              let originalFileName = fileObj.file.name;
+              let fileName = originalFileName;
+              
+              if (uploadedFileNames.has(originalFileName)) {
+                  const count = uploadedFileNames.get(originalFileName) + 1;
+                  uploadedFileNames.set(originalFileName, count);
+                  const extIndex = fileName.lastIndexOf(".");
+                  if (extIndex !== -1) {
+                      const namePart = fileName.substring(0, extIndex);
+                      const extPart = fileName.substring(extIndex);
+                      fileName = `${namePart} (${count})${extPart}`;
+                  } else {
+                      fileName = `${fileName} (${count})`; // No extension case
+                  }
+              } else {
+                  uploadedFileNames.set(originalFileName, 0); // First occurrence
+              }
 
-                        if (fileObj.canceled) {
-                            console.log(`Upload for ${fileObj.file.name} was canceled.`);
-                            resolve(); // Resolve the promise even if canceled
-                            return;
-                        }
+              // Create a new File object with the updated name if necessary
+              const renamedFile = new File([fileObj.file], fileName, { type: fileObj.file.type });
 
-                        const formData = new FormData();
-                        formData.append('file', fileObj.file);
+              // Create a promise for each file upload
+              const uploadPromise = new Promise(async (resolve, reject) => {
+                  try {
+                      await simulateFileUpload(fileObj);
 
-                        const response = await fetch('upload.php', {
-                            method: 'POST',
-                            body: formData,
-                        });
-                        
-                        const result = await response.json();
-                        if (result.status === 'success') {
-                            successfulUploads++;
+                      if (fileObj.canceled) {
+                          console.log(`Upload for ${fileObj.file.name} was canceled.`);
+                          resolve(); // Resolve the promise even if canceled
+                          return;
+                      }
 
-                            // Remove file from the DOM and list
-                            const listItem = fileObj.progressBar.closest(".file-item");
-                            if (listItem) {
-                                listItem.remove(); // Remove the file item from the DOM
-                            }
-                            uploadedFiles = uploadedFiles.filter((f) => f !== fileObj); // Remove from the list
-                            allFiles.delete(fileObj.file.name); // Remove from the set
-                            updateFileCountIndicator(); // Update file count indicator
+                      const formData = new FormData();
+                      formData.append('file', renamedFile); // Use the renamed file
 
-                            // Handle duplicate filenames
-                            let originalFileName = fileObj.file.name;
-                            let fileName = originalFileName;
-                            if (uploadedFileNames.has(originalFileName)) {
-                                const count = uploadedFileNames.get(originalFileName) + 1;
-                                uploadedFileNames.set(originalFileName, count);
-                                const extIndex = fileName.lastIndexOf(".");
-                                if (extIndex !== -1) {
-                                    const namePart = fileName.substring(0, extIndex);
-                                    const extPart = fileName.substring(extIndex);
-                                    fileName = `${namePart} (${count})${extPart}`;
-                                } else {
-                                    fileName = `${fileName} (${count})`; // No extension case
-                                }
-                            } else {
-                                uploadedFileNames.set(originalFileName, 0); // First occurrence
-                            }
-                            const finalFileName = result.file_name; // Use the server-provided file name
-                            const row = document.createElement("tr");
-                            row.innerHTML = `
-                                <td>${finalFileName}</td>
-                                <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
-                                <td>${new Date().toLocaleString()}</td>     
-                            `;
-                            uploadedFilesTable.appendChild(row);
-                            resolve(); // Resolve the promise after successful upload
-                        } else {
-                            console.error('Error:', result.message);
-                            reject(result.message); // Reject the promise if there's an error
-                        }
-                    } catch (error) {
-                        console.error('Upload failed:', fileObj.file.name, error);
-                        reject(error); // Reject the promise if there's an error
-                    }
-                });
+                      const response = await fetch('upload.php', {
+                          method: 'POST',
+                          body: formData,
+                      });
+                      
+                      const result = await response.json();
+                      if (result.status === 'success') {
+                          successfulUploads++;
 
-                uploadPromises.push(uploadPromise); // Add the promise to the array
-            }
+                          // Remove file from the DOM and list
+                          const listItem = fileObj.progressBar.closest(".file-item");
+                          if (listItem) {
+                              listItem.remove(); // Remove the file item from the DOM
+                          }
+                          uploadedFiles = uploadedFiles.filter((f) => f !== fileObj); // Remove from the list
+                          allFiles.delete(fileObj.file.name); // Remove from the set
+                          updateFileCountIndicator(); // Update file count indicator
 
-            // Wait for all uploads to complete
-            Promise.allSettled(uploadPromises).then((results) => {
-                // Show the modal after all uploads are complete
-                showModal(`${successfulUploads} file(s) uploaded successfully!`, 'success');
-            });
-        });
+                          // Add the file details to the uploaded files table
+                          const row = document.createElement("tr");
+                          row.innerHTML = `
+                              <td>${fileName}</td>
+                              <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
+                              <td>${new Date().toLocaleString()}</td>     
+                          `;
+                          uploadedFilesTable.appendChild(row);
+                          resolve(); // Resolve the promise after successful upload
+                      } else {
+                          console.error('Error:', result.message);
+                          reject(result.message); // Reject the promise if there's an error
+                      }
+                  } catch (error) {
+                      console.error('Upload failed:', fileObj.file.name, error);
+                      reject(error); // Reject the promise if there's an error
+                  }
+              });
+
+              uploadPromises.push(uploadPromise); // Add the promise to the array
+          }
+
+          // Wait for all uploads to complete
+          Promise.allSettled(uploadPromises).then((results) => {
+              // Show the modal after all uploads are complete
+              showModal(`${successfulUploads} file(s) uploaded successfully!`, 'success');
+          });
+      });
+
 
         // Function to format file size in KB, MB, or GB
         function formatFileSize(sizeInBytes) {

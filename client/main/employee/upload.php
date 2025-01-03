@@ -31,16 +31,16 @@ function encryptFile($filePath, $aesKey, $iv) {
     return openssl_encrypt($fileData, 'aes-256-cbc', $aesKey, OPENSSL_RAW_DATA, $iv);
 }
 
-function getUniqueFileName($directory, $fileName) {
-    $filePath = $directory . $fileName;
+function getUniqueFileName($directory, $fileName, $userId) {
+    $filePath = $directory . $userId . '_' . $fileName;
     $fileInfo = pathinfo($fileName);
     $baseName = $fileInfo['filename'];
     $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';
     $counter = 1;
 
     while (file_exists($filePath)) {
-        $filePath = $directory . $baseName . " ($counter)" . $extension;
-        $fileName = $baseName . " ($counter)" . $extension;
+        $filePath = $directory . $userId . '_' . $baseName . " ($counter)" . $extension;
+        $fileName = $userId . '_' . $baseName . " ($counter)" . $extension;
         $counter++;
     }
 
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $publicKey = file_get_contents($userPublicKeyPath);
 
     // Ensure the uploaded file has a unique name
-    $uniqueFileName = getUniqueFileName($uploadDir, basename($file['name']));
+    $uniqueFileName = getUniqueFileName($uploadDir, basename($file['name']), $userId);
     $filePath = $uploadDir . $uniqueFileName;
 
     // Move the uploaded file to a temporary location for processing
@@ -101,14 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
     $formattedSize = formatFileSize($file['size']);
 
-    // Insert into tb_files
-    $stmt = $pdo->prepare("INSERT INTO tb_files (owner_id, name, size) 
-    VALUES (:owner_id, :name, :size)");
-    $stmt->bindParam(':owner_id', $userId);
-    $stmt->bindParam(':name', $uniqueFileName);
-    $stmt->bindParam(':size', $formattedSize);
-    $stmt->execute();
-
     // Prepare metadata for the encrypted file
     $metadata = [
         'iv' => base64_encode($iv),
@@ -126,6 +118,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     // Delete the original file
     if (file_exists($tempFilePath)) {
         unlink($tempFilePath);
+    }
+
+    // Insert file information into the database
+    try {
+        $stmt = $pdo->prepare("INSERT INTO tb_files (owner_id, name, size) VALUES (:owner_id, :name, :size)");
+        $stmt->bindParam(':owner_id', $userId);
+        $stmt->bindParam(':name', $uniqueFileName);
+        $stmt->bindParam(':size', $formattedSize);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        die(json_encode(['status' => 'error', 'message' => 'Failed to insert file information into database: ' . $e->getMessage()]));
     }
 
     // Output success message
