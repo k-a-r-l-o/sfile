@@ -7,7 +7,7 @@ if (isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_us
 
     require_once '../../config/database.php';
 
-    if (isset($_SESSION['client_user_id'])) {
+    if (isset($_SESSION['admin_user_id'])) {
         try {
             $db = new Database();
             $conn = $db->getConnection();
@@ -19,7 +19,7 @@ if (isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_us
                  user_log = NOW(),
              WHERE user_id = :user_id"
             );
-            $updateStatusStmt->execute([':user_id' => $_SESSION['client_user_id']]);
+            $updateStatusStmt->execute([':user_id' => $_SESSION['admin_user_id']]);
         } catch (PDOException $e) {
             error_log("Signout error: " . $e->getMessage());
             // Optionally, you can show a message or log this for further review
