@@ -77,17 +77,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $uniqueFileName = getUniqueFileName($uploadDir, basename($file['name']));
     $filePath = $uploadDir . $uniqueFileName;
 
-    // Move the uploaded file to the desired location
-    if (!move_uploaded_file($file['tmp_name'], $filePath)) {
-        die(json_encode(['status' => 'error', 'message' => 'Failed to move uploaded file.']));
-    }
+    // Move the uploaded file to a temporary location for processing
+    $tempFilePath = $file['tmp_name'];
 
     // Generate AES key and IV
     $aesKey = generateAESKey();
     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 
     // Encrypt the file using AES-256-CBC
-    $encryptedData = encryptFile($filePath, $aesKey, $iv);
+    $encryptedData = encryptFile($tempFilePath, $aesKey, $iv);
     $encryptedFilePath = $filePath . '.enc';
 
     // Save the encrypted file
@@ -101,6 +99,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         die(json_encode(['status' => 'error', 'message' => 'Failed to encrypt AES key.']));
     }
 
+    $formattedSize = formatFileSize($file['size']);
+
+    // Insert into tb_files
+    $stmt = $pdo->prepare("INSERT INTO tb_files (owner_id, name, size) 
+    VALUES (:owner_id, :name, :size)");
+    $stmt->bindParam(':owner_id', $userId);
+    $stmt->bindParam(':name', $uniqueFileName);
+    $stmt->bindParam(':size', $formattedSize);
+    $stmt->execute();
+
     // Prepare metadata for the encrypted file
     $metadata = [
         'iv' => base64_encode($iv),
@@ -113,6 +121,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $metadataFilePath = $encryptedFilePath . '.meta';
     if (false === file_put_contents($metadataFilePath, json_encode($metadata))) {
         die(json_encode(['status' => 'error', 'message' => 'Failed to save metadata.']));
+    }
+
+    // Delete the original file
+    if (file_exists($tempFilePath)) {
+        unlink($tempFilePath);
     }
 
     // Output success message
