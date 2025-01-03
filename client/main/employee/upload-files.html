@@ -526,17 +526,14 @@
                             } else {
                                 uploadedFileNames.set(originalFileName, 0); // First occurrence
                             }
-                            const finalFileName = result.fileName;
-
-                            // Add the file(s) to the table
+                            const finalFileName = result.file_name; // Use the server-provided file name
                             const row = document.createElement("tr");
                             row.innerHTML = `
-                                <td>${fileName}</td>
+                                <td>${finalFileName}</td>
                                 <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
                                 <td>${new Date().toLocaleString()}</td>     
                             `;
                             uploadedFilesTable.appendChild(row);
-
                             resolve(); // Resolve the promise after successful upload
                         } else {
                             console.error('Error:', result.message);
