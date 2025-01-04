@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -232,53 +233,54 @@
       <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
       
       <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          // Extract query parameters
-          const urlParams = new URLSearchParams(window.location.search);
-          const id = urlParams.get("id");
-          const email = urlParams.get("email");
-          const firstname = urlParams.get("fname");
-          const lastname = urlParams.get("lname");
-          const role = urlParams.get("role");
+document.addEventListener('DOMContentLoaded', function () {
+    // Extract query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+    const email = urlParams.get("email");
+    const firstname = urlParams.get("fname");
+    const lastname = urlParams.get("lname");
+    const role = urlParams.get("role");
 
-          // Check if all parameters exist
-          if (id && email && firstname && lastname && role) {
-              // Populate input fields
-              document.getElementById("user_id").value = id;
-              document.getElementById("email").value = email;
-              document.getElementById("firstname").value = firstname;
-              document.getElementById("lastname").value = lastname;
-              document.getElementById("role").value = role;
-          } else {
-              console.error("Missing required query parameters.");
-              alert("Error: Missing required query parameters.");
-              window.location.href = "edit-client?error=missing_params";
-          }
+    // Check if all parameters exist
+    if (id && email && firstname && lastname && role) {
+        // Populate input fields
+        document.getElementById("user_id").value = id;
+        document.getElementById("email").value = email;
+        document.getElementById("firstname").value = firstname;
+        document.getElementById("lastname").value = lastname;
+        document.getElementById("role").value = role;
+    } else {
+        console.error("Error: Missing required query parameters.");
+        alert("Error: Missing required query parameters.");
+        window.location.href = "profile-settings?error=missing_params";
+        return;
+    }
 
-          // Handle Update Profile Button Click
-          const updateProfileButton = document.getElementById('updateProfileButton');
-          const updateProfileModal = new bootstrap.Modal(document.getElementById('updateProfileModal'));
+    // Handle Update Profile Button Click
+    const updateProfileButton = document.getElementById('updateProfileButton');
+    const updateProfileModal = new bootstrap.Modal(document.getElementById('updateProfileModal'));
 
-          updateProfileButton.addEventListener('click', function (event) {
-              event.preventDefault(); // Prevent default form submission
+    updateProfileButton.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default form submission
 
-              // Get updated values
-              const firstName = document.getElementById('firstname').value;
-              const lastName = document.getElementById('lastname').value;
+        // Get updated values
+        const firstName = document.getElementById('firstname').value;
+        const lastName = document.getElementById('lastname').value;
 
-              // Populate modal fields with updated values
-              document.getElementById('clientFirstName').textContent = firstName;
-              document.getElementById('clientLastName').textContent = lastName;
+        // Populate modal fields with updated values
+        document.getElementById('clientFirstName').textContent = firstName;
+        document.getElementById('clientLastName').textContent = lastName;
 
-              // Show confirmation modal
-              updateProfileModal.show();
-          });
+        // Show confirmation modal
+        updateProfileModal.show();
+    });
 
-          // Handle Confirm Update Button in Modal
-          document.getElementById('confirmUpdateClient').addEventListener('click', function () {
-              document.getElementById('profileForm').submit(); // Submit the form
-          });
-      });
+    // Handle Confirm Update Button in Modal
+    document.getElementById('confirmUpdateClient').addEventListener('click', function () {
+        document.getElementById('profileForm').submit(); // Submit the form
+    });
+});
 
       </script>
 
