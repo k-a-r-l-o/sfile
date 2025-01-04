@@ -22,32 +22,38 @@ try {
 }
 
 // Helper Functions
-function generateAESKey() {
+function generateAESKey(): string {
     return openssl_random_pseudo_bytes(32); // 256-bit AES key
 }
 
-function encryptFile($filePath, $aesKey, $iv) {
+function encryptFile(string $filePath, string $aesKey, string $iv): string {
     $fileData = file_get_contents($filePath);
-    return openssl_encrypt($fileData, 'aes-256-cbc', $aesKey, OPENSSL_RAW_DATA, $iv);
+    if ($fileData === false) {
+        throw new RuntimeException('Failed to read file data for encryption.');
+    }
+    $encryptedData = openssl_encrypt($fileData, 'aes-256-cbc', $aesKey, OPENSSL_RAW_DATA, $iv);
+    if ($encryptedData === false) {
+        throw new RuntimeException('Failed to encrypt file data.');
+    }
+    return $encryptedData;
 }
 
-function getUniqueFileName($directory, $fileName, $userId) {
-    $filePath = $directory . $userId . '_' . $fileName;
+function getUniqueFileName(string $directory, string $fileName): string {
     $fileInfo = pathinfo($fileName);
     $baseName = $fileInfo['filename'];
     $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';
     $counter = 1;
 
-    while (file_exists($filePath)) {
-        $filePath = $directory . $userId . '_' . $baseName . " ($counter)" . $extension;
-        $fileName = $userId . '_' . $baseName . " ($counter)" . $extension;
+    do {
+        $uniqueName = $baseName . ($counter > 1 ? " ($counter)" : '') . $extension;
+        $filePath = $directory . $uniqueName;
         $counter++;
-    }
+    } while (file_exists($filePath));
 
-    return $fileName;
+    return $uniqueName;
 }
 
-function formatFileSize($bytes) {
+function formatFileSize(int $bytes): string {
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];
     $i = 0;
     while ($bytes >= 1024 && $i < count($units) - 1) {
@@ -70,12 +76,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     if (!file_exists($userPublicKeyPath)) {
         die(json_encode(['status' => 'error', 'message' => 'Public key not found for user ID: ' . $userId]));
     }
-    
+
     $publicKey = file_get_contents($userPublicKeyPath);
+    if ($publicKey === false) {
+        die(json_encode(['status' => 'error', 'message' => 'Failed to read public key.']));
+    }
+
+    // Create a directory structure based on the user ID
+    $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId"; // Absolute path
+    if (!is_dir($folderPath) && !mkdir($folderPath, 0755, true)) {
+        die(json_encode(['status' => 'error', 'message' => "Failed to create folder '$folderPath'."]));
+    }
 
     // Ensure the uploaded file has a unique name
-    $uniqueFileName = getUniqueFileName($uploadDir, basename($file['name']), $userId);
-    $filePath = $uploadDir . $uniqueFileName;
+    $uniqueFileName = getUniqueFileName($folderPath . '/', $file['name']);
+    $filePath = $folderPath . '/' . $uniqueFileName;
 
     // Move the uploaded file to a temporary location for processing
     $tempFilePath = $file['tmp_name'];
@@ -86,10 +101,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
     // Encrypt the file using AES-256-CBC
     $encryptedData = encryptFile($tempFilePath, $aesKey, $iv);
-    $encryptedFilePath = $filePath . '.enc';
+    $encryptedFilePath = $folderPath . '/' . $uniqueFileName . '.enc';
 
     // Save the encrypted file
-    if (false === file_put_contents($encryptedFilePath, $encryptedData)) {
+    if (file_put_contents($encryptedFilePath, $encryptedData) === false) {
         die(json_encode(['status' => 'error', 'message' => 'Failed to save encrypted file.']));
     }
 
@@ -110,8 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     ];
 
     // Save metadata as a JSON file
-    $metadataFilePath = $encryptedFilePath . '.meta';
-    if (false === file_put_contents($metadataFilePath, json_encode($metadata))) {
+    $metadataFilePath = $folderPath . '/' . $uniqueFileName . '.enc.meta';
+    if (file_put_contents($metadataFilePath, json_encode($metadata)) === false) {
         die(json_encode(['status' => 'error', 'message' => 'Failed to save metadata.']));
     }
 
@@ -138,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         'file_name' => $uniqueFileName,
         'encrypted_file_path' => $encryptedFilePath,
         'metadata_path' => $metadataFilePath,
-        'formatted_size' => formatFileSize($file['size']),
+        'formatted_size' => $formattedSize,
     ]);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
