@@ -135,12 +135,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         unlink($tempFilePath);
     }
 
+    $fileDate = date('Y-m-d H:i:s');
+
     // Insert file information into the database
     try {
-        $stmt = $pdo->prepare("INSERT INTO tb_files (owner_id, name, size) VALUES (:owner_id, :name, :size)");
+        $stmt = $pdo->prepare("INSERT INTO tb_files (owner_id, name, size, created_at) VALUES (:owner_id, :name, :size, :created_at)");
         $stmt->bindParam(':owner_id', $userId);
         $stmt->bindParam(':name', $uniqueFileName);
         $stmt->bindParam(':size', $formattedSize);
+        $stmt->bindParam(':created_at', $fileDate);
         $stmt->execute();
     } catch (PDOException $e) {
         die(json_encode(['status' => 'error', 'message' => 'Failed to insert file information into database: ' . $e->getMessage()]));

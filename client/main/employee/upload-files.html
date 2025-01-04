@@ -532,13 +532,7 @@
                           updateFileCountIndicator(); // Update file count indicator
 
                           // Add the file details to the uploaded files table
-                          const row = document.createElement("tr");
-                          row.innerHTML = `
-                              <td>${fileName}</td>
-                              <td>${formatFileSize(fileObj.file.size)}</td> <!-- File size displayed as KB, MB, or GB -->
-                              <td>${new Date().toLocaleString()}</td>     
-                          `;
-                          uploadedFilesTable.appendChild(row);
+                          addFileToTable(fileName, fileObj.file.size, new Date().toLocaleString());
                           resolve(); // Resolve the promise after successful upload
                       } else {
                           console.error('Error:', result.message);
@@ -560,6 +554,15 @@
           });
       });
 
+      function addFileToTable(fileName, fileSize, uploadTime) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+              <td>${fileName}</td>
+              <td>${formatFileSize(fileSize)}</td> <!-- File size displayed as KB, MB, or GB -->
+              <td>${uploadTime}</td>     
+          `;
+          uploadedFilesTable.appendChild(row);
+      }
 
         // Function to format file size in KB, MB, or GB
         function formatFileSize(sizeInBytes) {

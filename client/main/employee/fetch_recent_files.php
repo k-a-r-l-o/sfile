@@ -21,7 +21,9 @@ try {
     $stmt = $pdo->prepare("
         SELECT name, size, created_at 
         FROM tb_files 
-        WHERE owner_id = :owner_id
+        WHERE owner_id = :owner_id 
+        AND created_at >= NOW() - INTERVAL 4 HOUR
+        ORDER BY created_at DESC
     ");
     $stmt->bindParam(':owner_id', $userId);
     $stmt->execute();
