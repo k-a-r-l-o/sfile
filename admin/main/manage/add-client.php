@@ -1,6 +1,11 @@
 <?php
-
 session_start();
+
+// Check if the session contains a user ID
+if (!isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_user_id'])) {
+    header("Location: ../../login?error=session_expired");
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Include database connection
