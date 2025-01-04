@@ -4,7 +4,7 @@ require_once '../../../../config/database.php';
 
 // Check if the session contains a user ID
 if (!isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client_user_id'])) {
-    header("Location: ../../login?error=session_expired");
+    header("Location: ../../../login?error=session_expired");
 } else {
     if ($_SESSION['client_role'] == 'Head') {
         header("Location: ../../head/");
