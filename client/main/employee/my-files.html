@@ -360,6 +360,31 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal for password input -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="passwordModalLabel">Confirm Adding New Administrator</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                  <p>Please enter your password:</p>
+                  <div>
+                      <label for="password" class="form-label">Password</label>
+                      <input type="password" class="form-control" name="password" id="password" required />
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-primary" id="confirmPassword">Confirm</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+
     <script>
       // Parse query parameters
       const urlParams = new URLSearchParams(window.location.search);
@@ -444,17 +469,18 @@
               <td>${file.size}</td>
               <td>${formatDateTime(file.created_at)}</td>
               <td>
-                <button
+                  <button
                     type="button"
                     title="Download"
-                    class="btn btn-success m-1 btn-sm"
+                    class="btn btn-success m-1 btn-sm downloadButton"
                   >
-                    <i class="ti ti-download"></i>
+                      <i class="ti ti-download"></i>
                   </button>
                   <button
                     type="button"
                     title="Share"
                     class="btn btn-primary m-1 btn-sm"
+                    id="ShareButton"
                   >
                     <i class="ti ti-send"></i>
                   </button>
@@ -469,6 +495,7 @@
                     type="button"
                     title="Delete"
                     class="btn btn-danger m-1 btn-sm"
+                    id="submitButton"
                   >
                     <i class="ti ti-trash"></i>
                   </button>
@@ -545,6 +572,31 @@
 
         // Initial fetch
         fetchData();
+      });
+
+      document.addEventListener('DOMContentLoaded', function () {
+          // Select all download buttons
+          const downloadButtons = document.querySelectorAll('.downloadButton');
+          const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+
+          // Add event listener to each download button
+          downloadButtons.forEach(downloadButton => {
+              downloadButton.addEventListener('click', function(event) {
+                  event.preventDefault(); // Prevent default form submission
+
+                  const password = document.getElementById('password').value;
+                  
+                  // You might want to handle password submission here before showing modal.
+                  document.getElementById('password').textContent = password; // Note: This line won't work as intended for <input> element
+
+                  passwordModal.show();
+              });
+          });
+
+          // Confirm password button logic
+          document.getElementById('confirmPassword').addEventListener('click', function() {
+              document.querySelector('form').submit();  // Submit the form (add necessary form handling)
+          });
       });
     </script>
 
