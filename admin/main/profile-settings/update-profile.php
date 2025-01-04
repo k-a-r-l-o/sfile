@@ -54,7 +54,7 @@ try {
 
         // Fetch the current user's email and role
         $doerUserId = $_SESSION['admin_user_id'];
-        $userStmt = $pdo->prepare("
+        $userStmt = $conn->prepare("
             SELECT user_email, user_role 
             FROM tb_admin_userdetails 
             WHERE user_id = :user_id
@@ -67,7 +67,7 @@ try {
         // Log the user addition
         $logAction = "Profile name updated successfully";
         $logdate = date('Y-m-d H:i:s');
-        $logStmt = $pdo->prepare("
+        $logStmt = $conn->prepare("
             INSERT INTO tb_logs (doer, log_date, role, log_action) 
             VALUES (:doer, :log_date, :role, :action)
         ");
