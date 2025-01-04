@@ -337,20 +337,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Create `tb_files` table
     try {
         echo "<h2>Creating table tb_files...</h2>";
         $pdo->exec("CREATE TABLE IF NOT EXISTS tb_files (
-        file_id INT AUTO_INCREMENT PRIMARY KEY,
-        owner_id INT NOT NULL,
-        encrypted_key VARCHAR(255) NOT NULL,
-        name VARCHAR(100) NOT NULL UNIQUE,
-        size VARCHAR(50) NOT NULL,
-        status TINYINT(1) DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (owner_id) REFERENCES tb_client_userdetails(user_id) ON DELETE CASCADE
-    );");
+            file_id INT AUTO_INCREMENT PRIMARY KEY,
+            owner_id INT NOT NULL,
+            name VARCHAR(100) NOT NULL,
+            size VARCHAR(50) NOT NULL,
+            status TINYINT(1) DEFAULT 1,
+            created_at DATETIME,
+            updated_at DATETIME,
+            UNIQUE (owner_id, name),
+            FOREIGN KEY (owner_id) REFERENCES tb_client_userdetails(user_id) ON DELETE CASCADE
+        );");
         error_log('Table tb_files created successfully.');
     } catch (PDOException $e) {
         error_log("Error creating table tb_files: " . $e->getMessage());

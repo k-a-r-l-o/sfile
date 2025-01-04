@@ -258,6 +258,10 @@
                 </div>
               </div>
 
+              <div class="alert my-2 d-none" id="error" role="alert">
+                An unknown error occurred. Please try again.
+              </div>
+
               <!-- Table -->
               <div class="col-lg-12">
                 <div class="table-responsive my-2">
@@ -395,6 +399,39 @@
       </div>
     </div>
     <script>
+      // Parse query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+
+      if (error) {
+        const messagetext = document.getElementById("error");
+        let message = "";
+
+        // Map error types to messages
+        switch (error) {
+          case "none":
+            message = "User successfully deleted.";
+            break;
+          default:
+            message = "An unknown error occurred. Please try again.";
+        }
+
+        // Update the alert with the message and show it
+        messagetext.textContent = message;
+        messagetext.classList.remove("d-none");
+
+        // Remove previous alert classes and apply the correct one
+        if (error === "none") {
+          messagetext.classList.add("alert-success");
+        } else {
+          messagetext.classList.add("alert-danger");
+        }
+
+        setTimeout(() => {
+          messagetext.classList.add("d-none");
+        }, 5000);
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         const tableBody = document.getElementById("tableBody");
         const currentPageElementshow =

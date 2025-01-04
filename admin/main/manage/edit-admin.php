@@ -57,9 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Log the edit action
         $logAction = "Administrator user $Id updated successfully.";
-        $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
+        $logAction = "Administrator user $user_id added successfully.";
+        $logdate = date('Y-m-d H:i:s');
+        $logStmt = $pdo->prepare("
+            INSERT INTO tb_logs (doer, log_date, role, log_action) 
+            VALUES (:doer, :log_date, :role, :action)
+        ");
         $logStmt->execute([
             ':doer' => $doerUserId,
+            ':log_date' => $logdate,
             ':role' => $logRole,
             ':action' => $logAction
         ]);

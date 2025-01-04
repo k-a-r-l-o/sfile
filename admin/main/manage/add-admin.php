@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Check if email already exists
-        $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM tb_admin_userdetails WHERE user_email = :email");
+        $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM tb_admin_userdetails WHERE user_email = :email AND user_status = '1'");
         $checkStmt->bindParam(':email', $email);
         $checkStmt->execute();
         $emailExists = $checkStmt->fetchColumn();
@@ -74,12 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Log the user addition
         $logAction = "Administrator user $user_id added successfully.";
+        $logdate = date('Y-m-d H:i:s');
         $logStmt = $pdo->prepare("
-            INSERT INTO tb_logs (doer, role, log_action) 
-            VALUES (:doer, :role, :action)
+            INSERT INTO tb_logs (doer, log_date, role, log_action) 
+            VALUES (:doer, :log_date, :role, :action)
         ");
         $logStmt->execute([
             ':doer' => $doerUserId,
+            ':log_date' => $logdate,
             ':role' => $logRole,
             ':action' => $logAction
         ]);

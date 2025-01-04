@@ -31,7 +31,7 @@ try {
         ON 
             u.user_id = l.user_id
         WHERE 
-            1=1
+            u.user_status = 1
     ";
 
     // Capture the filter parameters from the query string
