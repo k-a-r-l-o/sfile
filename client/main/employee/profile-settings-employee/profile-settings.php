@@ -170,29 +170,29 @@
                 
                           <!-- Profile Content -->  
                           <div id="profileContent" class="tab-content">  
-                              <form id="profileForm" action="client-update-profile.php" method="POST">
-                                  <div class="mb-3">  
-                                    <label for="user_id" class="form-label">User ID </label>  
-                                    <input type="text" class="form-control" name="user_id" id="user_id" readonly />  
-                                  </div>
-                                  <div class="mb-3">  
-                                    <label for="email" class="form-label">Email </label>  
-                                    <input type="text" class="form-control" name="email" id="email" readonly />  
-                                  </div>  
-                                  <div class="mb-3">  
-                                      <label for="firstname" class="form-label">First Name <i>(can be changed)</i></label>  
-                                      <input type="text" class="form-control" name="firstname" id="firstname" required />  
-                                  </div>  
-                                  <div class="mb-3">  
-                                      <label for="lastname" class="form-label">Last Name <i>(can be changed)</i></label>  
-                                      <input type="text" class="form-control" name="lastname" id="lastname" required />  
-                                  </div>   
-                                  <div class="mb-3">
-                                    <label for="role" class="form-label">Role</label>
-                                    <input type="text" class="form-control" name="role" id="role" readonly />
-                                  </div>                                
-                                  <button type="button" class="btn btn-primary" id="updateProfileButton">Update Profile</button>  
-                              </form>  
+                          <form id="profileForm" action="profile-settings.php" method="POST">
+                              <div class="mb-3">  
+                                  <label for="user_id" class="form-label">User ID </label>  
+                                  <input type="text" class="form-control" name="user_id" id="user_id" value="<?= htmlspecialchars($user['user_id']) ?>" readonly />  
+                              </div>
+                              <div class="mb-3">  
+                                  <label for="email" class="form-label">Email </label>  
+                                  <input type="text" class="form-control" name="email" id="email" value="<?= htmlspecialchars($user['user_email']) ?>" readonly />  
+                              </div>  
+                              <div class="mb-3">  
+                                  <label for="firstname" class="form-label">First Name <i>(can be changed)</i></label>  
+                                  <input type="text" class="form-control" name="firstname" id="firstname" value="<?= htmlspecialchars($user['user_fname']) ?>" required />  
+                              </div>  
+                              <div class="mb-3">  
+                                  <label for="lastname" class="form-label">Last Name <i>(can be changed)</i></label>  
+                                  <input type="text" class="form-control" name="lastname" id="lastname" value="<?= htmlspecialchars($user['user_lname']) ?>" required />  
+                              </div>   
+                              <div class="mb-3">
+                                  <label for="role" class="form-label">Role</label>
+                                  <input type="text" class="form-control" name="role" id="role" value="<?= htmlspecialchars($user['user_role']) ?>" readonly />
+                              </div>                                
+                              <button type="submit" class="btn btn-primary" id="updateProfileButton">Update Profile</button>  
+                          </form>
                           </div>  
                       </div>  
                   </div>  
@@ -232,59 +232,55 @@
       <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
       
       <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          // Extract query parameters
+          const urlParams = new URLSearchParams(window.location.search);
+          const id = urlParams.get("id");
+          const email = urlParams.get("email");
+          const firstname = urlParams.get("fname");
+          const lastname = urlParams.get("lname");
+          const role = urlParams.get("role");
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get("id");
-        const email = urlParams.get("email");
-        const firstname = urlParams.get("fname");
-        const lastname = urlParams.get("lname");
-        const role = urlParams.get("role");
+          // Check if all parameters exist
+          if (id && email && firstname && lastname && role) {
+              // Populate input fields
+              document.getElementById("user_id").value = id;
+              document.getElementById("email").value = email;
+              document.getElementById("firstname").value = firstname;
+              document.getElementById("lastname").value = lastname;
+              document.getElementById("role").value = role;
+          } else {
+              console.error("Missing required query parameters.");
+              alert("Error: Missing required query parameters.");
+              window.location.href = "edit-client?error=missing_params";
+          }
 
-        if (id && email && firstname && lastname && role) {
-            const user_id = document.getElementById("user_id");
-            const user_email = document.getElementById("email");
-            const user_firstname = document.getElementById("firstname");
-            const user_lastname = document.getElementById("lastname");
-            const user_role = document.getElementById("role");
-
-            user_id.value = id;
-            user_email.value = email;
-            user_firstname.value = firstname;
-            user_lastname.value = lastname;
-            user_role.value = role;
-
-        } else {
-            console.error("Missing required query parameters.");
-            window.location.href = "edit-client?error=missing_params";
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {  
+          // Handle Update Profile Button Click
           const updateProfileButton = document.getElementById('updateProfileButton');
-          const updateProfileModal = new bootstrap.Modal(document.getElementById('updateProfileModal')); 
+          const updateProfileModal = new bootstrap.Modal(document.getElementById('updateProfileModal'));
 
-          updateProfileButton.addEventListener('click', function(event) {   
-            event.preventDefault(); // Prevent default form submission   
-      
-            const firstName = document.getElementById('firstname').value;  
-            const lastName = document.getElementById('lastname').value; 
-          
-            document.getElementById('clientFirstName').textContent = firstName;  
-            document.getElementById('clientLastName').textContent = lastName;  
-      
-            editClientModal.show();  
-          });  
-    
-          document.getElementById('confirmUpdateClient').addEventListener('click', function() {  
-            document.querySelector('form').submit(); 
-          });  
-        });  
-           
-      </script>
-      <script>
-          // Handle the confirm button click
-          document.getElementById('confirmUpdate').addEventListener('click', function() {
+          updateProfileButton.addEventListener('click', function (event) {
+              event.preventDefault(); // Prevent default form submission
+
+              // Get updated values
+              const firstName = document.getElementById('firstname').value;
+              const lastName = document.getElementById('lastname').value;
+
+              // Populate modal fields with updated values
+              document.getElementById('clientFirstName').textContent = firstName;
+              document.getElementById('clientLastName').textContent = lastName;
+
+              // Show confirmation modal
+              updateProfileModal.show();
+          });
+
+          // Handle Confirm Update Button in Modal
+          document.getElementById('confirmUpdateClient').addEventListener('click', function () {
               document.getElementById('profileForm').submit(); // Submit the form
           });
+      });
+
       </script>
+
   </body>
 </html>
