@@ -174,29 +174,10 @@
                         type="email"  
                         class="form-control"  
                         id="emailShare"  
-                        placeholder="Enter email address"  
+                        placeholder="Enter receivers email address"  
                         required  
-                      />  
-                      <select class="form-select" id="accessLevel">  
-                        <option value="Viewer">Can View Only</option>  
-                        <option value="Downloader">Can Download Only</option> 
-                        <option value="Viewer & Downloader">Can View and Download</option> 
-                      </select>  
-                      <button type="button" class="btn btn-primary" id="addReceiverButton">Add</button>  
-                    </div>  
-
-                    <h6 class="fw-semibold">People with access</h6>  
-                    <div class="list-group mb-3" id="peopleWithAccess">  
-                      <div class="list-group-item d-flex justify-content-between align-items-center">  
-                        <span>Christeline Jane Tabacon (you)</span>  
-                        <span class="text-muted">Owner</span>  
-                      </div>  
-                      <!-- Additional dynamically added recipients will go here -->  
-                    </div>  
-
-                    <div id="sharingList" class="mb-3">  
-                      <!-- Added container to display added email addresses and their access levels -->  
-                    </div> 
+                      />   
+                    </div>   
 
                     <button type="button" class="btn btn-dark" onclick="window.location.href='../../'">Back</button>  
                     <button type="button" class="btn btn-primary" id="shareFileButton">Share Now</button>
@@ -244,7 +225,7 @@
           <div class="modal-footer">  
             <button  
               type="button"  
-              class="btn btn-secondary"  
+              class="btn btn-danger"  
               data-bs-dismiss="modal"  
             >  
               Cancel  
@@ -288,49 +269,16 @@
         checkSession();
       })();
 
-      document.getElementById('addReceiverButton').addEventListener('click', function() {  
-        const emailInput = document.getElementById('emailShare');  
-        const accessLevelSelect = document.getElementById('accessLevel');  
-
-        // Get the input values  
-        const email = emailInput.value.trim();  
-        const accessLevel = accessLevelSelect.value;  
-
-        // Validation: Check if email is not empty  
-        if (email === '') {  
-          alert('Please enter an email address.');  
-          return;  
+      // Add event listener for "Share Now" button  
+      document.getElementById("shareFileButton").addEventListener("click", function() {  
+        const emailInput = document.getElementById("emailShare").value;  
+        if (!emailInput) {  
+          alert("Please enter a valid email address."); // Alert if the email input is empty  
+        } else {  
+          // Show the password modal  
+          const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));  
+          passwordModal.show();  
         }  
-
-        // Create a new list item for the added receiver  
-        const listItem = document.createElement('div');  
-        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';  
-        listItem.innerHTML = `  
-          <span>${email}</span>  
-          <span class="text-muted">${accessLevel}</span>  
-          <button type="button" class="btn-close" aria-label="Close" onclick="this.parentElement.remove()"></button>  
-        `;  
-
-        // Append the new item to the list  
-        document.getElementById('peopleWithAccess').appendChild(listItem);  
-
-        // Clear the input field  
-        emailInput.value = '';  
-        accessLevelSelect.value = 'viewer'; // Reset to default value  
-      });  
-
-      document.getElementById('shareFileButton').addEventListener('click', function() {  
-        const emailList = document.getElementById('peopleWithAccess').children;  
-
-        // Check if there's at least one email in the list  
-        if (emailList.length === 0) {  
-          alert('Please add at least one email to share.');  
-          return;  
-        }  
-
-        // If there's at least one email, show the password modal  
-        const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));  
-        passwordModal.show();  
       });  
     </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
