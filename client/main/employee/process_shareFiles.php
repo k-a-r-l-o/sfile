@@ -53,7 +53,7 @@ if (isset($input['password'], $input['email'], $input['filename'])) {
                 ];
 
                 // Path to the user's folder where the private key is stored
-                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee/$userId";
+                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee/$userId"; 
 
                 // Path to the encrypted private key
                 $encryptedPrivateKeyPath = "$privateKeyPath/private_key.enc";
@@ -85,7 +85,7 @@ if (isset($input['password'], $input['email'], $input['filename'])) {
                     exit;
                 }
 
-                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId";
+                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId"; 
                 $metadataFilePath = "$folderPath/{$file['name']}.enc.meta";
 
                 // Check if the metadata file exists
@@ -128,7 +128,7 @@ if (isset($input['password'], $input['email'], $input['filename'])) {
                 $stmt->bindParam(':email', $enteredEmail, PDO::PARAM_STR);
                 $stmt->execute();
 
-                $headUserId = $stmt->fetch(PDO::FETCH_ASSOC)['user_id'];
+                $headUserId = $stmt->fetch(PDO::FETCH_ASSOC)['user_id']; // Fetch the user_id of the Head
 
                 if (!$headUserId) {
                     $response = [
@@ -175,21 +175,55 @@ if (isset($input['password'], $input['email'], $input['filename'])) {
                     exit;
                 }
 
+                // Base64 encode the encrypted AES key for storage or transmission
+                $encryptedAESKeyForHead = base64_encode($encryptedAESKeyForHead);
+
+                /*/ Insert the data into the database (tb_shared_files table)
+                $stmt = $pdo->prepare("INSERT INTO tb_shared_files (file_id, shared_to, encrypted_key, shared_at) VALUES (:file_id, :shared_to, :encrypted_key, :shared_at)");
+                $stmt->bindParam(':file_id', $file['id'], PDO::PARAM_INT);
+                $stmt->bindParam(':shared_to', $enteredEmail, PDO::PARAM_STR);
+                $stmt->bindParam(':encrypted_key', $encryptedAESKeyForHead, PDO::PARAM_STR);
+                $stmt->bindParam(':shared_at', date('Y-m-d H:i:s'), PDO::PARAM_STR);
+
+                if ($stmt->execute()) {
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'AES key encrypted and stored in database successfully.',
+                        'encrypted_key' => $encryptedAESKeyForHead
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Failed to store the encrypted AES key in the database.'
+                    ];
+                }
+                / Path to save the encrypted AES key
+                $encryptedAESKeyFilePath = __DIR__ . "/../../../security/keys/head/$headUserId/encrypted_aes_key.enc";
+
+                // Save the encrypted AES key to the file
+                if (file_put_contents($encryptedAESKeyFilePath, $encryptedAESKeyForHead) === false) {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Failed to save the encrypted AES key to file.'
+                    ];
+                    echo json_encode($response);
+                    exit;
+                }*/
+
                 // Final response
                 $response = [
                     'status' => 'success',
                     'message' => 'AES key encrypted and saved successfully.',
-                    'encrypted_key' => base64_encode($encryptedAESKeyForHead)
+                    'encrypted_key' => $encryptedAESKeyForHead
                 ];
 
                 echo json_encode($response);
             } else {
                 $response = [
                     'status' => 'error',
-                    'message' => 'Wrong password input, please try again.'
+                    'message' => 'Invalid password.',
                 ];
                 echo json_encode($response);
-                exit;
             }
         } else {
             $response = [

@@ -235,7 +235,6 @@
               aria-label="Close"
             ></button>
           </div>
-
           <div class="modal-body">
             <form id="passwordForm">
               <div class="mb-3">
@@ -248,14 +247,8 @@
                   required
                 />
               </div>
-              <div
-                id="passwordError"
-                class="text-danger"
-                style="display: none; font-size: 0.9em;"
-              ></div>
             </form>
           </div>
-          
           <div class="modal-footer">
             <button
               type="button"
@@ -344,55 +337,40 @@
             );
             passwordModal.show();
 
-
             document
-            .getElementById("confirmPassword")
-            .addEventListener("click", function () {
-              const password = document.getElementById("password").value;
-              const emailInput = document.getElementById("emailShare").value;
-              const filename = new URLSearchParams(window.location.search).get("file");
+          .getElementById("confirmPassword")
+          .addEventListener("click", function () {
+            const password = document.getElementById("password").value;
 
-              if (password.trim() === "") {
-                alert("Please enter a password.");
-                return;
-              }
+            if (password.trim() === "") {
+              alert("Please enter a password.");
+              return;
+            }
 
-              // Send the password to the server via AJAX
-              fetch("process_shareFiles.php", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  password: password,
-                  email: emailInput,
-                  filename: filename,
-                }),
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  const errorMessageElement = document.getElementById("passwordError");
-
-                  if (data.status === "success") {
+            // Send the password to the server via AJAX
+            fetch("process_shareFiles.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ password: password, email: emailInput,
+                filename: filename,}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status == 'success') {
                     console.log("Message:", data.message);
-                    passwordModal.hide();
-                  } else {
+                    // Handle successful response (e.g., initiate file download)
+                } else {
                     console.error("Message:", data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 
-                    // Display the error message in the modal
-                    if (errorMessageElement) {
-                      errorMessageElement.textContent = data.message;
-                      errorMessageElement.style.display = "block";
-                    }
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error:", error);
-                });
-                
             // Close the modal after confirming
             passwordModal.hide();
-
             });
           }
         });
