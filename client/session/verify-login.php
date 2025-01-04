@@ -14,7 +14,7 @@ if (isset($_GET['token'])) {
             "SELECT l.user_id, u.user_role, l.token, l.token_expiration 
              FROM tb_client_logindetails l
              JOIN tb_client_userdetails u ON l.user_id = u.user_id
-             WHERE l.token_expiration > NOW()"
+             WHERE l.token_expiration > NOW() AND u.user_status = 1"
         );
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -43,7 +43,7 @@ if (isset($_GET['token'])) {
             $_SESSION['client_token'] = $token;
 
             // Fetch the current user's email and role for logging purposes
-            $doerUserId = $_SESSION['admin_user_id'];
+            $doerUserId = $_SESSION['client_user_id'];
             $logRole = $user['user_role'];
 
             // Log the edit action

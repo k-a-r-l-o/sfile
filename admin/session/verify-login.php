@@ -14,7 +14,7 @@ if (isset($_GET['token'])) {
             "SELECT l.user_id, u.user_role, l.token, l.token_expiration 
              FROM tb_admin_logindetails l
              JOIN tb_admin_userdetails u ON l.user_id = u.user_id
-             WHERE l.token_expiration > NOW()"
+             WHERE l.token_expiration > NOW() AND u.user_status = 1"
         );
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);

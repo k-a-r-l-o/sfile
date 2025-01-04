@@ -205,25 +205,7 @@
                 </div>
                 <div class="col-sm-4 text-end">
                   <div class="row">
-                    <div class="col-lg-6 text-end">
-                      <form method="get" onsubmit="return false;" class="my-2">
-                        <select
-                          title="Sort By"
-                          name="sort-by"
-                          id="sort-by"
-                          class="form-select text-start"
-                          onchange="applyFilters()"
-                        >
-                          <option value="">Sort By</option>
-                          <option value="Ascending">Filename (A-Z)</option>
-                          <option value="Descending">Filename (Z-A)</option>
-                          <option value="Oldest">Date (Oldest)</option>
-                          <option value="Newest">Date (Newest)</option>
-                          <option value="Smallest">File Size (Smallest)</option>
-                          <option value="Largest">File Size (Largest)</option>
-                        </select>
-                      </form>
-                    </div>
+                    <div class="col-lg-6 text-end"></div>
                     <div class="col-lg-6 text-end">
                       <form method="get" onsubmit="return false;" class="my-2">
                         <select
@@ -412,13 +394,11 @@
         const totalPagesElement = document.getElementById("totalPages");
 
         const limitFilter = document.getElementById("limit-filter");
-        const sortFilter = document.getElementById("sort-by"); // Sort By
         const byTimeFilter = document.getElementById("time-filter"); // Filter by Time
         const searchFilter = document.getElementById("search");
 
         let currentPage = 1;
         let limit = parseInt(limitFilter.value);
-        let sortBy = sortFilter.value; // Sort By dropdown
         let timeFilter = byTimeFilter.value; // Filter by Time dropdown
         let search = searchFilter.value;
 
@@ -427,7 +407,6 @@
           const url = new URL("./my-files.php", window.location.href);
           url.searchParams.append("page", currentPage);
           url.searchParams.append("limit", limit);
-          if (sortBy) url.searchParams.append("sortBy", sortBy);
           if (timeFilter) url.searchParams.append("timeFilter", timeFilter);
           if (search) url.searchParams.append("search", search);
 
@@ -446,32 +425,63 @@
           files.forEach((file) => {
             const row = document.createElement("tr");
             row.innerHTML = `
-              <td>${file.filename}</td>
-              <td>${file.file_size}</td>
-              <td>${file.upload_date}</td>
               <td>
-                <div class="dropdown">
-                  <button
-                    class="btn btn-secondary btn-sm dropdown-toggle"
+                <a
+                  href="#"
+                  title="View"
+                  class="nav-link nav-icon-hover text-primary hover:text-primary">
+                  <strong>${file.name}</strong>
+                </a>
+              </td>
+              <td>${file.size}</td>
+              <td>${formatDateTime(file.created_at)}</td>
+              <td>
+                <button
                     type="button"
-                    id="dropdownMenuButton${file.id}"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
+                    title="Download"
+                    class="btn btn-success m-1 btn-sm"
                   >
-                    Actions
+                    <i class="ti ti-download"></i>
                   </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton${file.id}">
-                    <li><a class="dropdown-item" href="#" onclick="viewFile('${file.id}')">View</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="downloadFile('${file.id}')">Download</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="shareFile('${file.id}')">Share</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="renameFile('${file.id}')">Rename</a></li>
-                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteFile('${file.id}')">Delete</a></li>
-                  </ul>
-                </div>
+                  <button
+                    type="button"
+                    title="Share"
+                    class="btn btn-primary m-1 btn-sm"
+                  >
+                    <i class="ti ti-send"></i>
+                  </button>
+                  <button
+                    type="button"
+                    title="Rename"
+                    class="btn btn-warning m-1 btn-sm"
+                  >
+                    <i class="ti ti-edit"></i>
+                  </button>
+                  <button
+                    type="button"
+                    title="Delete"
+                    class="btn btn-danger m-1 btn-sm"
+                  >
+                    <i class="ti ti-trash"></i>
+                  </button>
               </td>
             `;
             tableBody.appendChild(row);
           });
+        }
+
+        function formatDateTime(dateTime) {
+          const date = new Date(dateTime);
+          const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          };
+          return date.toLocaleString("en-US", options);
         }
 
         // Update pagination
@@ -490,7 +500,6 @@
         // Apply filters
         function applyFilters() {
           limit = parseInt(limitFilter.value);
-          sortBy = sortFilter.value; // Sort By dropdown
           timeFilter = byTimeFilter.value; // Filter by Time dropdown
           search = searchFilter.value.trim(); // Search input
           currentPage = 1; // Reset to first page on filter change
@@ -514,7 +523,6 @@
 
         // Event listeners for filters and pagination
         limitFilter.addEventListener("change", applyFilters);
-        sortFilter.addEventListener("change", applyFilters);
         byTimeFilter.addEventListener("change", applyFilters);
         searchFilter.addEventListener("input", applyFilters); // Trigger search on input
         document

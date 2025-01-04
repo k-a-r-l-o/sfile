@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 "SELECT l.password, u.user_id, u.user_role, l.user_status
                  FROM tb_client_logindetails l
                  JOIN tb_client_userdetails u ON l.user_id = u.user_id
-                 WHERE u.user_email = :email"
+                 WHERE u.user_email = :email AND u.user_status = 1"
             );
             $stmt->bindValue(':email', $email);
             $stmt->execute();
