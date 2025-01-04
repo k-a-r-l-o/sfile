@@ -126,7 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Log the user addition
         $logAction = "$role user $user_id added successfully.";
-        $logAction = "Administrator user $user_id added successfully.";
         $logdate = date('Y-m-d H:i:s');
         $logStmt = $pdo->prepare("
             INSERT INTO tb_logs (doer, log_date, role, log_action) 
