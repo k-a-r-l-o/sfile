@@ -50,14 +50,14 @@ if (isset($_GET['token'])) {
             $logAction = "Signed in successfully.";
             $userlog = date('Y-m-d H:i:s'); // Current timestamp
             $logStmt = $conn->prepare("
-                INSERT INTO tb_logs (doer, role, log_action, user_log) 
-                VALUES (:doer, :role, :action, :userlog)
+                INSERT INTO tb_logs (log_date, doer, role, log_action)
+                VALUES (:userlog, :doer, :role, :action)
             ");
             $logStmt->execute([
+                ':userlog' => $userlog,
                 ':doer' => $doerUserId,
                 ':role' => $logRole,
-                ':action' => $logAction,
-                ':userlog' => $userlog
+                ':action' => $logAction
             ]);
             // Redirect based on role
             header("Location: ../verification-success");

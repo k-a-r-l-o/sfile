@@ -75,12 +75,13 @@
       <div
         class="container-fluid container-l position-relative d-flex align-items-center"
       >
-      <a href="../index.html" class="logo d-flex align-items-center me-auto">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <img src="../assets/img/logo.png" alt="SecureFile" />
-        <h1 class="sitename">Secure</h1>
-        <h1 class="accented">File</h1>
-      </a></div>
+        <a href="../index.html" class="logo d-flex align-items-center me-auto">
+          <!-- Uncomment the line below if you also wish to use an image logo -->
+          <img src="../assets/img/logo.png" alt="SecureFile" />
+          <h1 class="sitename">Secure</h1>
+          <h1 class="accented">File</h1>
+        </a>
+      </div>
     </header>
 
     <main class="main">
@@ -111,6 +112,7 @@
                   method="post"
                   data-aos="fade-up"
                   data-aos-delay="200"
+                  onsubmit="disableButton(this)"
                 >
                   <div class="mb-3">
                     <div class="input-group">
@@ -160,7 +162,9 @@
                       >Forgot password?</a
                     >
                   </div>
-                  <button type="submit" class="btn-signin">Sign In</button>
+                  <button type="submit" class="btn-signin" id="signInButton">
+                    Sign In
+                  </button>
                 </form>
               </div>
             </div>
@@ -222,6 +226,12 @@
 
         messagetext.textContent = message;
         notification.style.display = "flex";
+      }
+
+      function disableButton(form) {
+        const button = form.querySelector("#signInButton");
+        button.disabled = true;
+        button.textContent = "Processing...";
       }
     </script>
 
