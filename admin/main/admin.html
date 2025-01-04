@@ -181,7 +181,7 @@
                     type="button"
                     class="btn btn-primary my-2 fs-3"
                   >
-                    <i class="ti ti-plus"></i> Add Administrator
+                    <i class="ti ti-plus"></i> New Administrator
                   </button>
                 </div>
                 <div class="col-sm-4 text-end">
@@ -459,7 +459,7 @@
                     <td>${user.user_status}</td>  
                     <td>  
                         <button onclick="window.location.href='manage/edit-admin?id=${user.user_id}&fname=${user.user_fname}&lname=${user.user_lname}&email=${user.user_email}'" class="btn btn-primary btn-sm">Edit</button>  
-                        <button onclick="showDeleteConfirmation('${user.user_id}')" class="btn btn-danger btn-sm">Delete</button>  
+                        <button onclick="confirmDeleteButton('${user.user_id}')" class="btn btn-danger btn-sm">Delete</button>  
                     </td>  
                 `;  
                 tableBody.appendChild(row);  
