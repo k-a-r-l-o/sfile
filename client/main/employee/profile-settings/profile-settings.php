@@ -6,7 +6,7 @@ require_once '../../../../config/database.php';
 if (!isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client_user_id'])) {
   header("Location: ../../login?error=session_expired");
 } else {
-  if ($_SESSION['client_role'] != 'Head') {
+  if ($_SESSION['client_role'] == 'Head') {
     header("Location: ../../head/");
   }
 }

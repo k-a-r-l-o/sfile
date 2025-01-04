@@ -32,7 +32,7 @@
           >
             <a href="../" class="text-nowrap logo-img">
               <img
-                src="../../../../assets/img/light-logo-employee.svg"
+                src="../../../../assets/img/light-logo-head.svg"
                 alt=""
               />
             </a>
@@ -64,31 +64,16 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link"
-                  href="../upload-files"
+                  href="../employee-files"
                   aria-expanded="false"
                 >
                   <span>
                     <iconify-icon
-                      icon="solar:upload-minimalistic-bold-duotone"
+                      icon="solar:folder-with-files-bold-duotone"
                       class="fs-6"
                     ></iconify-icon>
                   </span>
-                  <span class="hide-menu">Upload Files</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a
-                  class="sidebar-link"
-                  href="../my-files"
-                  aria-expanded="false"
-                >
-                  <span>
-                    <iconify-icon
-                      icon="solar:layers-minimalistic-bold-duotone"
-                      class="fs-6"
-                    ></iconify-icon>
-                  </span>
-                  <span class="hide-menu">My Files</span>
+                  <span class="hide-menu">Employee's Files</span>
                 </a>
               </li>
             </ul>
@@ -427,9 +412,9 @@
                 // Redirect to the logout script if the session is invalid
                 window.location.href = "../login?error=session_expired";
               } else {
-                if (data.role == "Head") {
+                if (data.role == "Employee") {
                   // Redirect to the employee dashboard if the user is an employee
-                  window.location.href = "../../head/";
+                  window.location.href = "../../employee/";
                 }
               }
             })

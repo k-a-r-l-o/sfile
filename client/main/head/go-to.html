@@ -125,7 +125,7 @@
                   >
                     <div class="message-body">
                       <a
-                        href="../head/profile-setting/profile"
+                        href="../head/profile-settings/profile-settings"
                         class="d-flex align-items-center gap-2 dropdown-item"
                       >
                         <i class="ti ti-user fs-6"></i>
@@ -325,6 +325,38 @@
         </div>
       </div>
     </div>
+    <script>
+      (function () {
+        const checkSession = () => {
+          fetch("../../session/sessioncheck.php", {
+            method: "GET",
+            credentials: "include", // Include cookies with the request
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (!data.sessionValid) {
+                // Redirect to the logout script if the session is invalid
+                window.location.href = "../login?error=session_expired";
+              } else {
+                if (data.role == "Employee") {
+                  // Redirect to the employee dashboard if the user is an employee
+                  window.location.href = "../../employee/";
+                }
+              }
+            })
+            .catch((err) => {
+              console.error("Error checking session:", err);
+              // Handle fetch errors if needed
+            });
+        };
+
+        // Check the session every 5 minutes (300,000 milliseconds)
+        setInterval(checkSession, 300000);
+
+        // Also check the session immediately when the script is loaded
+        checkSession();
+      })();
+    </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
