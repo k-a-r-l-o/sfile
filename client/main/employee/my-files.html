@@ -364,23 +364,23 @@
     <!-- Modal for password input -->
     <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
       <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="passwordModalLabel">Confirm Adding New Administrator</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <p>Please enter your password:</p>
-                  <div>
-                      <label for="password" class="form-label">Password</label>
-                      <input type="password" class="form-control" name="password" id="password" required />
-                  </div>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" class="btn btn-primary" id="confirmPassword">Confirm</button>
-              </div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="passwordModalLabel">Confirm Adding New Administrator</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
+          <div class="modal-body">
+            <p>Please enter your password:</p>
+            <div>
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" name="password" id="password" required />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="confirmPassword">Confirm</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -504,6 +504,33 @@
             tableBody.appendChild(row);
           });
         }
+
+        // Select all download buttons
+        const downloadButtons = document.querySelectorAll('.downloadButton');
+        const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+
+        // Add event listener to each download button
+        downloadButtons.forEach((downloadButton) => {
+          downloadButton.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default action
+
+            // Show the password modal
+            passwordModal.show();
+          });
+        });
+
+        // Confirm password button logic
+        document.getElementById('confirmPassword').addEventListener('click', function() {
+          // Handle form submission or further logic here
+          const password = document.getElementById('password').value;
+          console.log('Password entered:', password); // Just a sample, you can perform validation here
+
+          // Close the modal
+          passwordModal.hide();
+
+          // Continue with the download or any other action
+          alert('Password confirmed! Proceed with download...');
+        });
 
         function formatDateTime(dateTime) {
           const date = new Date(dateTime);
