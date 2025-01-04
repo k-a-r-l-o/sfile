@@ -345,6 +345,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             name VARCHAR(100) NOT NULL,
             size VARCHAR(50) NOT NULL,
             status TINYINT(1) DEFAULT 1,
+            hashed_key VARCHAR(255) NOT NULL,
             created_at DATETIME,
             updated_at DATETIME,
             UNIQUE (owner_id, name),
