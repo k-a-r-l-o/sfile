@@ -95,6 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     // Move the uploaded file to a temporary location for processing
     $tempFilePath = $file['tmp_name'];
 
+    // Calculate SHA-256 hash for file integrity
+    $fileHash = hash_file('sha256', $tempFilePath);
+    if ($fileHash === false) {
+        die(json_encode(['status' => 'error', 'message' => 'Failed to calculate file hash.']));
+    }
+
     // Generate AES key and IV
     $aesKey = generateAESKey();
     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
@@ -122,11 +128,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         'encrypted_key' => base64_encode($encryptedAESKey),
         'file_name' => $uniqueFileName,
         'upload_time' => date('Y-m-d H:i:s'),
+        'sha256_hash' => $fileHash,
     ];
 
     // Save metadata as a JSON file
     $metadataFilePath = $folderPath . '/' . $uniqueFileName . '.enc.meta';
-    if (file_put_contents($metadataFilePath, json_encode($metadata)) === false) {
+    if (file_put_contents($metadataFilePath, json_encode($metadata, JSON_PRETTY_PRINT)) === false) {
         die(json_encode(['status' => 'error', 'message' => 'Failed to save metadata.']));
     }
 
@@ -157,6 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         'encrypted_file_path' => $encryptedFilePath,
         'metadata_path' => $metadataFilePath,
         'formatted_size' => $formattedSize,
+        'sha256_hash' => $fileHash, // Return the hash in the response
     ]);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
