@@ -20,13 +20,22 @@ if (isset($_GET['token'])) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($token, $user['token'])) {
-            // Clear token to prevent reuse
+            $userlog = date('Y-m-d H:i:s'); // Current timestamp
             $clearTokenStmt = $conn->prepare(
                 "UPDATE tb_admin_logindetails 
-                 SET token = NULL, token_expiration = NULL, verified = 1, user_status = 'Online', user_log = NOW() 
-                 WHERE user_id = :user_id"
+                SET token = NULL, 
+                    token_expiration = NULL, 
+                    verified = 1, 
+                    user_status = 'Online', 
+                    user_log = :userlog 
+                WHERE user_id = :user_id"
             );
-            $clearTokenStmt->execute([':user_id' => $user['user_id']]);
+
+            $clearTokenStmt->execute([
+                ':userlog' => $userlog,
+                ':user_id' => $user['user_id']
+            ]);
+
 
             // Store user details in session
             $_SESSION['admin_user_id'] = $user['user_id'];
@@ -39,11 +48,16 @@ if (isset($_GET['token'])) {
 
             // Log the edit action
             $logAction = "Signed in successfully.";
-            $logStmt = $conn->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
+            $userlog = date('Y-m-d H:i:s'); // Current timestamp
+            $logStmt = $conn->prepare("
+                INSERT INTO tb_logs (doer, role, log_action, user_log) 
+                VALUES (:doer, :role, :action, :userlog)
+            ");
             $logStmt->execute([
                 ':doer' => $doerUserId,
                 ':role' => $logRole,
-                ':action' => $logAction
+                ':action' => $logAction,
+                ':userlog' => $userlog
             ]);
             // Redirect based on role
             header("Location: ../verification-success");

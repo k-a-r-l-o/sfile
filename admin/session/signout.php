@@ -28,16 +28,18 @@ if (isset($_SESSION['admin_user_id'])) {
         $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
         $logRole = $userDetails['user_role'] ?? 'Unknown';
 
-        // Log the user addition
+        // Log the signout action 
         $logAction = "Signed out successfully.";
+        $userlog = date('Y-m-d H:i:s'); // Current timestamp
         $logStmt = $conn->prepare("
-            INSERT INTO tb_logs (doer, role, log_action) 
-            VALUES (:doer, :role, :action)
+            INSERT INTO tb_logs (doer, role, log_action, user_log) 
+            VALUES (:doer, :role, :action, :userlog)
         ");
         $logStmt->execute([
             ':doer' => $doerUserId,
             ':role' => $logRole,
-            ':action' => $logAction
+            ':action' => $logAction,
+            ':userlog' => $userlog
         ]);
     } catch (PDOException $e) {
         error_log("Signout error: " . $e->getMessage());

@@ -12,14 +12,19 @@ if (isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client
             $db = new Database();
             $conn = $db->getConnection();
 
-            // Mark user as "Offline"
+            $userlog = date('Y-m-d H:i:s'); // Current timestamp
             $updateStatusStmt = $conn->prepare(
                 "UPDATE tb_client_logindetails 
-             SET user_status = 'Online' 
-                 user_log = NOW(),
-             WHERE user_id = :user_id"
+                SET token = NULL, 
+                    user_status = 'Online', 
+                    user_log = :userlog 
+                WHERE user_id = :user_id"
             );
-            $updateStatusStmt->execute([':user_id' => $_SESSION['client_user_id']]);
+
+            $updateStatusStmt->execute([
+                ':userlog' => $userlog,
+                ':user_id' => $user['user_id']
+            ]);
         } catch (PDOException $e) {
             error_log("Signout error: " . $e->getMessage());
             // Optionally, you can show a message or log this for further review
