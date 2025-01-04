@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../../config/database.php';
+$userlog = date('Y-m-d H:i:s'); // Current timestamp
 
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
@@ -36,7 +37,7 @@ if (isset($_GET['token'])) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($token, $user['token'])) {
-            $userlog = date('Y-m-d H:i:s'); // Current timestamp
+
             $clearTokenStmt = $conn->prepare(
                 "UPDATE tb_client_logindetails 
                 SET token = NULL, 
@@ -64,7 +65,6 @@ if (isset($_GET['token'])) {
 
             // Log the edit action
             $logAction = "Signed in successfully.";
-            $userlog = date('Y-m-d H:i:s'); // Current timestamp
             $logStmt = $conn->prepare("
                 INSERT INTO tb_logs (log_date, doer, role, log_action)
                 VALUES (:userlog, :doer, :role, :action)
