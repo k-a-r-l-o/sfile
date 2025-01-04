@@ -4,7 +4,6 @@ session_start();
 // Check if session variables are set
 if (!isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_user_id'])) {
     header("Location: ../login?error=session_expired");
-    exit;
 }
 
 require_once __DIR__ . '/../../config/config.php';
@@ -28,24 +27,24 @@ try {
 
     // Filters
     $filters = [];
-    if (!empty($_GET['role'])) {
-        $filters['role'] = htmlspecialchars($_GET['role']);
+    if (isset($_GET['role']) && !empty($_GET['role'])) {
+        $filters['role'] = $_GET['role'];
         $sql .= " AND `role` = :role";
     }
 
-    if (!empty($_GET['time-filter'])) {
-        $timeFilter = $_GET['time-filter'];
-        if ($timeFilter === "Week") {
+    if (isset($_GET['time-filter']) && !empty($_GET['time-filter'])) {
+        $filters = $_GET['time-filter'];
+        if ($filters === "Week") {
             $sql .= " AND `date_time` >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
-        } elseif ($timeFilter === "Month") {
+        } elseif ($filters === "Month") {
             $sql .= " AND `date_time` >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
-        } elseif ($timeFilter === "Year") {
+        } elseif ($filters === "Year") {
             $sql .= " AND `date_time` >= DATE_SUB(NOW(), INTERVAL 1 YEAR)";
         }
     }
 
-    if (!empty($_GET['search'])) {
-        $filters['search'] = "%" . htmlspecialchars($_GET['search']) . "%";
+    if (isset($_GET['search']) && !empty($_GET['search'])) {
+        $filters['search'] = "%" . $_GET['search'] . "%";
         $sql .= " AND (
             `name` LIKE :search OR 
             `activity` LIKE :search OR 
@@ -54,8 +53,8 @@ try {
     }
 
     // Pagination
-    $limit = max(1, intval($_GET['limit'] ?? 10));
-    $page = max(1, intval($_GET['page'] ?? 1));
+    $limit = isset($_GET['limit']) && is_numeric($_GET['limit']) ? intval($_GET['limit']) : 10;
+    $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
     $offset = ($page - 1) * $limit;
 
     $sql .= " ORDER BY `date_time` DESC, `log_id` DESC";
@@ -79,7 +78,28 @@ try {
     $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Count total records
-    $countSql = str_replace("*", "COUNT(*) AS total", $sql);
+    $countSql = "
+        SELECT COUNT(*) AS total FROM (
+            SELECT * FROM view_admin_activity_logs
+            UNION ALL
+            SELECT * FROM view_client_activity_logs
+            UNION ALL
+            SELECT * FROM view_system_generated_logs
+        ) AS logs
+        WHERE 1=1
+    ";
+
+    if (isset($filters['role'])) {
+        $countSql .= " AND `role` = :role";
+    }
+    if (isset($filters['search'])) {
+        $countSql .= " AND (
+            `name` LIKE :search OR 
+            `activity` LIKE :search OR 
+            `email_address` LIKE :search
+        )";
+    }
+
     $countStmt = $pdo->prepare($countSql);
     if (isset($filters['role'])) {
         $countStmt->bindParam(':role', $filters['role'], PDO::PARAM_STR);
@@ -106,6 +126,6 @@ try {
     echo json_encode($response);
 } catch (PDOException $e) {
     error_log("Error: " . $e->getMessage());
-    echo json_encode(["error" => "Unable to fetch logs. Please try again later."]);
+    echo json_encode(["error" => "An error occurred while fetching logs"]);
 }
 exit;
