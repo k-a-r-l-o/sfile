@@ -30,7 +30,7 @@ if (isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client
             // Optionally, you can show a message or log this for further review
         }
     }
-    echo json_encode(['sessionValid' => true]);
+    echo json_encode(['sessionValid' => true, 'role' => $_SESSION['client_role']]);
     exit;
 } else {
     echo json_encode(['sessionValid' => false]);

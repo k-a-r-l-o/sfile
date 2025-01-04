@@ -14,6 +14,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/tabler-icons@1.30.1/dist/tabler-icons.min.css"
     />
+    
   </head>
 
   <body>
@@ -34,7 +35,7 @@
           <div
             class="brand-logo d-flex align-items-center justify-content-between"
           >
-            <a href="./index.html" class="text-nowrap logo-img">
+            <a href="./" class="text-nowrap logo-img">
               <img src="../../assets/img/light-logo-admin.svg" alt="" />
             </a>
             <div
@@ -151,7 +152,7 @@
                   >
                     <div class="message-body">
                       <a
-                        href="javascript:void(0)"
+                      href="profile-settings/profile-settings"
                         class="d-flex align-items-center gap-2 dropdown-item"
                       >
                         <i class="ti ti-user fs-6"></i>
@@ -175,15 +176,15 @@
             <div class="card-body">
               <div class="row">
                 <h3 class="col-lg-12">Activity Logs</h3>
-                <div class="col-sm-8 text-start">
+                <div class="col-sm-8 text-start">  
                   <button  
-                    onclick="exportToCSV()"  
+                    onclick="exportAsPDF()"  
                     type="button"  
                     class="btn btn-primary my-2 fs-3"  
                   >  
-                    Export as CSV  
-                  </button>
-                </div>
+                    Export as PDF   
+                  </button>  
+                </div>  
                 <div class="col-sm-4 text-end">
                   <form method="get" onsubmit="return false;" class="mb-2">
                     <input
@@ -401,8 +402,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const tableBody = document.getElementById("tableBody");
-        const currentPageElementshow =
-          document.getElementById("currentPageshow");
+        const currentPageElementshow = document.getElementById("currentPageshow");
         const currentPageElement = document.getElementById("currentPage");
         const totalPagesElement = document.getElementById("totalPages");
 
@@ -520,31 +520,6 @@
           .addEventListener("click", () => navigatePage("custom"));
         // Initial fetch
         fetchData();
-
-        // Function to export table data as CSV  
-        function exportToCSV() {  
-          console.log("Exporting to CSV..."); // Debug log  
-          const rows = Array.from(document.querySelectorAll("#tableBody tr"));  
-          if (rows.length === 0) {  
-            console.log("No rows found!"); // Debug log  
-            return; // Exit if no rows  
-          }  
-          
-          const csvContent = "data:text/csv;charset=utf-8,"   
-            + rows.map(row => {  
-                const cols = Array.from(row.querySelectorAll("td"));  
-                return cols.map(col => col.textContent).join(",");  
-              }).join("\n");  
-
-          const encodedUri = encodeURI(csvContent);  
-          const link = document.createElement("a");  
-          link.setAttribute("href", encodedUri);  
-          link.setAttribute("download", "activity_logs.csv");  
-          document.body.appendChild(link); // Required for FF  
-
-          link.click(); // This will download the CSV file  
-          document.body.removeChild(link); // Clean up  
-        }
       });
     </script>
     <script>
@@ -574,6 +549,57 @@
         checkSession();
       })();
     </script>
+
+    <script>
+      function exportAsPDF() {
+        // Import jsPDF library
+        const { jsPDF } = window.jspdf;
+
+        // Create a new jsPDF instance
+        const doc = new jsPDF();
+
+        // Add title to the PDF
+        doc.setFontSize(18);
+        doc.text("Activity Logs", 10, 10);
+
+        // Define table headers
+        const headers = [
+          ["Log ID", "Name", "Email Address", "Date & Time", "Role", "Activity"],
+        ];
+
+        // Get table data from the DOM
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.querySelectorAll("tr");
+        const data = [];
+
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll("td");
+          const rowData = [];
+          cells.forEach((cell) => {
+            rowData.push(cell.textContent.trim());
+          });
+          data.push(rowData);
+        });
+
+        // Add table to the PDF
+        doc.autoTable({
+          head: headers,
+          body: data,
+          startY: 20, // Start the table below the title
+          styles: {
+            fontSize: 10,
+            cellPadding: 3,
+          },
+          headStyles: {
+            fillColor: [41, 128, 185], // Blue color for header
+            textColor: [255, 255, 255], // White text
+          },
+        });
+
+        // Save the PDF
+        doc.save("Activity_Logs.pdf");
+      }
+    </script>
     <script src="../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
@@ -582,5 +608,7 @@
     <script src="../../assets/js/app.min.js"></script>
     <script src="../../assets/js/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   </body>
 </html>

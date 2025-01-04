@@ -10,10 +10,6 @@
       href="../../../assets/img/logo.png"
     />
     <link rel="stylesheet" href="../../../assets/css/styles.min.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/tabler-icons@1.30.1/dist/tabler-icons.min.css"
-    />
   </head>
 
   <body>
@@ -138,7 +134,7 @@
                     aria-expanded="false"
                   >
                     <img
-                      src="../../../assets/images/profile/user-1.jpg"
+                      src="../../../../assets/images/profile/user-1.jpg"
                       alt=""
                       width="35"
                       height="35"
@@ -151,7 +147,7 @@
                   >
                     <div class="message-body">
                       <a
-                        href="../profile-settings/profile-settings"
+                        href="../employee/profile-settings/profile-settings"
                         class="d-flex align-items-center gap-2 dropdown-item"
                       >
                         <i class="ti ti-user fs-6"></i>
@@ -172,123 +168,137 @@
         <!--  Header End -->
         <div class="container-fluid">
           <div class="row">
-            <h3 class="col-lg-8">Editing Client</h3>
-
-            <!-- Form -->
             <div class="col-lg-12">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title fw-semibold mb-4">
-                    User's Information
-                  </h5>
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="alert d-none" id="error" role="alert">
-                        An unknown error occurred. Please try again.
+                  <h3 class="col-lg-12 text-start">Profile</h3>
+                  <div class="col-lg-12">
+                    <div class="card">
+                      <div class="card-body">
+                        <div>
+                          <img
+                            src="../../../../assets/images/profile/user-1.jpg"
+                            alt=""
+                            width="150"
+                            height="150"
+                            class="rounded-circle"
+                          />
+                        </div>
+                        <!-- Tabs for Profile and Password as links -->
+                        <div class="d-flex mb-4">
+                          <a
+                            href="./profile-settings"
+                            class="tab-button active"
+                            id="profileTab"
+                            >Personal Information</a
+                          >
+                          <a
+                            href="./change-password"
+                            class="tab-button"
+                            id="passwordTab"
+                            >Password</a
+                          >
+                        </div>
+
+                        <!-- Profile Content -->
+                        <div id="profileContent" class="tab-content">
+                          <div class="alert d-none" id="error" role="alert">
+                            An unknown error occurred. Please try again.
+                          </div>
+                          <form
+                            id="profileForm"
+                            action="update-profile.php"
+                            method="POST"
+                          >
+                            <div class="mb-3">
+                              <label for="user_id" class="form-label"
+                                >User ID
+                              </label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                name="user_id"
+                                id="user_id"
+                                readonly
+                              />
+                            </div>
+                            <div class="mb-3">
+                              <label for="email" class="form-label"
+                                >Email
+                              </label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                name="email"
+                                id="email"
+                                readonly
+                              />
+                            </div>
+                            <div class="mb-3">
+                              <label for="firstname" class="form-label"
+                                >First Name <i>(can be changed)</i></label
+                              >
+                              <input
+                                type="text"
+                                class="form-control"
+                                name="firstname"
+                                id="firstname"
+                                required
+                              />
+                            </div>
+                            <div class="mb-3">
+                              <label for="lastname" class="form-label"
+                                >Last Name <i>(can be changed)</i></label
+                              >
+                              <input
+                                type="text"
+                                class="form-control"
+                                name="lastname"
+                                id="lastname"
+                                required
+                              />
+                            </div>
+                            <div class="mb-3">
+                              <label for="role" class="form-label">Role</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                name="role"
+                                id="role"
+                                readonly
+                              />
+                            </div>
+                            <button
+                              type="submit"
+                              class="btn btn-primary"
+                              id="updateProfileButton"
+                            >
+                              Update Profile
+                            </button>
+                          </form>
+                        </div>
                       </div>
-                      <form action="edit-client.php" method="POST">
-                        <div class="mb-3">
-                          <label for="user_id" class="form-label"
-                            >User ID</label
-                          >
-                          <input
-                            type="number"
-                            class="form-control"
-                            name="user_id"
-                            id="user_id"
-                            readonly
-                          />
-                        </div>
-                        <div class="mb-3">
-                          <label for="email" class="form-label"
-                            >Email Address</label
-                          >
-                          <input
-                            type="email"
-                            class="form-control"
-                            name="email"
-                            id="email"
-                            readonly
-                          />
-                        </div>
-                        <div class="mb-3">
-                          <label for="firstname" class="form-label"
-                            >First Name <i>(can be changed)</i></label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            name="firstname"
-                            id="firstname"
-                            required
-                          />
-                        </div>
-                        <div class="mb-3">
-                          <label for="lastname" class="form-label"
-                            >Last Name <i>(can be changed)</i></label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            name="lastname"
-                            id="lastname"
-                            required
-                          />
-                        </div>
-                        <div class="mb-3">
-                          <label for="role" class="form-label"
-                            >Role <i>(can be changed)</i></label
-                          >
-                          <select
-                            title="Role"
-                            name="role"
-                            id="role"
-                            class="form-select"
-                          >
-                            <option value="Head">Head</option>
-                            <option value="Employee">Employee</option>
-                          </select>
-                        </div>
-                        <button
-                          type="button"
-                          onclick="window.location.href='../client'"
-                          class="btn btn-dark"
-                        >
-                          Back
-                        </button>
-                        <button
-                          type="submit"
-                          class="btn btn-primary"
-                          id="saveChangesButton"
-                        >
-                          Save Changes
-                        </button>
-                      </form>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            <!-- Card for Activity Logs Navigation -->
-            <div class="col-lg-4"></div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Confirm Edit Info of the Client Modal -->
+    <!-- Confirm Edit Info of the Admin Modal -->
     <div
       class="modal fade"
-      id="editClientModal"
+      id="editAdminModal"
       tabindex="-1"
-      aria-labelledby="editClientModalLabel"
+      aria-labelledby="editAdminModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editClientModalLabel">
+            <h5 class="modal-title" id="editAdminModalLabel">
               Confirm Save Changes
             </h5>
             <button
@@ -301,10 +311,9 @@
           <div class="modal-body">
             <p>Are you sure you want to save the following changes?</p>
             <p>
-              <strong>First Name:</strong> <span id="clientFirstName"></span>
+              <strong>First Name:</strong> <span id="adminFirstName"></span>
             </p>
-            <p><strong>Last Name:</strong> <span id="clientLastName"></span></p>
-            <p><strong>Role:</strong> <span id="clientRole"></span></p>
+            <p><strong>Last Name:</strong> <span id="adminLastName"></span></p>
           </div>
           <div class="modal-footer">
             <button
@@ -314,18 +323,13 @@
             >
               Cancel
             </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              id="confirmEditClient"
-            >
+            <button type="button" class="btn btn-primary" id="confirmEditAdmin">
               Confirm
             </button>
           </div>
         </div>
       </div>
     </div>
-
     <script>
       // Parse query parameters
       const urlParams = new URLSearchParams(window.location.search);
@@ -338,17 +342,13 @@
         // Map error types to messages
         switch (error) {
           case "none":
-            message = "User successfully edited.";
+            message = "Name successfully updated.";
             break;
-          case "user_not_found":
-            message = "No user found with the provided ID. Please try again.";
+          case "required_fields":
+            message = "First Name and Last Name are required.";
             break;
-          case "server_error":
-            message =
-              "An error occurred on the server. Please try again later.";
-            break;
-          case "missing_fields":
-            message = "Please fill in all required fields.";
+          case "invalid_input":
+            message = "Invalid input. Please try again.";
             break;
           default:
             message = "An unknown error occurred. Please try again.";
@@ -364,38 +364,64 @@
         } else {
           messagetext.classList.add("alert-danger");
         }
+
+        setTimeout(() => {
+          messagetext.classList.add("d-none");
+        }, 5000);
       }
 
-      const id = urlParams.get("id");
-      const email = urlParams.get("email");
-      const firstname = urlParams.get("fname");
-      const lastname = urlParams.get("lname");
-      const role = urlParams.get("role");
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("profile-settings.php") // Path to your PHP script
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              const user = data.data;
+              document.getElementById("user_id").value = user.user_id;
+              document.getElementById("email").value = user.user_email;
+              document.getElementById("firstname").value = user.user_fname;
+              document.getElementById("lastname").value = user.user_lname;
+              document.getElementById("role").value = user.user_role;
+            } else {
+              alert(data.message || "Failed to fetch user details.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching user details:", error);
+            alert("An error occurred. Please try again.");
+          });
+      });
 
-      if (id && email && firstname && lastname && role) {
-        if (role == "Head" || role == "Employee") {
-          const user_id = document.getElementById("user_id");
-          const user_email = document.getElementById("email");
-          const user_firstname = document.getElementById("firstname");
-          const user_lastname = document.getElementById("lastname");
-          const user_role = document.getElementById("role");
+      document.addEventListener("DOMContentLoaded", function () {
+        const saveChangesButton = document.getElementById(
+          "updateProfileButton"
+        );
+        const editAdminModal = new bootstrap.Modal(
+          document.getElementById("editAdminModal")
+        );
 
-          user_id.value = id;
-          user_email.value = email;
-          user_firstname.value = firstname;
-          user_lastname.value = lastname;
-          user_role.value = role;
-        } else {
-          window.location.href = "../client";
-        }
-      } else {
-        window.location.href = "../client";
-      }
+        saveChangesButton.addEventListener("click", function (event) {
+          event.preventDefault(); // Prevent default form submission
+          0;
+          const firstName = document.getElementById("firstname").value;
+          const lastName = document.getElementById("lastname").value;
+
+          document.getElementById("adminFirstName").textContent = firstName;
+          document.getElementById("adminLastName").textContent = lastName;
+
+          editAdminModal.show();
+        });
+
+        document
+          .getElementById("confirmEditAdmin")
+          .addEventListener("click", function () {
+            document.querySelector("form").submit();
+          });
+      });
     </script>
     <script>
       (function () {
         const checkSession = () => {
-          fetch("../../session/sessioncheck.php", {
+          fetch("../../../session/sessioncheck.php", {
             method: "GET",
             credentials: "include", // Include cookies with the request
           })
@@ -403,7 +429,7 @@
             .then((data) => {
               if (!data.sessionValid) {
                 // Redirect to the logout script if the session is invalid
-                window.location.href = "../../login?error=session_expired";
+                window.location.href = "../login?error=session_expired";
               }
             })
             .catch((err) => {
@@ -419,41 +445,13 @@
         checkSession();
       })();
     </script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const saveChangesButton = document.getElementById("saveChangesButton");
-        const editClientModal = new bootstrap.Modal(
-          document.getElementById("editClientModal")
-        );
-
-        saveChangesButton.addEventListener("click", function (event) {
-          event.preventDefault(); // Prevent default form submission
-
-          const firstName = document.getElementById("firstname").value;
-          const lastName = document.getElementById("lastname").value;
-          const role = document.getElementById("role").value;
-
-          document.getElementById("clientFirstName").textContent = firstName;
-          document.getElementById("clientLastName").textContent = lastName;
-          document.getElementById("clientRole").textContent = role;
-
-          editClientModal.show();
-        });
-
-        document
-          .getElementById("confirmEditClient")
-          .addEventListener("click", function () {
-            document.querySelector("form").submit();
-          });
-      });
-    </script>
-    <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
-    <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="../../../assets/libs/simplebar/dist/simplebar.js"></script>
-    <script src="../../../assets/js/sidebarmenu.js"></script>
-    <script src="../../../assets/js/app.min.js"></script>
-    <script src="../../../assets/js/dashboard.js"></script>
+    <script src="../../../../assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="../../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="../../../../assets/libs/simplebar/dist/simplebar.js"></script>
+    <script src="../../../../assets/js/sidebarmenu.js"></script>
+    <script src="../../../../assets/js/app.min.js"></script>
+    <script src="../../../../assets/js/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   </body>
 </html>

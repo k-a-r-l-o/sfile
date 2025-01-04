@@ -93,7 +93,7 @@ try {
         FROM tb_client_userdetails u
         LEFT JOIN tb_client_logindetails l 
         ON u.user_id = l.user_id
-        WHERE 1=1
+        WHERE u.user_status = 1
     ";
 
     if (isset($filters['role'])) {

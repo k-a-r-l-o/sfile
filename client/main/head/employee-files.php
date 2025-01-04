@@ -4,10 +4,14 @@ session_start();
 // Check if session variables are set
 if (!isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client_user_id'])) {
     header("Location: ../../login?error=session_expired");
+} else {
+    if ($_SESSION['client_role'] == 'Employee') {
+        header("Location: ../employee/");
+    }
 }
 
 // Include the configuration file
-require_once __DIR__ . '/../../../config/config.php';
+require_once __DIR__ . '../../../../config/config.php';
 
 try {
     // Establish a PDO connection
@@ -17,33 +21,34 @@ try {
     // Define the base SQL query
     $sql = "
         SELECT 
-            name,
-            size,
-            created_at
+            u.user_id, 
+            u.user_fname, 
+            u.user_lname, 
+            u.user_email, 
+            u.user_role, 
+            u.user_status, 
+            l.user_status
         FROM 
-            tb_files
+            tb_client_userdetails u
+        LEFT JOIN 
+            tb_client_logindetails l 
+        ON 
+            u.user_id = l.user_id
         WHERE 
-            status = 1 AND owner_id = :owner_id
+            u.user_status = 1 AND u.user_role = 'employee'
     ";
 
     // Capture the filter parameters from the query string
     $filters = [];
+
     if (isset($_GET['search']) && !empty($_GET['search'])) {
         $filters['search'] = "%" . $_GET['search'] . "%";
         $sql .= " AND (
-            `name` LIKE :search
+            u.user_id LIKE :search OR 
+            u.user_fname LIKE :search OR 
+            u.user_lname LIKE :search OR 
+            u.user_email LIKE :search
         )";
-    }
-
-    if (isset($_GET['time-filter']) && !empty($_GET['time-filter'])) {
-        $filters = $_GET['time-filter'];
-        if ($filters === "Week") {
-            $sql .= " AND `date_time` >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
-        } elseif ($filters === "Month") {
-            $sql .= " AND `date_time` >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
-        } elseif ($filters === "Year") {
-            $sql .= " AND `date_time` >= DATE_SUB(NOW(), INTERVAL 1 YEAR)";
-        }
     }
 
     // Pagination logic
@@ -57,17 +62,10 @@ try {
     $stmt = $pdo->prepare($sql);
 
     // Bind parameters for filters
-    if (isset($filters['role'])) {
-        $stmt->bindParam(':role', $filters['role'], PDO::PARAM_STR);
-    }
-    if (isset($filters['status'])) {
-        $stmt->bindParam(':status', $filters['status'], PDO::PARAM_STR);
-    }
     if (isset($filters['search'])) {
         $stmt->bindParam(':search', $filters['search'], PDO::PARAM_STR);
     }
 
-    $stmt->bindParam(':owner_id', $_SESSION['client_user_id'], PDO::PARAM_STR);
     // Bind pagination parameters
     $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
     $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -81,17 +79,11 @@ try {
     // Get the total count of records for pagination metadata
     $countSql = "
         SELECT COUNT(*) as total 
-        FROM tb_files
-        WHERE status = 1 AND owner_id = :owner_id
+        FROM tb_client_userdetails u
+        LEFT JOIN tb_client_logindetails l 
+        ON u.user_id = l.user_id
+        WHERE u.user_status = 1
     ";
-
-    /*
-    if (isset($filters['role'])) {
-        $countSql .= " AND user_role = :role";
-    }
-    if (isset($filters['status'])) {
-        $countSql .= " AND l.user_status = :status";
-    }*/
 
     if (isset($filters['search'])) {
         $countSql .= " AND (
@@ -103,16 +95,9 @@ try {
     }
 
     $countStmt = $pdo->prepare($countSql);
-    if (isset($filters['role'])) {
-        $countStmt->bindParam(':role', $filters['role'], PDO::PARAM_STR);
-    }
-    if (isset($filters['status'])) {
-        $countStmt->bindParam(':status', $filters['status'], PDO::PARAM_STR);
-    }
     if (isset($filters['search'])) {
         $countStmt->bindParam(':search', $filters['search'], PDO::PARAM_STR);
     }
-    $countStmt->bindParam(':owner_id', $_SESSION['client_user_id'], PDO::PARAM_STR);
     $countStmt->execute();
     $total = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
 

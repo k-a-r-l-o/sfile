@@ -30,7 +30,7 @@
           <div
             class="brand-logo d-flex align-items-center justify-content-between"
           >
-            <a href="./index.html" class="text-nowrap logo-img">
+            <a href="./" class="text-nowrap logo-img">
               <img src="../../../assets/img/light-logo-head.svg" alt="" />
             </a>
             <div
@@ -125,7 +125,7 @@
                   >
                     <div class="message-body">
                       <a
-                        href="../head/profile-setting/profile"
+                        href="../head/profile-settings/profile-settings"
                         class="d-flex align-items-center gap-2 dropdown-item"
                       >
                         <i class="ti ti-user fs-6"></i>
@@ -150,23 +150,25 @@
               <div class="card">
                 <div class="card-body text-center">
                   <h3 class="col-lg-12 text-start">Dashboard</h3>
-                  <img
-                    src="../../../assets/images/backgrounds/product-tip.png"
-                    alt="image"
-                    class="img-fluid"
-                    width="205"
-                  />
-                  <h4 class="mt-9">Welcome to SecureFile</h4>
-                  <p class="card-subtitle mt-2 mb-3">
-                    Your files, your security. Access with confidence.
-                  </p>
+                  <div class="width-100 rounded-3 p-4 bg-light shadow-sm">
+                    <img
+                      src="../../../assets/images/backgrounds/product-tip.png"
+                      alt="image"
+                      class="img-fluid"
+                      width="205"
+                    />
+                    <h4 class="mt-9">Welcome to SecureFile</h4>
+                    <p class="card-subtitle mt-2 mb-3">
+                      Your files, your security. Access with confidence.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="col-lg-4">
               <div class="card overflow-hidden hover-img">
                 <div class="position-relative">
-                  <a href="./admin">
+                  <a href="./employee-files">
                     <img
                       src="../../../assets/images/blog/blog-img1.jpg"
                       class="card-img-top"
@@ -184,7 +186,7 @@
                   >
                   <a
                     class="d-block my-4 fs-5 text-dark fw-semibold link-primary"
-                    href="./admin"
+                    href="./employee-files"
                     >Manage Employee's Files</a
                   >
                 </div>
@@ -194,6 +196,38 @@
         </div>
       </div>
     </div>
+    <script>
+      (function () {
+        const checkSession = () => {
+          fetch("../../session/sessioncheck.php", {
+            method: "GET",
+            credentials: "include", // Include cookies with the request
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (!data.sessionValid) {
+                // Redirect to the logout script if the session is invalid
+                window.location.href = "../../login?error=session_expired";
+              } else {
+                if (data.role == "Employee") {
+                  // Redirect to the employee dashboard if the user is an employee
+                  window.location.href = "../../employee/";
+                }
+              }
+            })
+            .catch((err) => {
+              console.error("Error checking session:", err);
+              // Handle fetch errors if needed
+            });
+        };
+
+        // Check the session every 5 minutes (300,000 milliseconds)
+        setInterval(checkSession, 300000);
+
+        // Also check the session immediately when the script is loaded
+        checkSession();
+      })();
+    </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>

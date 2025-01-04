@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+// Check if the session contains a user ID
+if (!isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_user_id'])) {
+    header("Location: ../../login?error=session_expired");
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Include database connection
     require_once '../../../config/config.php';
@@ -59,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Log the edit action
         $logAction = "$role user $Id updated successfully.";
-        $logAction = "Administrator user $user_id added successfully.";
         $logdate = date('Y-m-d H:i:s');
         $logStmt = $pdo->prepare("
             INSERT INTO tb_logs (doer, log_date, role, log_action) 
