@@ -97,7 +97,7 @@ try {
         $doerUserId = $_SESSION['client_user_id'];
         $userStmt = $conn->prepare("
             SELECT user_email, user_role 
-            FROM tb_admin_userdetails 
+            FROM tb_client_userdetails 
             WHERE user_id = :user_id
         ");
         $userStmt->bindParam(':user_id', $doerUserId);
