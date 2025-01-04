@@ -11,12 +11,28 @@ if (isset($_GET['token'])) {
 
         // Join tb_client_logindetails and tb_client_userdetails to retrieve role and other details
         $stmt = $conn->prepare(
-            "SELECT l.user_id, u.user_role, l.token, l.token_expiration 
-             FROM tb_client_logindetails l
-             JOIN tb_client_userdetails u ON l.user_id = u.user_id
-             WHERE l.token_expiration > NOW() AND u.user_status = 1"
+            "SELECT 
+             l.user_id, 
+             u.user_role, 
+             l.token, 
+             l.token_expiration 
+         FROM 
+             tb_client_logindetails l
+         JOIN 
+             tb_client_userdetails u 
+             ON l.user_id = u.user_id
+         WHERE 
+             l.token_expiration > :userlog 
+             AND u.user_status = 1"
         );
+
+        // Bind the parameter
+        $stmt->bindParam(':userlog', $userlog, PDO::PARAM_STR);
+
+        // Execute the statement
         $stmt->execute();
+
+        // Fetch the results
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($token, $user['token'])) {

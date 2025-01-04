@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../../config/database.php';
+$userlog = date('Y-m-d H:i:s'); // Current timestamp
 
 if (isset($_GET['token'])) {
     $token = $_GET['token'];
@@ -11,16 +12,31 @@ if (isset($_GET['token'])) {
 
         // Join tb_admin_logindetails and tb_admin_userdetails to retrieve role and other details
         $stmt = $conn->prepare(
-            "SELECT l.user_id, u.user_role, l.token, l.token_expiration 
-             FROM tb_admin_logindetails l
-             JOIN tb_admin_userdetails u ON l.user_id = u.user_id
-             WHERE l.token_expiration > NOW() AND u.user_status = 1"
+            "SELECT 
+             l.user_id, 
+             u.user_role, 
+             l.token, 
+             l.token_expiration 
+         FROM 
+             tb_admin_logindetails l
+         JOIN 
+             tb_admin_userdetails u 
+             ON l.user_id = u.user_id
+         WHERE 
+             l.token_expiration > :userlog 
+             AND u.user_status = 1"
         );
+
+        // Bind the parameter
+        $stmt->bindParam(':userlog', $userlog, PDO::PARAM_STR);
+
+        // Execute the statement
         $stmt->execute();
+
+        // Fetch the results
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($token, $user['token'])) {
-            $userlog = date('Y-m-d H:i:s'); // Current timestamp
             $clearTokenStmt = $conn->prepare(
                 "UPDATE tb_admin_logindetails 
                 SET token = NULL, 
@@ -47,8 +63,7 @@ if (isset($_GET['token'])) {
             $logRole = $user['user_role'];
 
             // Log the edit action
-            $logAction = "Signed in successfully.";
-            $userlog = date('Y-m-d H:i:s'); // Current timestamp
+            $logAction = "Signed in successfully."; // Current timestamp
             $logStmt = $conn->prepare("
                 INSERT INTO tb_logs (log_date, doer, role, log_action)
                 VALUES (:userlog, :doer, :role, :action)
