@@ -460,7 +460,7 @@
                     <td>${user.user_status}</td>  
                     <td>  
                         <button onclick="window.location.href='manage/edit-admin?id=${user.user_id}&fname=${user.user_fname}&lname=${user.user_lname}&email=${user.user_email}'" class="btn btn-primary btn-sm">Edit</button>  
-                        <button onclick="showDeleteConfirmation('${user.user_id}')" class="btn btn-danger btn-sm">Delete</button>  
+                        <button data-id="${user.user_id}" onclick="openDeleteModal(this)" class="btn btn-danger btn-sm">Delete</button>  
                     </td>  
                 `;  
                 tableBody.appendChild(row);  
@@ -522,6 +522,17 @@
         // Initial fetch
         fetchData();
       });
+
+
+      function openDeleteModal(icon) {
+        const deleteModal = document.getElementById('deleteConfirmationModal');
+
+        // Get user ID from the clicked icon's data attribute
+        const userId = icon.getAttribute('data-id');
+        // You can use the user ID here for delete confirmation or actions
+
+        deleteModal.classList.add('show'); // Show the modal
+    }
 
       let userIdToDelete = null; // Variable to store the user ID to delete
 
