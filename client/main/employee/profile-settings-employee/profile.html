@@ -170,7 +170,11 @@
                 
                           <!-- Profile Content -->  
                           <div id="profileContent" class="tab-content">  
-                              <form id="profileForm" action="client-update-profile.php" method="POST">  
+                              <form id="profileForm" action="client-update-profile.php" method="POST">
+                                  <div class="mb-3">  
+                                    <label for="firstname" class="form-label">User ID </label>  
+                                    <input type="text" class="form-control" name="firstname" id="firstname" readonly />  
+                                  </div>  
                                   <div class="mb-3">  
                                       <label for="firstname" class="form-label">First Name <i>(can be changed)</i></label>  
                                       <input type="text" class="form-control" name="firstname" id="firstname" required />  
@@ -178,11 +182,7 @@
                                   <div class="mb-3">  
                                       <label for="lastname" class="form-label">Last Name <i>(can be changed)</i></label>  
                                       <input type="text" class="form-control" name="lastname" id="lastname" required />  
-                                  </div>  
-                                  <div class="mb-3">  
-                                      <label for="email" class="form-label">Email</label>  
-                                      <input type="email" class="form-control" name="email" id="email" readonly />  
-                                  </div>  
+                                  </div>   
                                   <button type="button" class="btn btn-primary" id="updateProfileButton">Update Profile</button>  
                               </form>  
                           </div>  
@@ -229,18 +229,21 @@
         const email = urlParams.get("email");
         const firstname = urlParams.get("fname");
         const lastname = urlParams.get("lname");
+        const role = urlParams.get("role");
 
-        if (id && email && firstname && lastname) {
-          if (role == "Head") {
+        if (id && email && firstname && lastname && role) {
+          if (role == "Head" || role == "Employee") {
             const user_id = document.getElementById("user_id");
             const user_email = document.getElementById("email");
             const user_firstname = document.getElementById("firstname");
             const user_lastname = document.getElementById("lastname");
+            const user_role = document.getElementById("role");
 
             user_id.value = id;
             user_email.value = email;
             user_firstname.value = firstname;
             user_lastname.value = lastname;
+            user_role.value = role;
           } else {
             window.location.href = "";
           }

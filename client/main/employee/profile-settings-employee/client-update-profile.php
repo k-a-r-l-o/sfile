@@ -9,10 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $firstname = $_POST['firstname'] ?? '';
     $lastname = $_POST['lastname'] ?? '';
+    $role = $_POST['role'] ?? '';
 
     // Validate form data
-    if (empty($Id) || empty($firstname) || empty($lastname)) {
-        header("Location: edit-client?error=missing_fields&id=$Id&email=$email&fname=$firstname&lname=$lastname");
+    if (empty($Id) || empty($firstname) || empty($lastname) || empty($role)) {
+        header("Location: edit-client?error=missing_fields&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
         exit;
     }
 
@@ -37,10 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Update tb_client_userdetails (only updating the first name and last name)
         $stmt = $pdo->prepare("UPDATE tb_client_userdetails 
-                               SET user_fname = :fname, user_lname = :lname
+                               SET user_fname = :fname, user_lname = :lname, user_role = :role
                                WHERE user_id = :Id");
         $stmt->bindParam(':fname', $firstname);
         $stmt->bindParam(':lname', $lastname);
+        $stmt->bindParam(':role', $role);
         $stmt->bindParam(':Id', $Id);
         $stmt->execute();
 
@@ -48,15 +50,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->commit();
 
         // Fetch the current user's email and role for logging purposes
-        $doerUserId = $_SESSION['client_user_id'];
-        $userStmt = $pdo->prepare("SELECT user_email, user_role FROM tb_client_userdetails WHERE user_id = :user_id");
+        $doerUserId = $_SESSION['admin_user_id'];
+        $userStmt = $pdo->prepare("SELECT user_email, user_role FROM tb_admin_userdetails WHERE user_id = :user_id");
         $userStmt->bindParam(':user_id', $doerUserId);
         $userStmt->execute();
         $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
         $logRole = $userDetails['user_role'] ?? 'Unknown';
 
         // Log the edit action
-        $logAction = "user $Id updated profile information successfully.";
+        $logAction = "$role user $Id updated successfully.";
         $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
         $logStmt->execute([
             ':doer' => $doerUserId,
@@ -66,13 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Return success response
         echo json_encode(["success" => true]);
-        header("Location: edit-client?error=none&id=$Id&email=$email&fname=$firstname&lname=$lastname");
+        header("Location: edit-client?error=none&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
         exit;
     } catch (PDOException $e) {
         // Rollback the transaction on error
         $pdo->rollBack();
         echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
-        header("Location: edit-client?error=server_error&id=$Id&email=$email&fname=$firstname&lname=$lastname");
+        header("Location: edit-client?error=server_error&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
         exit;
     }
 }
