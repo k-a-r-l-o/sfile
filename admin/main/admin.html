@@ -521,6 +521,7 @@
         fetchData();
       });
 
+
       let userIdToDelete = null; // Variable to store the user ID to delete  
 
       function showDeleteConfirmation(userId) {  
@@ -528,17 +529,40 @@
           const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));  
           deleteModal.show(); // Show the modal  
       }  
-
+      
       document.getElementById('confirmDeleteButton').addEventListener('click', function() {  
           if (userIdToDelete) {  
               deleteAdmin(userIdToDelete); // Call the delete function with the stored ID  
               userIdToDelete = null; // Reset the ID  
           }  
       });  
-
+      
       // Implement the deleteAdmin function  
-      function deleteAdmin(id) {}
+      function deleteAdmin(id) {  
+          const doer = 'Admin Name'; // Replace with the actual name of the doer  
+          const role = 'Administrator'; // Replace with the role of the doer  
+      
+          fetch('manage/deleteUser.php', {  
+              method: 'POST',  
+              headers: { 'Content-Type': 'application/json' },  
+              body: JSON.stringify({ user_id: id, doer: doer, role: role })  
+          })  
+              .then(response => response.json())  
+              .then(data => {  
+                  if (data.status === 'success') {  
+                      alert(data.message);  
+                      // Optionally refresh the page or remove the user from the table  
+                      location.reload(); // Refresh the page to reflect changes  
+                  } else {  
+                      alert(data.message);  
+                  }  
+              })  
+              .catch(error => console.error('Error:', error));  
+      }
+      
+
     </script>
+
     <script>
       (function () {
         const checkSession = () => {
