@@ -1,82 +1,58 @@
 <?php
 session_start();
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Include database connection
-    require_once '../../../config/config.php';
+require_once '../../../../config/config.php';  // Adjust path if necessary
 
-    // Retrieve form data
-    $Id = $_POST['user_id'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate input
+    $user_id = $_POST['user_id'] ?? '';
     $email = $_POST['email'] ?? '';
     $firstname = $_POST['firstname'] ?? '';
     $lastname = $_POST['lastname'] ?? '';
     $role = $_POST['role'] ?? '';
 
-    // Validate form data
-    if (empty($Id) || empty($firstname) || empty($lastname) || empty($role)) {
-        header("Location: edit-client?error=missing_fields&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
+    // Check if necessary fields are provided
+    if (empty($user_id) || empty($firstname) || empty($lastname)) {
+        $_SESSION['error_message'] = "Missing required fields.";
+        header("Location: edit-client.php?error=missing_fields&id=$user_id&email=$email");
         exit;
     }
 
+    // Connect to the database
     try {
         $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Check if user exists in the database
-        $checkUserStmt = $pdo->prepare("SELECT COUNT(*) FROM tb_client_userdetails WHERE user_id = :Id");
-        $checkUserStmt->bindParam(':Id', $Id);
-        $checkUserStmt->execute();
-        $userExists = $checkUserStmt->fetchColumn();
-
-        if ($userExists == 0) {
-            // If the user doesn't exist, redirect with an error
-            header("Location: edit-client?error=user_not_found&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
-            exit;
-        }
-
-        // Start a transaction
-        $pdo->beginTransaction();
-
-        // Update tb_client_userdetails (only updating the first name and last name)
+        // Prepare the SQL query to update the client profile
         $stmt = $pdo->prepare("UPDATE tb_client_userdetails 
-                               SET user_fname = :fname, user_lname = :lname, user_role = :role
-                               WHERE user_id = :Id");
-        $stmt->bindParam(':fname', $firstname);
-        $stmt->bindParam(':lname', $lastname);
-        $stmt->bindParam(':role', $role);
-        $stmt->bindParam(':Id', $Id);
-        $stmt->execute();
+                               SET user_fname = :firstname, user_lname = :lastname
+                               WHERE user_id = :user_id");
 
-        // Commit the transaction
-        $pdo->commit();
-
-        // Fetch the current user's email and role for logging purposes
-        $doerUserId = $_SESSION['admin_user_id'];
-        $userStmt = $pdo->prepare("SELECT user_email, user_role FROM tb_admin_userdetails WHERE user_id = :user_id");
-        $userStmt->bindParam(':user_id', $doerUserId);
-        $userStmt->execute();
-        $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
-        $logRole = $userDetails['user_role'] ?? 'Unknown';
-
-        // Log the edit action
-        $logAction = "$role user $Id updated successfully.";
-        $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
-        $logStmt->execute([
-            ':doer' => $doerUserId,
-            ':role' => $logRole,
-            ':action' => $logAction
+        // Execute the query
+        $stmt->execute([
+            ':firstname' => $firstname,
+            ':lastname' => $lastname,
+            ':user_id' => $user_id
         ]);
 
-        // Return success response
-        echo json_encode(["success" => true]);
-        header("Location: edit-client?error=none&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
+        // Check if update was successful
+        if ($stmt->rowCount() > 0) {
+            $_SESSION['success_message'] = "Profile updated successfully!";
+        } else {
+            $_SESSION['error_message'] = "No changes were made or profile update failed.";
+        }
+
+        // Redirect to the profile page with success message
+        header("Location: edit-client.php?success=true&id=$user_id&email=$email&fname=$firstname&lname=$lastname");
         exit;
     } catch (PDOException $e) {
-        // Rollback the transaction on error
-        $pdo->rollBack();
-        echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
-        header("Location: edit-client?error=server_error&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
+        // Error handling
+        $_SESSION['error_message'] = "An error occurred: " . $e->getMessage();
+        header("Location: edit-client.php?error=server_error&id=$user_id&email=$email");
         exit;
     }
+} else {
+    // If not a POST request, redirect back to the form
+    header("Location: ../");
+    exit;
 }
-header("Location: ../");
-exit;
+?>

@@ -176,7 +176,7 @@
                                     <input type="text" class="form-control" name="user_id" id="user_id" readonly />  
                                   </div>
                                   <div class="mb-3">  
-                                    <label for="email" class="form-label">User ID </label>  
+                                    <label for="email" class="form-label">Email </label>  
                                     <input type="text" class="form-control" name="email" id="email" readonly />  
                                   </div>  
                                   <div class="mb-3">  
@@ -187,6 +187,10 @@
                                       <label for="lastname" class="form-label">Last Name <i>(can be changed)</i></label>  
                                       <input type="text" class="form-control" name="lastname" id="lastname" required />  
                                   </div>   
+                                  <div class="mb-3">
+                                    <label for="role" class="form-label">Role</label>
+                                    <input type="text" class="form-control" name="role" id="role" readonly />
+                                  </div>                                
                                   <button type="button" class="btn btn-primary" id="updateProfileButton">Update Profile</button>  
                               </form>  
                           </div>  
@@ -229,6 +233,7 @@
       
       <script>
 
+        const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get("id");
         const email = urlParams.get("email");
         const firstname = urlParams.get("fname");
@@ -236,7 +241,6 @@
         const role = urlParams.get("role");
 
         if (id && email && firstname && lastname && role) {
-          if (role == "Head" || role == "Employee") {
             const user_id = document.getElementById("user_id");
             const user_email = document.getElementById("email");
             const user_firstname = document.getElementById("firstname");
@@ -248,11 +252,10 @@
             user_firstname.value = firstname;
             user_lastname.value = lastname;
             user_role.value = role;
-          } else {
-            window.location.href = "";
-          }
+
         } else {
-          window.location.href = "";
+            console.error("Missing required query parameters.");
+            window.location.href = "edit-client?error=missing_params";
         }
 
         document.addEventListener('DOMContentLoaded', function () {  
