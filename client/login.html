@@ -112,6 +112,7 @@
                   method="post"
                   data-aos="fade-up"
                   data-aos-delay="200"
+                  onsubmit="disableButton(this)"
                 >
                   <div class="mb-3">
                     <div class="input-group">
@@ -161,7 +162,9 @@
                       >Forgot password?</a
                     >
                   </div>
-                  <button type="submit" class="btn-signin">Sign In</button>
+                  <button type="submit" class="btn-signin" id="signInButton">
+                    Sign In
+                  </button>
                 </form>
               </div>
             </div>
@@ -223,6 +226,12 @@
 
         messagetext.textContent = message;
         notification.style.display = "flex";
+      }
+
+      function disableButton(form) {
+        const button = form.querySelector("#signInButton");
+        button.disabled = true;
+        button.textContent = "Processing...";
       }
     </script>
 
