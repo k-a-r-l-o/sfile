@@ -23,7 +23,7 @@ if (isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client
 
             $updateStatusStmt->execute([
                 ':userlog' => $userlog,
-                ':user_id' => $user['user_id']
+                ':user_id' => $_SESSION['client_user_id']
             ]);
         } catch (PDOException $e) {
             error_log("Signout error: " . $e->getMessage());

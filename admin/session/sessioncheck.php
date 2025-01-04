@@ -23,7 +23,7 @@ if (isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_us
 
             $updateStatusStmt->execute([
                 ':userlog' => $userlog,
-                ':user_id' => $user['user_id']
+                ':user_id' => $_SESSION['admin_user_id']
             ]);
         } catch (PDOException $e) {
             error_log("Signout error: " . $e->getMessage());
