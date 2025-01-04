@@ -160,204 +160,51 @@
         </header>
         <!--  Header End -->
         <div class="container-fluid">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <h3 class="col-lg-12">My Files</h3>
-                <div class="col-sm-8 text-start">
-                  <button
-                    onclick="window.location.href='./upload-files'"
-                    type="button"
-                    class="btn btn-primary my-2 fs-3"
-                  >
-                    <i class="ti ti-upload"></i> Upload Files
-                  </button>
-                </div>
-                <div class="col-sm-4 text-end">
-                  <form method="get" onsubmit="return false;" class="mb-2">
-                    <input
-                      type="search"
-                      class="form-control fs-3"
-                      name="search"
-                      id="search"
-                      oninput="applyFilters()"
-                      placeholder="Search File"
-                    />
-                  </form>
-                </div>
-              </div>
+            <div class="row">
+              <h3 class="col-lg-8">Sharing File</h3>
+  
+              <!-- Form for Sharing Files -->  
+              <div class="col-lg-12">  
+                <div class="card">  
+                  <div class="card-body">  
+                    <h5 class="card-title fw-semibold mb-4">Share "filename.mp4"</h5>   
 
-              <div class="row justify-content-between">
-                <div class="col-sm-3 text-end">
-                  <form
-                    method="get"
-                    onsubmit="return false;"
-                    class="d-flex my-2 align-items-center"
-                  >
-                    <label for="limit-filter" class="form-label mb-0 me-2"
-                      >Show</label
-                    >
-                    <select
-                      title="Limit"
-                      name="limit-filter"
-                      id="limit-filter"
-                      class="form-select text-start mx-2"
-                      onchange="applyFilters()"
-                    >
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value="50">50</option>
-                    </select>
-                    <p class="mb-0 ms-0">entries.</p>
-                  </form>
-                </div>
-                <div class="col-sm-4 text-end">
-                  <div class="row">
-                    <div class="col-lg-6 text-end"></div>
-                    <div class="col-lg-6 text-end">
-                      <form method="get" onsubmit="return false;" class="my-2">
-                        <select
-                          title="Filter by Time"
-                          name="time-filter"
-                          id="time-filter"
-                          class="form-select text-start"
-                          onchange="applyFilters()"
-                        >
-                          <option value="">All Time</option>
-                          <option value="Week">This Week</option>
-                          <option value="Month">This Month</option>
-                          <option value="Year">This Year</option>
-                        </select>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    <div class="input-group mb-3">  
+                      <input  
+                        type="email"  
+                        class="form-control"  
+                        id="emailShare"  
+                        placeholder="Enter email address"  
+                        required  
+                      />  
+                      <select class="form-select" id="accessLevel">  
+                        <option value="Viewer">Can View Only</option>  
+                        <option value="Downloader">Can Download Only</option> 
+                        <option value="Viewer & Downloader">Can View and Download</option> 
+                      </select>  
+                      <button type="button" class="btn btn-primary" id="addReceiverButton">Add</button>  
+                    </div>  
 
-              <div class="alert my-2 d-none" id="error" role="alert">
-                An unknown error occurred. Please try again.
-              </div>
+                    <h6 class="fw-semibold">People with access</h6>  
+                    <div class="list-group mb-3" id="peopleWithAccess">  
+                      <div class="list-group-item d-flex justify-content-between align-items-center">  
+                        <span>Christeline Jane Tabacon (you)</span>  
+                        <span class="text-muted">Owner</span>  
+                      </div>  
+                      <!-- Additional dynamically added recipients will go here -->  
+                    </div>  
 
-              <!-- Table -->
-              <div class="col-lg-12">
-                <div class="table-responsive my-2">
-                  <table class="table text-nowrap align-middle mb-0">
-                    <thead>
-                      <tr
-                        class="border-2 border-bottom border-primary border-0"
-                      >
-                        <th scope="col" class="ps-0">Filename</th>
-                        <th scope="col" class="ps-0">File Size</th>
-                        <th scope="col" class="ps-0">Uploaded Date & Time</th>
-                        <th scope="col" class="ps-0">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody class="table-group-divider" id="tableBody">
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                      <tr>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                        <td><div class="skeleton-loader"></div></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+                    <div id="sharingList" class="mb-3">  
+                      <!-- Added container to display added email addresses and their access levels -->  
+                    </div> 
 
-              <div class="row text-center align-items-center">
-                <div class="col-sm-2 px-1">
-                  <form
-                    method="get"
-                    onsubmit="return false;"
-                    class="d-flex my-2 align-items-center"
-                  >
-                    <label for="currentPage" class="form-label mb-0 me-2"
-                      >Go to page:</label
-                    >
-                    <input
-                      type="number"
-                      class="form-control text-center"
-                      name="currentPage"
-                      id="currentPage"
-                      value="1"
-                      min="1"
-                      onchange="navigatePage('custom')"
-                      required
-                    />
-                    <button
-                      type="submit"
-                      class="btn btn-dark ms-2"
-                      id="goButton"
-                      onclick="navigatePage('custom')"
-                    >
-                      Go
-                    </button>
-                  </form>
-                </div>
-                <div class="col-sm-2 px-1"></div>
-                <div class="col-sm-4 px-1 align-items-center">
-                  <p class="mb-0 ms-0">
-                    Page <strong id="currentPageshow">1</strong> of
-                    <strong id="totalPages">1</strong>
-                  </p>
-                </div>
-                <div
-                  class="col-sm-4 d-flex align-items-center justify-content-end px-1"
-                >
-                  <!-- Previous Button -->
-                  <button
-                    type="button"
-                    class="btn btn-dark me-2"
-                    id="prevButton"
-                    onclick="navigatePage('prev')"
-                  >
-                    Prev
-                  </button>
-
-                  <!-- Next Button -->
-                  <button
-                    type="button"
-                    class="btn btn-dark ms-2"
-                    id="nextButton"
-                    onclick="navigatePage('next')"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
+                    <button type="button" class="btn btn-dark" onclick="window.location.href='../../'">Back</button>  
+                    <button type="button" class="btn btn-primary" id="shareFileButton">Share Now</button>
+                  </div>  
+                </div>  
+              </div>   
             </div>
           </div>
-        </div>
       </div>
     </div>
 
@@ -415,195 +262,6 @@
     </div>
 
     <script>
-      // Parse query parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const error = urlParams.get("error");
-
-      if (error) {
-        const messagetext = document.getElementById("error");
-        let message = "";
-
-        // Map error types to messages
-        switch (error) {
-          case "none":
-            message = "File successfully deleted.";
-            break;
-          default:
-            message = "An unknown error occurred. Please try again.";
-        }
-
-        // Update the alert with the message and show it
-        messagetext.textContent = message;
-        messagetext.classList.remove("d-none");
-
-        // Remove previous alert classes and apply the correct one
-        if (error === "none") {
-          messagetext.classList.add("alert-success");
-        } else {
-          messagetext.classList.add("alert-danger");
-        }
-
-        setTimeout(() => {
-          messagetext.classList.add("d-none");
-        }, 5000);
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const tableBody = document.getElementById("tableBody");
-        const currentPageElementshow =
-          document.getElementById("currentPageshow");
-        const currentPageElement = document.getElementById("currentPage");
-        const totalPagesElement = document.getElementById("totalPages");
-
-        const limitFilter = document.getElementById("limit-filter");
-        const byTimeFilter = document.getElementById("time-filter"); // Filter by Time
-        const searchFilter = document.getElementById("search");
-
-        let currentPage = 1;
-        let limit = parseInt(limitFilter.value);
-        let timeFilter = byTimeFilter.value; // Filter by Time dropdown
-        let search = searchFilter.value;
-
-        // Fetch data and populate table - temp palang ning php niya
-        function fetchData() {
-          const url = new URL("./my-files.php", window.location.href);
-          url.searchParams.append("page", currentPage);
-          url.searchParams.append("limit", limit);
-          if (timeFilter) url.searchParams.append("timeFilter", timeFilter);
-          if (search) url.searchParams.append("search", search);
-
-          fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-              populateTable(data.data);
-              updatePagination(data.pagination);
-            })
-            .catch((error) => console.error("Error fetching data:", error));
-        }
-
-        // Populate table rows  
-        function populateTable(files) {  
-          tableBody.innerHTML = ""; // Clear existing rows  
-          files.forEach((file) => {  
-            const row = document.createElement("tr");  
-            row.innerHTML = `  
-              <td>  
-                <a  
-                  href="#"  
-                  title="View"  
-                  class="nav-link nav-icon-hover text-primary hover:text-primary">  
-                  <strong>${file.name}</strong>  
-                </a>  
-              </td>  
-              <td>${file.size}</td>  
-              <td>${formatDateTime(file.created_at)}</td>  
-              <td>  
-                  <button  
-                    type="button"  
-                    title="Download"  
-                    class="btn btn-success m-1 btn-sm downloadButton"  
-                  >  
-                      <i class="ti ti-download"></i>  
-                  </button>  
-                  <button  
-                    type="button"  
-                    title="Share"  
-                    class="btn btn-primary m-1 btn-sm"
-                    onclick="window.location.href=''" 
-                  >
-                    <i class="ti ti-send"></i>  
-                  </button>  
-                  <button  
-                    type="button"  
-                    title="Rename"  
-                    class="btn btn-warning m-1 btn-sm"  
-                  >  
-                    <i class="ti ti-edit"></i>  
-                  </button>  
-                  <button  
-                    type="button"  
-                    title="Delete"  
-                    class="btn btn-danger m-1 btn-sm"  
-                    id="submitButton"  
-                  >  
-                    <i class="ti ti-trash"></i>  
-                  </button>  
-              </td>  
-            `;  
-            tableBody.appendChild(row);  
-          });  
-        }
-
-        function formatDateTime(dateTime) {
-          const date = new Date(dateTime);
-          const options = {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: true,
-          };
-          return date.toLocaleString("en-US", options);
-        }
-
-        // Update pagination
-        function updatePagination(pagination) {
-          currentPageElementshow.textContent = pagination.current_page;
-          currentPageElement.value = pagination.current_page;
-          totalPagesElement.textContent = pagination.total_pages;
-          currentPageElement.max = pagination.total_pages;
-
-          document.getElementById("prevButton").disabled =
-            pagination.current_page <= 1;
-          document.getElementById("nextButton").disabled =
-            pagination.current_page >= pagination.total_pages;
-        }
-
-        // Apply filters
-        function applyFilters() {
-          limit = parseInt(limitFilter.value);
-          timeFilter = byTimeFilter.value; // Filter by Time dropdown
-          search = searchFilter.value.trim(); // Search input
-          currentPage = 1; // Reset to first page on filter change
-          fetchData();
-        }
-
-        // Navigate pages
-        function navigatePage(direction) {
-          if (direction === "prev" && currentPage > 1) {
-            currentPage--;
-          } else if (direction === "next") {
-            currentPage++;
-          } else if (direction === "custom") {
-            currentPage = parseInt(currentPageElement.value);
-            if (currentPage > parseInt(totalPagesElement.textContent)) {
-              return;
-            }
-          }
-          fetchData();
-        }
-
-        // Event listeners for filters and pagination
-        limitFilter.addEventListener("change", applyFilters);
-        byTimeFilter.addEventListener("change", applyFilters);
-        searchFilter.addEventListener("input", applyFilters); // Trigger search on input
-        document
-          .getElementById("prevButton")
-          .addEventListener("click", () => navigatePage("prev"));
-        document
-          .getElementById("nextButton")
-          .addEventListener("click", () => navigatePage("next"));
-        document
-          .getElementById("goButton")
-          .addEventListener("click", () => navigatePage("custom"));
-
-        // Initial fetch
-        fetchData();
-      });
-    </script>
-    <script>
       (function () {
         const checkSession = () => {
           fetch("../../session/sessioncheck.php", {
@@ -629,35 +287,51 @@
         // Also check the session immediately when the script is loaded
         checkSession();
       })();
-    </script>
-    <script>
-     document.addEventListener("DOMContentLoaded", function () {  
-      const passwordModal = new bootstrap.Modal(document.getElementById("passwordModal"));  
 
-      // Add event listener to dynamically created download buttons  
-      document.getElementById("tableBody").addEventListener("click", function (event) {  
-        if (event.target.closest(".downloadButton")) {  
-          event.preventDefault(); // Prevent default action  
-          passwordModal.show(); // Show the modal  
-        }  
-      });  
+      document.getElementById('addReceiverButton').addEventListener('click', function() {  
+        const emailInput = document.getElementById('emailShare');  
+        const accessLevelSelect = document.getElementById('accessLevel');  
 
-      // Confirm password button logic  
-      document.getElementById("confirmPassword").addEventListener("click", function () {  
-        const password = document.getElementById("password").value;  
+        // Get the input values  
+        const email = emailInput.value.trim();  
+        const accessLevel = accessLevelSelect.value;  
 
-        if (password.trim() === "") {  
-          alert("Please enter a password.");  
+        // Validation: Check if email is not empty  
+        if (email === '') {  
+          alert('Please enter an email address.');  
           return;  
         }  
 
-        // Perform the download action here  
-        console.log("Password entered:", password);  
+        // Create a new list item for the added receiver  
+        const listItem = document.createElement('div');  
+        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';  
+        listItem.innerHTML = `  
+          <span>${email}</span>  
+          <span class="text-muted">${accessLevel}</span>  
+          <button type="button" class="btn-close" aria-label="Close" onclick="this.parentElement.remove()"></button>  
+        `;  
 
-        // Close the modal after confirming  
-        passwordModal.hide();  
+        // Append the new item to the list  
+        document.getElementById('peopleWithAccess').appendChild(listItem);  
+
+        // Clear the input field  
+        emailInput.value = '';  
+        accessLevelSelect.value = 'viewer'; // Reset to default value  
       });  
-    });
+
+      document.getElementById('shareFileButton').addEventListener('click', function() {  
+        const emailList = document.getElementById('peopleWithAccess').children;  
+
+        // Check if there's at least one email in the list  
+        if (emailList.length === 0) {  
+          alert('Please add at least one email to share.');  
+          return;  
+        }  
+
+        // If there's at least one email, show the password modal  
+        const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));  
+        passwordModal.show();  
+      });  
     </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
