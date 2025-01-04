@@ -362,28 +362,57 @@
     </div>
 
     <!-- Modal for password input -->
-    <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="passwordModalLabel">Confirm Adding New Administrator</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p>Please enter your password:</p>
-            <div>
+    <div
+    class="modal fade"
+    id="passwordModal"
+    tabindex="-1"
+    aria-labelledby="passwordModalLabel"
+    aria-hidden="true"
+    >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="passwordModalLabel">Enter Password</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form id="passwordForm">
+            <div class="mb-3">
               <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control" name="password" id="password" required />
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="Enter your password"
+                required
+              />
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="confirmPassword">Confirm</button>
-          </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="confirmPassword"
+          >
+            Confirm
+          </button>
         </div>
       </div>
     </div>
-
+    </div>
 
     <script>
       // Parse query parameters
@@ -479,8 +508,7 @@
                   <button
                     type="button"
                     title="Share"
-                    class="btn btn-primary m-1 btn-sm"
-                    id="ShareButton"
+                    class="btn btn-primary m-1 btn-sm shareButton"
                   >
                     <i class="ti ti-send"></i>
                   </button>
@@ -504,33 +532,6 @@
             tableBody.appendChild(row);
           });
         }
-
-        // Select all download buttons
-        const downloadButtons = document.querySelectorAll('.downloadButton');
-        const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
-
-        // Add event listener to each download button
-        downloadButtons.forEach((downloadButton) => {
-          downloadButton.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default action
-
-            // Show the password modal
-            passwordModal.show();
-          });
-        });
-
-        // Confirm password button logic
-        document.getElementById('confirmPassword').addEventListener('click', function() {
-          // Handle form submission or further logic here
-          const password = document.getElementById('password').value;
-          console.log('Password entered:', password); // Just a sample, you can perform validation here
-
-          // Close the modal
-          passwordModal.hide();
-
-          // Continue with the download or any other action
-          alert('Password confirmed! Proceed with download...');
-        });
 
         function formatDateTime(dateTime) {
           const date = new Date(dateTime);
@@ -600,31 +601,6 @@
         // Initial fetch
         fetchData();
       });
-
-      document.addEventListener('DOMContentLoaded', function () {
-          // Select all download buttons
-          const downloadButtons = document.querySelectorAll('.downloadButton');
-          const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
-
-          // Add event listener to each download button
-          downloadButtons.forEach(downloadButton => {
-              downloadButton.addEventListener('click', function(event) {
-                  event.preventDefault(); // Prevent default form submission
-
-                  const password = document.getElementById('password').value;
-                  
-                  // You might want to handle password submission here before showing modal.
-                  document.getElementById('password').textContent = password; // Note: This line won't work as intended for <input> element
-
-                  passwordModal.show();
-              });
-          });
-
-          // Confirm password button logic
-          document.getElementById('confirmPassword').addEventListener('click', function() {
-              document.querySelector('form').submit();  // Submit the form (add necessary form handling)
-          });
-      });
     </script>
     <script>
       (function () {
@@ -652,6 +628,41 @@
         // Also check the session immediately when the script is loaded
         checkSession();
       })();
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Select all download buttons
+        const downloadButtons = document.querySelectorAll(".downloadButton");
+        const passwordModal = new bootstrap.Modal(
+          document.getElementById("passwordModal")
+        );
+    
+        // Add event listener to each download button
+        downloadButtons.forEach((downloadButton) => {
+          downloadButton.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default action
+            passwordModal.show(); // Show the modal
+          });
+        });
+    
+        // Confirm password button logic
+        document
+          .getElementById("confirmPassword")
+          .addEventListener("click", function () {
+            const password = document.getElementById("password").value;
+    
+            if (password.trim() === "") {
+              alert("Please enter a password.");
+              return;
+            }
+    
+            // Perform the download action here
+            console.log("Password entered:", password);
+    
+            // Close the modal after confirming
+            passwordModal.hide();
+          });
+      });
     </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
