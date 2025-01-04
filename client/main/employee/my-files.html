@@ -501,7 +501,8 @@
                   <button  
                     type="button"  
                     title="Download"  
-                    class="btn btn-success m-1 btn-sm downloadButton"  
+                    class="btn btn-success m-1 btn-sm downloadButton"
+                    data-file-id="${file.name}"  
                   >  
                       <i class="ti ti-download"></i>  
                   </button>  
@@ -638,7 +639,15 @@
       document.getElementById("tableBody").addEventListener("click", function (event) {  
         // Check if the clicked element is a download button  
         if (event.target.closest(".downloadButton")) {  
-          event.preventDefault(); // Prevent default action  
+          event.preventDefault(); // Prevent default action
+
+          // Get the file ID from the data-file-id attribute
+          const fileName = event.target.closest(".downloadButton").getAttribute("data-file-id");
+
+          window.currentFileName = fileName;
+          // Store the file ID for later use (e.g., sending it to the server)
+          console.log("File ID to download:", fileName);
+
           passwordModal.show(); // Show the modal for password input  
         }  
         
@@ -649,21 +658,55 @@
         }  
       });  
 
-      // Confirm password button logic  
-      document.getElementById("confirmPassword").addEventListener("click", function () {  
-        const password = document.getElementById("password").value;  
+      document.getElementById("confirmPassword").addEventListener("click", function () {
+          const password = document.getElementById("password").value;
+          const fileName = window.currentFileName;
 
-        if (password.trim() === "") {  
-          alert("Please enter a password.");  
-          return;  
-        }  
+          if (password.trim() === "") {
+              alert("Please enter a password.");
+              return;
+          }
 
-        // Perform the view action (or download action, adjust accordingly)  
-        console.log("Password entered:", password);  
+          // Send the password to the server via AJAX
+          fetch('process_password.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ password: password, fileName: fileName })
+          })
+          .then(response => {
+              // Check if the response is OK (status 200)
+              if (!response.ok) {
+                  return response.json().then(error => {
+                      throw new Error(error.message);
+                  });
+              }
 
-        // Close the modal after confirming  
-        passwordModal.hide();  
-      });  
+              document.getElementById("password").value = "";
+              // If the response is OK, handle the file download
+              return response.blob(); // Get the binary file content
+          })
+          .then(blob => {
+              // Create a temporary download link
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.style.display = 'none';
+              a.href = url;
+              a.download = fileName; // Set the suggested filename
+              document.body.appendChild(a);
+              a.click(); // Trigger the download
+              window.URL.revokeObjectURL(url); // Clean up the URL
+          })
+          .catch(error => {
+              console.error('Error:', error.message);
+              alert(`Error: ${error.message}`);
+          });
+
+          // Close the modal after confirming
+          passwordModal.hide();
+      });
+ 
     });
     </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
