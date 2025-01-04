@@ -92,9 +92,9 @@ try {
     $updateQuery->bindParam(':user_id', $userId, PDO::PARAM_INT);
 
     if ($updateQuery->execute()) {
-        
+
         // Fetch the current user's email and role
-        $doerUserId = $_SESSION['admin_user_id'];
+        $doerUserId = $_SESSION['client_user_id'];
         $userStmt = $conn->prepare("
             SELECT user_email, user_role 
             FROM tb_admin_userdetails 

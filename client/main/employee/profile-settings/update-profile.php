@@ -53,7 +53,7 @@ try {
         ]);
 
         // Fetch the current user's email and role
-        $doerUserId = $_SESSION['admin_user_id'];
+        $doerUserId = $_SESSION['client_user_id'];
         $userStmt = $conn->prepare("
             SELECT user_email, user_role 
             FROM tb_admin_userdetails 
