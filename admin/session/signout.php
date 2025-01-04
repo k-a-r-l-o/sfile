@@ -53,6 +53,6 @@ if (isset($_SESSION['admin_user_id'])) {
         exit; // Ensure no further code is executed
     } catch (PDOException $e) {
         error_log("Signout error: " . $e->getMessage());
-        echo "Signout error:  . $e."
+        echo "Signout error:  . $e.";
     }
 }

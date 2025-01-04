@@ -59,7 +59,11 @@
                 </a>
               </li>
               <li class="sidebar-item">
-                <a class="sidebar-link" href="./upload-files" aria-expanded="false">
+                <a
+                  class="sidebar-link"
+                  href="./upload-files"
+                  aria-expanded="false"
+                >
                   <span>
                     <iconify-icon
                       icon="solar:upload-minimalistic-bold-duotone"
@@ -132,14 +136,14 @@
                   >
                     <div class="message-body">
                       <a
-                        href="../employee/profile-settings-employee/profile-settings.php"
+                        href="../employee/profile-settings/profile-settings"
                         class="d-flex align-items-center gap-2 dropdown-item"
                       >
                         <i class="ti ti-user fs-6"></i>
                         <p class="mb-0 fs-3">My Profile</p>
                       </a>
                       <a
-                      href="../../session/signout.php"
+                        href="../../session/signout.php"
                         class="btn btn-outline-primary mx-3 mt-2 d-block"
                         >Logout</a
                       >
@@ -157,23 +161,25 @@
               <div class="card">
                 <div class="card-body text-center">
                   <h3 class="col-lg-12 text-start">Dashboard</h3>
-                  <img
-                    src="../../../assets/images/backgrounds/product-tip.png"
-                    alt="image"
-                    class="img-fluid"
-                    width="205"
-                  />
-                  <h4 class="mt-9">Welcome to SecureFile</h4>
-                  <p class="card-subtitle mt-2 mb-3">
-                    Your files, your security. Access with confidence.
-                  </p>
+                  <div class="width-100 rounded-3 p-4 bg-light shadow-sm">
+                    <img
+                      src="../../../assets/images/backgrounds/product-tip.png"
+                      alt="image"
+                      class="img-fluid"
+                      width="205"
+                    />
+                    <h4 class="mt-9">Welcome to SecureFile</h4>
+                    <p class="card-subtitle mt-2 mb-3">
+                      Your files, your security. Access with confidence.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="col-lg-4">
               <div class="card overflow-hidden hover-img">
                 <div class="position-relative">
-                  <a href="./admin">
+                  <a href="./upload-files">
                     <img
                       src="../../../assets/images/blog/blog-img1.jpg"
                       class="card-img-top"
@@ -191,7 +197,7 @@
                   >
                   <a
                     class="d-block my-4 fs-5 text-dark fw-semibold link-primary"
-                    href="./admin"
+                    href="./upload-files"
                     >File Upload</a
                   >
                 </div>
@@ -200,7 +206,7 @@
             <div class="col-lg-4">
               <div class="card overflow-hidden hover-img">
                 <div class="position-relative">
-                  <a href="./admin">
+                  <a href="./my-files">
                     <img
                       src="../../../assets/images/blog/blog-img2.jpg"
                       class="card-img-top"
@@ -218,7 +224,7 @@
                   >
                   <a
                     class="d-block my-4 fs-5 text-dark fw-semibold link-primary"
-                    href="./admin"
+                    href="./my-files"
                     >See My Files</a
                   >
                 </div>
@@ -228,6 +234,33 @@
         </div>
       </div>
     </div>
+    <script>
+      (function () {
+        const checkSession = () => {
+          fetch("../../session/sessioncheck.php", {
+            method: "GET",
+            credentials: "include", // Include cookies with the request
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (!data.sessionValid) {
+                // Redirect to the logout script if the session is invalid
+                window.location.href = "../login?error=session_expired";
+              }
+            })
+            .catch((err) => {
+              console.error("Error checking session:", err);
+              // Handle fetch errors if needed
+            });
+        };
+
+        // Check the session every 5 minutes (300,000 milliseconds)
+        setInterval(checkSession, 300000);
+
+        // Also check the session immediately when the script is loaded
+        checkSession();
+      })();
+    </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>
