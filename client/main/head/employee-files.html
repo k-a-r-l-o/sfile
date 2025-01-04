@@ -332,8 +332,8 @@
           tableBody.innerHTML = ""; // Clear existing rows
           users.forEach((user) => {
             const box = document.createElement("div");
+            box.classList.add("col-md-3");
             box.innerHTML = `
-            <div class="col-md-3">
               <div class="card">
                 <img
                   src="../../../assets/images/profile/user-1.jpg"
@@ -346,7 +346,6 @@
                   <a href="./go-to?id=${user.user_id}" class="btn btn-primary">Go to Files</a>
                </div>
               </div>
-            </div>
             `;
             tableBody.appendChild(box);
           });
