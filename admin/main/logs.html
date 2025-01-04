@@ -399,24 +399,25 @@
         </div>
       </div>
     </div>
+    
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const tableBody = document.getElementById("tableBody");
         const currentPageElementshow = document.getElementById("currentPageshow");
         const currentPageElement = document.getElementById("currentPage");
         const totalPagesElement = document.getElementById("totalPages");
-
+    
         const limitFilter = document.getElementById("limit-filter");
         const roleFilter = document.getElementById("role-filter");
         const timeFilter = document.getElementById("time-filter");
         const searchFilter = document.getElementById("search");
-
+    
         let currentPage = 1;
         let limit = parseInt(limitFilter.value);
         let role = roleFilter.value;
         let time = timeFilter.value;
         let search = searchFilter.value;
-
+    
         // Fetch data and populate table
         function fetchData() {
           const url = new URL("./logs.php", window.location.href);
@@ -425,7 +426,7 @@
           if (role) url.searchParams.append("role", role);
           if (time) url.searchParams.append("time", time);
           if (search) url.searchParams.append("search", search);
-
+    
           fetch(url)
             .then((response) => response.json())
             .then((data) => {
@@ -434,7 +435,7 @@
             })
             .catch((error) => console.error("Error fetching data:", error));
         }
-
+    
         // Populate table rows
         function populateTable(logs) {
           tableBody.innerHTML = ""; // Clear existing rows
@@ -451,7 +452,7 @@
             tableBody.appendChild(row);
           });
         }
-
+    
         function formatDateTime(dateTime) {
           const date = new Date(dateTime);
           const options = {
@@ -465,20 +466,20 @@
           };
           return date.toLocaleString("en-US", options);
         }
-
+    
         // Update pagination
         function updatePagination(pagination) {
           currentPageElementshow.textContent = pagination.current_page;
           currentPageElement.value = pagination.current_page;
           totalPagesElement.textContent = pagination.total_pages;
           currentPageElement.max = pagination.total_pages;
-
+    
           document.getElementById("prevButton").disabled =
             pagination.current_page <= 1;
           document.getElementById("nextButton").disabled =
             pagination.current_page >= pagination.total_pages;
         }
-
+    
         // Apply filters
         function applyFilters() {
           limit = parseInt(limitFilter.value);
@@ -488,7 +489,13 @@
           currentPage = 1; // Reset to first page on filter change
           fetchData();
         }
-
+    
+        // Event listeners for filters and pagination
+        limitFilter.addEventListener("change", applyFilters);
+        roleFilter.addEventListener("change", applyFilters);
+        timeFilter.addEventListener("change", applyFilters);
+        searchFilter.addEventListener("input", applyFilters);
+    
         // Navigate pages
         function navigatePage(direction) {
           if (direction === "prev" && currentPage > 1) {
@@ -496,32 +503,23 @@
           } else if (direction === "next") {
             currentPage++;
           } else if (direction === "custom") {
-            currentPage = currentPageElement.value;
-            if (currentPage > totalPagesElement.textContent) {
+            currentPage = parseInt(currentPageElement.value, 10);
+            if (currentPage > parseInt(totalPagesElement.textContent, 10)) {
               return;
             }
           }
           fetchData();
         }
-
-        // Event listeners for filters and pagination
-        limitFilter.addEventListener("change", applyFilters);
-        roleFilter.addEventListener("change", applyFilters);
-        timeFilter.addEventListener("change", applyFilters);
-        searchFilter.addEventListener("change", applyFilters);
-        document
-          .getElementById("prevButton")
-          .addEventListener("click", () => navigatePage("prev"));
-        document
-          .getElementById("nextButton")
-          .addEventListener("click", () => navigatePage("next"));
-        document
-          .getElementById("goButton")
-          .addEventListener("click", () => navigatePage("custom"));
+    
+        document.getElementById("prevButton").addEventListener("click", () => navigatePage("prev"));
+        document.getElementById("nextButton").addEventListener("click", () => navigatePage("next"));
+        document.getElementById("goButton").addEventListener("click", () => navigatePage("custom"));
+    
         // Initial fetch
         fetchData();
       });
     </script>
+    
     <script>
       (function () {
         const checkSession = () => {
