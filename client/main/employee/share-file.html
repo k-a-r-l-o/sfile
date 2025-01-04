@@ -326,6 +326,8 @@
         .getElementById("shareFileButton")
         .addEventListener("click", function () {
           const emailInput = document.getElementById("emailShare").value;
+          const filename = new URLSearchParams(window.location.search).get("file");
+          
           if (!emailInput) {
             alert("Please enter a valid email address."); // Alert if the email input is empty
           } else {
@@ -334,6 +336,43 @@
               document.getElementById("passwordModal")
             );
             passwordModal.show();
+
+            document.getElementById("confirmPassword").addEventListener("click", function () {
+                const password = document.getElementById("password").value;
+
+                if (password.trim() === "") {
+                    alert("Please enter a password.");
+                    return;
+                }
+
+                // Send the password to the server via AJAX
+                fetch("process_shareFiles.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        password: password,
+                        email: emailInput,
+                        filename: filename,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === "success") {
+                            alert("File Successfully Shared.");
+                        } else {
+                            alert("Password is incorrect.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("An error occurred while processing your request.");
+                    });
+
+                // Close the modal after confirming
+                passwordModal.hide();
+            });
           }
         });
     </script>
