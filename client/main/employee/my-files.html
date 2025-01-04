@@ -63,7 +63,11 @@
                 </a>
               </li>
               <li class="sidebar-item">
-                <a class="sidebar-link" href="./upload-files" aria-expanded="false">
+                <a
+                  class="sidebar-link"
+                  href="./upload-files"
+                  aria-expanded="false"
+                >
                   <span>
                     <iconify-icon
                       icon="solar:upload-minimalistic-bold-duotone"
@@ -160,8 +164,7 @@
             <div class="card-body">
               <div class="row">
                 <h3 class="col-lg-12">My Files</h3>
-                <div class="col-sm-8 text-start">
-                </div>
+                <div class="col-sm-8 text-start"></div>
                 <div class="col-sm-4 text-end">
                   <form method="get" onsubmit="return false;" class="mb-2">
                     <input
@@ -241,6 +244,10 @@
                 </div>
               </div>
 
+              <div class="alert my-2 d-none" id="error" role="alert">
+                An unknown error occurred. Please try again.
+              </div>
+
               <!-- Table -->
               <div class="col-lg-12">
                 <div class="table-responsive my-2">
@@ -251,12 +258,47 @@
                       >
                         <th scope="col" class="ps-0">Filename</th>
                         <th scope="col" class="ps-0">File Size</th>
-                        <th scope="col" class="ps-0">Date & Time Upload</th>
+                        <th scope="col" class="ps-0">Uploaded Date & Time</th>
                         <th scope="col" class="ps-0">Actions</th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider" id="tableBody">
-                      <!-- Table rows will be populated dynamically -->
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -329,9 +371,43 @@
       </div>
     </div>
     <script>
+      // Parse query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+
+      if (error) {
+        const messagetext = document.getElementById("error");
+        let message = "";
+
+        // Map error types to messages
+        switch (error) {
+          case "none":
+            message = "File successfully deleted.";
+            break;
+          default:
+            message = "An unknown error occurred. Please try again.";
+        }
+
+        // Update the alert with the message and show it
+        messagetext.textContent = message;
+        messagetext.classList.remove("d-none");
+
+        // Remove previous alert classes and apply the correct one
+        if (error === "none") {
+          messagetext.classList.add("alert-success");
+        } else {
+          messagetext.classList.add("alert-danger");
+        }
+
+        setTimeout(() => {
+          messagetext.classList.add("d-none");
+        }, 5000);
+      }
+
       document.addEventListener("DOMContentLoaded", () => {
         const tableBody = document.getElementById("tableBody");
-        const currentPageElementshow = document.getElementById("currentPageshow");
+        const currentPageElementshow =
+          document.getElementById("currentPageshow");
         const currentPageElement = document.getElementById("currentPage");
         const totalPagesElement = document.getElementById("totalPages");
 
@@ -348,7 +424,7 @@
 
         // Fetch data and populate table - temp palang ning php niya
         function fetchData() {
-          const url = new URL("./client.php", window.location.href);
+          const url = new URL("./my-files.php", window.location.href);
           url.searchParams.append("page", currentPage);
           url.searchParams.append("limit", limit);
           if (sortBy) url.searchParams.append("sortBy", sortBy);
