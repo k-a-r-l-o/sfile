@@ -34,7 +34,7 @@
           <div
             class="brand-logo d-flex align-items-center justify-content-between"
           >
-            <a href="./" class="text-nowrap logo-img">
+            <a href="./index.html" class="text-nowrap logo-img">
               <img src="../../../assets/img/light-logo-employee.svg" alt="" />
             </a>
             <div
@@ -491,7 +491,7 @@
                 <a  
                   href="#"  
                   title="View"  
-                  class="nav-link nav-icon-hover text-primary hover:text-primary viewButton">   
+                  class="nav-link nav-icon-hover text-primary hover:text-primary">  
                   <strong>${file.name}</strong>  
                 </a>  
               </td>  
@@ -509,7 +509,7 @@
                     type="button"  
                     title="Share"  
                     class="btn btn-primary m-1 btn-sm"
-                    onclick="window.location.href='shareFile.html'" 
+                    onclick="window.location.href=''" 
                   >
                     <i class="ti ti-send"></i>  
                   </button>  
@@ -634,18 +634,11 @@
      document.addEventListener("DOMContentLoaded", function () {  
       const passwordModal = new bootstrap.Modal(document.getElementById("passwordModal"));  
 
-      // Add event listener to dynamically created download and view buttons  
+      // Add event listener to dynamically created download buttons  
       document.getElementById("tableBody").addEventListener("click", function (event) {  
-        // Check if the clicked element is a download button  
         if (event.target.closest(".downloadButton")) {  
           event.preventDefault(); // Prevent default action  
-          passwordModal.show(); // Show the modal for password input  
-        }  
-        
-        // Check if the clicked element is a view button  
-        if (event.target.closest(".viewButton")) {  
-          event.preventDefault(); // Prevent default action  
-          passwordModal.show(); // Show the modal for password input  
+          passwordModal.show(); // Show the modal  
         }  
       });  
 
@@ -658,7 +651,7 @@
           return;  
         }  
 
-        // Perform the view action (or download action, adjust accordingly)  
+        // Perform the download action here  
         console.log("Password entered:", password);  
 
         // Close the modal after confirming  
