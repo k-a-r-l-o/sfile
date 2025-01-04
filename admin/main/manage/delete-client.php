@@ -9,20 +9,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $firstname = $_POST['firstname'] ?? '';
     $lastname = $_POST['lastname'] ?? '';
+    $role = $_POST['role'] ?? '';
 
     try {
         $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Check if user exists in the database
-        $checkUserStmt = $pdo->prepare("SELECT COUNT(*) FROM tb_admin_userdetails WHERE user_id = :Id");
+        $checkUserStmt = $pdo->prepare("SELECT COUNT(*) FROM tb_client_userdetails WHERE user_id = :Id");
         $checkUserStmt->bindParam(':Id', $Id);
         $checkUserStmt->execute();
         $userExists = $checkUserStmt->fetchColumn();
 
         if ($userExists == 0) {
             // If the user doesn't exist, redirect with an error
-            header("Location: edit-admin?error=user_not_found&id=$Id&email=$email&fname=$firstname&lname=$lastname");
+            header("Location: edit-client?error=user_not_found&id=$Id&email=$email&fname=$firstname&lname=$lastname");
             exit;
         }
 
@@ -30,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->beginTransaction();
 
         // Update tb_admin_userdetails (only updating the first name and last name)
-        $stmt = $pdo->prepare("UPDATE tb_admin_userdetails 
+        $stmt = $pdo->prepare("UPDATE tb_client_userdetails 
                                SET user_status = '0'
                                WHERE user_id = :Id");
         $stmt->bindParam(':Id', $Id);
@@ -48,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $logRole = $userDetails['user_role'] ?? 'Unknown';
 
         // Log the edit action
-        $logAction = "Administrator user $Id deleted successfully.";
+        $logAction = "$role user $Id deleted successfully.";
         $logdate = date('Y-m-d H:i:s');
         $logStmt = $pdo->prepare("
             INSERT INTO tb_logs (doer, log_date, role, log_action) 
@@ -63,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Return success response
         echo json_encode(["success" => true]);
-        header("Location: ../admin?error=none");
+        header("Location: ../client?error=none");
         exit;
     } catch (PDOException $e) {
         // Rollback the transaction on error
         $pdo->rollBack();
         echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
-        header("Location: delete-admin?error=server_error&id=$Id&email=$email&fname=$firstname&lname=$lastname");
+        header("Location: delete-client?error=server_error&id=$Id&email=$email&fname=$firstname&lname=$lastname");
         exit;
     }
 }
