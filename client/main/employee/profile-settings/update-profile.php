@@ -51,6 +51,33 @@ try {
             'status' => 'success',
             'message' => 'Profile updated successfully.',
         ]);
+
+        // Fetch the current user's email and role
+        $doerUserId = $_SESSION['admin_user_id'];
+        $userStmt = $conn->prepare("
+            SELECT user_email, user_role 
+            FROM tb_admin_userdetails 
+            WHERE user_id = :user_id
+        ");
+        $userStmt->bindParam(':user_id', $doerUserId);
+        $userStmt->execute();
+        $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
+        $logRole = $userDetails['user_role'] ?? 'Unknown';
+
+        // Log the user addition
+        $logAction = "Profile name updated successfully";
+        $logdate = date('Y-m-d H:i:s');
+        $logStmt = $conn->prepare("
+            INSERT INTO tb_logs (doer, log_date, role, log_action) 
+            VALUES (:doer, :log_date, :role, :action)
+        ");
+        $logStmt->execute([
+            ':doer' => $doerUserId,
+            ':log_date' => $logdate,
+            ':role' => $logRole,
+            ':action' => $logAction
+        ]);
+
         header("Location: ./profile-settings?error=none");
     } else {
         echo json_encode([
