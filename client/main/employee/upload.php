@@ -2,9 +2,13 @@
 // Start session
 session_start();
 
-if (!isset($_SESSION['client_user_id'])) {
-    header('Location: login.php');
-    exit;
+// Check if the session contains a user ID
+if (!isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client_user_id'])) {
+    header("Location: ../../login?error=session_expired");
+} else {
+    if ($_SESSION['client_role'] == 'Head') {
+        header("Location: ../head/");
+    }
 }
 
 require_once __DIR__ . '/../../../config/config.php';
@@ -22,11 +26,13 @@ try {
 }
 
 // Helper Functions
-function generateAESKey(): string {
+function generateAESKey(): string
+{
     return openssl_random_pseudo_bytes(32); // 256-bit AES key
 }
 
-function encryptFile(string $filePath, string $aesKey, string $iv): string {
+function encryptFile(string $filePath, string $aesKey, string $iv): string
+{
     $fileData = file_get_contents($filePath);
     if ($fileData === false) {
         throw new RuntimeException('Failed to read file data for encryption.');
@@ -38,7 +44,8 @@ function encryptFile(string $filePath, string $aesKey, string $iv): string {
     return $encryptedData;
 }
 
-function getUniqueFileName(string $directory, string $fileName): string {
+function getUniqueFileName(string $directory, string $fileName): string
+{
     $fileInfo = pathinfo($fileName);
     $baseName = $fileInfo['filename'];
     $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';
@@ -53,7 +60,8 @@ function getUniqueFileName(string $directory, string $fileName): string {
     return $uniqueName;
 }
 
-function formatFileSize(int $bytes): string {
+function formatFileSize(int $bytes): string
+{
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];
     $i = 0;
     while ($bytes >= 1024 && $i < count($units) - 1) {
@@ -170,4 +178,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
 }
-?>

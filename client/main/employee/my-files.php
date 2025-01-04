@@ -1,9 +1,13 @@
 <?php
 session_start();
 
-// Check if session variables are set
+// Check if the session contains a user ID
 if (!isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client_user_id'])) {
     header("Location: ../../login?error=session_expired");
+} else {
+    if ($_SESSION['client_role'] == 'Head') {
+        header("Location: ../head/");
+    }
 }
 
 // Include the configuration file
@@ -17,6 +21,7 @@ try {
     // Define the base SQL query
     $sql = "
         SELECT 
+            file_id,
             name,
             size,
             created_at
