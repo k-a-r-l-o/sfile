@@ -7,9 +7,9 @@
     <link
       rel="shortcut icon"
       type="image/png"
-      href="../../../../assets/img/logo.png"
+      href="../../../assets/img/logo.png"
     />
-    <link rel="stylesheet" href="../../../../assets/css/styles.min.css" />
+    <link rel="stylesheet" href="../../../assets/css/styles.min.css" />
   </head>
 
   <body>
@@ -31,10 +31,7 @@
             class="brand-logo d-flex align-items-center justify-content-between"
           >
             <a href="../" class="text-nowrap logo-img">
-              <img
-                src="../../../../assets/img/light-logo-employee.svg"
-                alt=""
-              />
+              <img src="../../../assets/img/light-logo-admin.svg" alt="" />
             </a>
             <div
               class="close-btn d-xl-none d-block sidebartoggler cursor-pointer"
@@ -62,33 +59,40 @@
                 </a>
               </li>
               <li class="sidebar-item">
-                <a
-                  class="sidebar-link"
-                  href="../upload-files"
-                  aria-expanded="false"
-                >
-                  <span>
-                    <iconify-icon
-                      icon="solar:upload-minimalistic-bold-duotone"
-                      class="fs-6"
-                    ></iconify-icon>
-                  </span>
-                  <span class="hide-menu">Upload Files</span>
-                </a>
-              </li>
-              <li class="sidebar-item">
-                <a
-                  class="sidebar-link"
-                  href="../my-files"
-                  aria-expanded="false"
-                >
+                <a class="sidebar-link" href="../logs" aria-expanded="false">
                   <span>
                     <iconify-icon
                       icon="solar:layers-minimalistic-bold-duotone"
                       class="fs-6"
                     ></iconify-icon>
                   </span>
-                  <span class="hide-menu">My Files</span>
+                  <span class="hide-menu">Activity Logs</span>
+                </a>
+              </li>
+              <li class="nav-small-cap">
+                <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
+                <span class="hide-menu">User Management</span>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="../admin" aria-expanded="false">
+                  <span>
+                    <iconify-icon
+                      icon="solar:user-rounded-bold-duotone"
+                      class="fs-6"
+                    ></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Administrators</span>
+                </a>
+              </li>
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="../client" aria-expanded="false">
+                  <span>
+                    <iconify-icon
+                      icon="solar:user-rounded-bold"
+                      class="fs-6"
+                    ></iconify-icon>
+                  </span>
+                  <span class="hide-menu">Clients</span>
                 </a>
               </li>
             </ul>
@@ -150,7 +154,7 @@
                         <p class="mb-0 fs-3">My Profile</p>
                       </a>
                       <a
-                        href="../../../session/signout.php"
+                        href="../../session/signout.php"
                         class="btn btn-outline-primary mx-3 mt-2 d-block"
                         >Logout</a
                       >

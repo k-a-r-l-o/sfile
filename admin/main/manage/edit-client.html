@@ -34,7 +34,7 @@
           <div
             class="brand-logo d-flex align-items-center justify-content-between"
           >
-            <a href="../index.html" class="text-nowrap logo-img">
+            <a href="../" class="text-nowrap logo-img">
               <img src="../../../assets/img/light-logo-admin.svg" alt="" />
             </a>
             <div
@@ -151,7 +151,7 @@
                   >
                     <div class="message-body">
                       <a
-                        href="javascript:void(0)"
+                        href="../profile-settings/profile-settings"
                         class="d-flex align-items-center gap-2 dropdown-item"
                       >
                         <i class="ti ti-user fs-6"></i>
@@ -256,7 +256,11 @@
                         >
                           Back
                         </button>
-                        <button type="submit" class="btn btn-primary" id="saveChangesButton">
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          id="saveChangesButton"
+                        >
                           Save Changes
                         </button>
                       </form>
@@ -273,26 +277,53 @@
       </div>
     </div>
 
-    <!-- Confirm Edit Info of the Client Modal -->  
-    <div class="modal fade" id="editClientModal" tabindex="-1" aria-labelledby="editClientModalLabel" aria-hidden="true">  
-      <div class="modal-dialog">  
-        <div class="modal-content">  
-          <div class="modal-header">  
-            <h5 class="modal-title" id="editClientModalLabel">Confirm Save Changes</h5>  
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>  
-          </div>  
-          <div class="modal-body">  
-            <p>Are you sure you want to save the following changes?</p>  
-            <p><strong>First Name:</strong> <span id="clientFirstName"></span></p>  
-            <p><strong>Last Name:</strong> <span id="clientLastName"></span></p> 
+    <!-- Confirm Edit Info of the Client Modal -->
+    <div
+      class="modal fade"
+      id="editClientModal"
+      tabindex="-1"
+      aria-labelledby="editClientModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editClientModalLabel">
+              Confirm Save Changes
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to save the following changes?</p>
+            <p>
+              <strong>First Name:</strong> <span id="clientFirstName"></span>
+            </p>
+            <p><strong>Last Name:</strong> <span id="clientLastName"></span></p>
             <p><strong>Role:</strong> <span id="clientRole"></span></p>
-          </div>  
-          <div class="modal-footer">  
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>  
-            <button type="button" class="btn btn-primary" id="confirmEditClient">Confirm</button>  
-          </div>  
-        </div>  
-      </div>  
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="confirmEditClient"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -388,30 +419,34 @@
         checkSession();
       })();
     </script>
-    <script>  
-      document.addEventListener('DOMContentLoaded', function () {  
-        const saveChangesButton = document.getElementById('saveChangesButton');  
-        const editClientModal = new bootstrap.Modal(document.getElementById('editClientModal'));  
-    
-        saveChangesButton.addEventListener('click', function(event) {   
-          event.preventDefault(); // Prevent default form submission   
-    
-          const firstName = document.getElementById('firstname').value;  
-          const lastName = document.getElementById('lastname').value;  
-          const role = document.getElementById('role').value; 
-        
-          document.getElementById('clientFirstName').textContent = firstName;  
-          document.getElementById('clientLastName').textContent = lastName;  
-          document.getElementById('clientRole').textContent = role;  
-    
-          editClientModal.show();  
-        });  
-    
-        document.getElementById('confirmEditClient').addEventListener('click', function() {  
-          document.querySelector('form').submit(); 
-        });  
-      });  
-    </script>  
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const saveChangesButton = document.getElementById("saveChangesButton");
+        const editClientModal = new bootstrap.Modal(
+          document.getElementById("editClientModal")
+        );
+
+        saveChangesButton.addEventListener("click", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          const firstName = document.getElementById("firstname").value;
+          const lastName = document.getElementById("lastname").value;
+          const role = document.getElementById("role").value;
+
+          document.getElementById("clientFirstName").textContent = firstName;
+          document.getElementById("clientLastName").textContent = lastName;
+          document.getElementById("clientRole").textContent = role;
+
+          editClientModal.show();
+        });
+
+        document
+          .getElementById("confirmEditClient")
+          .addEventListener("click", function () {
+            document.querySelector("form").submit();
+          });
+      });
+    </script>
     <script src="../../../assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="../../../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/libs/apexcharts/dist/apexcharts.min.js"></script>

@@ -1,13 +1,13 @@
 <?php
 session_start();
-require_once '../../../../config/database.php';
+require_once '../../../config/database.php';
 
 // Check if the session contains a user ID
-if (!isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client_user_id'])) {
-  header("Location: ../../login?error=session_expired");
+if (!isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_user_id'])) {
+  header("Location: ../login?error=session_expired");
 }
 
-$userId = $_SESSION['client_user_id'];
+$userId = $_SESSION['admin_user_id'];
 
 try {
   $db = new Database();
@@ -16,7 +16,7 @@ try {
   // Fetch user details from the database
   $query = $conn->prepare(
     "SELECT user_id, user_fname, user_lname, user_email, user_role 
-         FROM tb_client_userdetails 
+         FROM tb_admin_userdetails 
          WHERE user_id = :user_id AND user_status = 1"
   );
   $query->bindParam(':user_id', $userId, PDO::PARAM_INT);
@@ -25,6 +25,7 @@ try {
   // Check if the user exists
   if ($query->rowCount() === 0) {
     echo "User not found.";
+    header("Location: ../login?error=user_not_found");
     exit;
   }
 
