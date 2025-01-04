@@ -172,7 +172,7 @@
         <!--  Header End -->
         <div class="container-fluid">
           <div class="row">
-            <h3 class="col-lg-8">Deleting Administrator</h3>
+            <h3 class="col-lg-8">Deleting Client</h3>
 
             <!-- Form -->
             <div class="col-lg-12">
@@ -186,7 +186,7 @@
                       <div class="alert d-none" id="error" role="alert">
                         An unknown error occurred. Please try again.
                       </div>
-                      <form action="delete-admin.php" method="POST">
+                      <form action="delete-client.php" method="POST">
                         <div class="mb-3">
                           <label for="user_id" class="form-label"
                             >User ID</label
@@ -235,9 +235,19 @@
                             readonly
                           />
                         </div>
+                        <div class="mb-3">
+                          <label for="role" class="form-label">Role</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="role"
+                            id="role"
+                            readonly
+                          />
+                        </div>
                         <button
                           type="button"
-                          onclick="window.location.href='../admin'"
+                          onclick="window.location.href='../client'"
                           class="btn btn-dark"
                         >
                           Back
@@ -345,17 +355,20 @@
       const email = urlParams.get("email");
       const firstname = urlParams.get("fname");
       const lastname = urlParams.get("lname");
+      const role = urlParams.get("role");
 
-      if (id && email && firstname && lastname) {
+      if (id && email && firstname && lastname && role) {
         const user_id = document.getElementById("user_id");
         const user_email = document.getElementById("email");
         const user_firstname = document.getElementById("firstname");
         const user_lastname = document.getElementById("lastname");
+        const user_role = document.getElementById("role");
 
         user_id.value = id;
         user_email.value = email;
         user_firstname.value = firstname;
         user_lastname.value = lastname;
+        user_role.value = role;
       } else {
         window.location.href = "../admin";
       }
