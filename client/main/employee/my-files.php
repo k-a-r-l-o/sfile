@@ -31,7 +31,7 @@ try {
     if (isset($_GET['search']) && !empty($_GET['search'])) {
         $filters['search'] = "%" . $_GET['search'] . "%";
         $sql .= " AND (
-            name LIKE :search
+            `name` LIKE :search
         )";
     }
 

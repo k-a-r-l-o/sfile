@@ -11,7 +11,7 @@ if (isset($_SESSION['client_user_id'])) {
         $updateStatusStmt = $conn->prepare(
             "UPDATE tb_client_logindetails 
              SET user_status = 'Offline', 
-                 user_log = NULL, 
+                 user_log = NULL
              WHERE user_id = :user_id"
         );
         $updateStatusStmt->execute([':user_id' => $_SESSION['client_user_id']]);
@@ -32,27 +32,27 @@ if (isset($_SESSION['client_user_id'])) {
         $logAction = "Signed out successfully.";
         $userlog = date('Y-m-d H:i:s'); // Current timestamp
         $logStmt = $conn->prepare("
-            INSERT INTO tb_logs (doer, role, log_action, user_log) 
-            VALUES (:doer, :role, :action, :userlog)
-        ");
+                INSERT INTO tb_logs (log_date, doer, role, log_action)
+                VALUES (:userlog, :doer, :role, :action)
+            ");
         $logStmt->execute([
+            ':userlog' => $userlog,
             ':doer' => $doerUserId,
             ':role' => $logRole,
-            ':action' => $logAction,
-            ':userlog' => $userlog
+            ':action' => $logAction
         ]);
+
+        // Destroy all session variables
+        session_unset();
+
+        // Destroy the session
+        session_destroy();
+
+        // Redirect the user to the login page
+        header("Location: ../index.php");
+        exit; // Ensure no further code is executed
     } catch (PDOException $e) {
         error_log("Signout error: " . $e->getMessage());
-        // Optionally, you can show a message or log this for further review
+        echo "Signout error:  . $e.";
     }
 }
-
-// Destroy all session variables
-session_unset();
-
-// Destroy the session
-session_destroy();
-
-// Redirect the user to the login page
-header("Location: ../index.php");
-exit; // Ensure no further code is executed
