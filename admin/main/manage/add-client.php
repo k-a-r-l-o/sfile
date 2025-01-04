@@ -62,7 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Commit the transaction
         $pdo->commit();
 
-        $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee"; // Absolute path
+        $rolefolder = '';
+        if ($role == 'Head') {
+            $rolefolder = 'head';
+        } else {
+            $rolefolder = 'employee';
+        }
+        $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/$rolefolder"; // Absolute path
         $folderName = $user_id;
         $newFolderPath = rtrim($folderPath, '/') . "/" . $folderName;
 
