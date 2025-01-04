@@ -146,10 +146,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
     // Insert file information into the database
     try {
-        $stmt = $pdo->prepare("INSERT INTO tb_files (owner_id, name, size, created_at) VALUES (:owner_id, :name, :size, :created_at)");
+        $stmt = $pdo->prepare("INSERT INTO tb_files (owner_id, name, size, hashed_key, created_at) VALUES (:owner_id, :name, :size, :hashed_key, :created_at)");
         $stmt->bindParam(':owner_id', $userId);
         $stmt->bindParam(':name', $uniqueFileName);
         $stmt->bindParam(':size', $formattedSize);
+        $stmt->bindParam(':hashed_key', $fileHash);
         $stmt->bindParam(':created_at', $fileDate);
         $stmt->execute();
     } catch (PDOException $e) {
