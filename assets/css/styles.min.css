@@ -17561,7 +17561,7 @@ body {
   background-color: #f0faff;
 }
 
-.file-list {
+#file-list {
   list-style: none;
   padding: 0;
 }
