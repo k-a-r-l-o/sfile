@@ -57,7 +57,7 @@ try {
         $userStmt = $conn->prepare("
             SELECT user_email, user_role 
             FROM tb_client_userdetails 
-            WHERE user_id = :user_id
+            WHERE user_id = :user_id AND user_status = 1
         ");
         $userStmt->bindParam(':user_id', $doerUserId);
         $userStmt->execute();
