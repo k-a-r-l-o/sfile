@@ -697,6 +697,14 @@
         const passwordModal = new bootstrap.Modal(
           document.getElementById("passwordModal")
         );
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordButton = document.getElementById("confirmPassword");
+        const cancelButton = document.getElementById("cancelButton"); // Assuming a cancel button exists in the modal
+    
+        // Clear the password field function
+        function clearPasswordInput() {
+          passwordInput.value = "";
+        }
     
         // Add event listener to dynamically created download and view buttons
         document
@@ -712,7 +720,6 @@
                 .getAttribute("data-file-id");
     
               window.currentFileName = fileName;
-              // Store the file ID for later use (e.g., sending it to the server)
               console.log("File ID to download:", fileName);
     
               passwordModal.show(); // Show the modal for password input
@@ -725,67 +732,73 @@
             }
           });
     
-        document
-          .getElementById("confirmPassword")
-          .addEventListener("click", function () {
-            const passwordInput = document.getElementById("password");
-            const password = passwordInput.value;
-            const fileName = window.currentFileName;
+        // Handle confirm password
+        confirmPasswordButton.addEventListener("click", function () {
+          const password = passwordInput.value;
+          const fileName = window.currentFileName;
     
-            if (password.trim() === "") {
-              alert("Please enter a password.");
-              return;
-            }
+          if (password.trim() === "") {
+            alert("Please enter a password.");
+            return;
+          }
     
-            fetch("process_downloadFiles.php", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ password: password, fileName: fileName }),
+          fetch("process_downloadFiles.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password: password, fileName: fileName }),
+          })
+            .then((response) => {
+              const contentType = response.headers.get("Content-Type");
+    
+              if (contentType && contentType.includes("application/json")) {
+                return response.json(); // Parse as JSON if Content-Type is JSON
+              } else if (contentType && contentType.includes("application/")) {
+                return response.blob(); // Handle binary file download
+              } else {
+                throw new Error("Unexpected response format.");
+              }
             })
-              .then((response) => {
-                const contentType = response.headers.get("Content-Type");
+            .then((dataOrBlob) => {
+              if (dataOrBlob instanceof Blob) {
+                const url = window.URL.createObjectURL(dataOrBlob);
+                const a = document.createElement("a");
+                a.style.display = "none";
+                a.href = url;
+                a.download = fileName; // Suggested filename
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
     
-                if (contentType && contentType.includes("application/json")) {
-                  return response.json(); // Parse as JSON if Content-Type is JSON
-                } else if (contentType && contentType.includes("application/")) {
-                  return response.blob(); // Handle binary file download
-                } else {
-                  throw new Error("Unexpected response format.");
-                }
-              })
-              .then((dataOrBlob) => {
-                if (dataOrBlob instanceof Blob) {
-                  // Handle file download
-                  const url = window.URL.createObjectURL(dataOrBlob);
-                  const a = document.createElement("a");
-                  a.style.display = "none";
-                  a.href = url;
-                  a.download = fileName; // Suggested filename
-                  document.body.appendChild(a);
-                  a.click();
-                  window.URL.revokeObjectURL(url);
+                alert("File downloaded successfully!");
+                passwordModal.hide(); // Close the modal after successful download
+              } else if (dataOrBlob.status === "error") {
+                alert("Incorrect password, please try again.");
+                passwordInput.value = ""; // Clear the input field
+                passwordInput.focus(); // Focus back to the input field
+              } else {
+                alert(dataOrBlob.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error.message);
+              alert(`Error: ${error.message}`);
+            });
+        });
     
-                  // Prompt success message
-                  alert("File downloaded successfully!");
-                  passwordModal.hide(); // Close the modal after successful download
-                } else if (dataOrBlob.status === "error") {
-                  // Handle incorrect password or other errors
-                  alert("Incorrect password, please try again.");
-                  passwordInput.value = ""; // Clear the input field
-                  passwordInput.focus(); // Focus back to the input field
-                } else {
-                  alert(dataOrBlob.message);
-                }
-              })
-              .catch((error) => {
-                console.error("Error:", error.message);
-                alert(`Error: ${error.message}`);
-              });
-          });
+        // Handle cancel button click (if cancel button exists in the modal)
+        if (cancelButton) {
+          cancelButton.addEventListener("click", clearPasswordInput);
+        }
+    
+        // Clear password input when modal is closed
+        document
+          .getElementById("passwordModal")
+          .addEventListener("hidden.bs.modal", clearPasswordInput);
       });
     </script>
+    
     
     
 
