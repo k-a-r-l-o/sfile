@@ -633,14 +633,12 @@
             const passwordInput = document.getElementById("password");
             const password = passwordInput.value;
             const fileName = window.currentFileName;
-            const action = window.currentAction;
 
             if (password.trim() === "") {
               alert("Please enter a password.");
               return;
             }
 
-            if (action === "download") {
               fetch("process_downloadFiles.php", {
                 method: "POST",
                 headers: {
@@ -691,7 +689,6 @@
                   console.error("Error:", error.message);
                   alert(`Error: ${error.message}`);
                 });
-            }
           });
       });
     </script>
