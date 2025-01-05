@@ -22,6 +22,7 @@ try {
 } catch (PDOException $e) {
     die(json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $e->getMessage()]));
 }
+
 // Retrieve the JSON input
 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -52,7 +53,6 @@ if (isset($input['password'])) {
 
             // Verify the entered password against the hashed password
             if (password_verify($enteredPassword, $hashedPassword)) {
-
                 // Password is correct
                 $response = [
                     'status' => 'success',
@@ -131,43 +131,38 @@ if (isset($input['password'])) {
                 // Decrypt the file using AES-256-CBC
                 $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', $decryptedAESKey, OPENSSL_RAW_DATA, $iv);
 
-                if ($decryptedData !== false) {
-                    // Determine the MIME type based on the file extension
-                    $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
-                    $mimeType = match (strtolower($fileExtension)) {
-                        'pdf' => 'application/pdf',
-                        'doc', 'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                        'xls', 'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                        'txt' => 'text/plain',
-                        'ppt', 'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-                        'png' => 'image/png',
-                        'jpg', 'jpeg' => 'image/jpeg',
-                        default => 'application/octet-stream', // Fallback for unknown types
-                    };
-                
-                    // Set headers for file download
-                    header('Content-Type: ' . $mimeType);
-                    header('Content-Disposition: attachment; filename="' . basename($file['name']) . '"');
-                    header('Content-Length: ' . strlen($decryptedData));
-                    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-                    header('Expires: 0');
-
-                    // Ensure no output before headers
-                    if (ob_get_length()) {
-                        ob_end_clean();
-                    }
-            
-                    echo $decryptedData;
-                    exit;
-                } else {
-                    // Return error if decryption fails
-                    header('Content-Type: application/json');
-                    echo json_encode([
+                if ($decryptedData === false) {
+                    $response = [
                         'status' => 'error',
                         'message' => 'Failed to decrypt the file.'
-                    ]);
-                    exit;
-                }                
+                    ];
+                }   
+
+                // Determine the MIME type based on the file extension
+                $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $mimeType = match (strtolower($fileExtension)) {
+                    'pdf' => 'application/pdf',
+                    'doc', 'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'xls', 'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'txt' => 'text/plain',
+                    'ppt', 'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                    'png' => 'image/png',
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    default => 'application/octet-stream', // Fallback for unknown types
+                };
+
+                // Set headers for file download
+                header('Content-Type: ' . $mimeType);
+                header('Content-Disposition: attachment; filename="' . basename($file['name']) . '"');
+                header('Content-Length: ' . strlen($decryptedData));
+                header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+                header('Expires: 0');
+
+                // Clear output buffer and send the file
+                ob_clean();
+                flush();
+                echo $decryptedData;
+                exit;
 
                 // Return success message
                 $response = [
@@ -178,7 +173,7 @@ if (isset($input['password'])) {
 
             } else {
                 $response = [
-                    'status' => 'invalid',
+                    'status' => 'error',
                     'message' => 'Invalid password.'
                 ];
             }
@@ -204,18 +199,5 @@ if (isset($input['password'])) {
         'message' => 'Password field is missing.'
     ];
 }
-
-header('Content-Type: application/json');
-
-// Add this line at the end of your PHP script to ensure a response is always sent
-if (!isset($response)) {
-    $response = [
-        'status' => 'error',
-        'message' => 'An unknown error occurred.'
-    ];
-}
-
-echo json_encode($response);
-exit;
 
 ?>

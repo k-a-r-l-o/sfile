@@ -337,41 +337,42 @@
             );
             passwordModal.show();
 
-            document
-          .getElementById("confirmPassword")
-          .addEventListener("click", function () {
-            const password = document.getElementById("password").value;
+            document.getElementById("confirmPassword").addEventListener("click", function () {
+              const password = document.getElementById("password").value;
 
-            if (password.trim() === "") {
-              alert("Please enter a password.");
-              return;
-            }
+              if (password.trim() === "") {
+                  alert("Please enter a password.");
+                  return;
+              }
 
-            // Send the password to the server via AJAX
-            fetch("process_shareFiles.php", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ password: password, email: emailInput,
-                filename: filename,}),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status == 'success') {
-                    console.log("Message:", data.message);
-                    // Handle successful response (e.g., initiate file download)
-                } else {
-                    console.error("Message:", data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+              // Send the password to the server via AJAX
+              fetch("process_shareFiles.php", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                      password: password,
+                      email: emailInput,
+                      filename: filename,
+                  }),
+              })
+                  .then((response) => response.json())
+                  .then((data) => {
+                      if (data.status === "success") {
+                          alert("File Successfully Shared.");
+                      } else {
+                          alert("Password is incorrect.");
+                      }
+                  })
+                  .catch((error) => {
+                      console.error("Error:", error);
+                      alert("An error occurred while processing your request.");
+                  });
 
-            // Close the modal after confirming
-            passwordModal.hide();
-            });
+              // Close the modal after confirming
+              passwordModal.hide();
+          });
           }
         });
     </script>
