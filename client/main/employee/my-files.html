@@ -636,55 +636,61 @@
           });
 
         document
-          .getElementById("confirmPassword")
-          .addEventListener("click", function () {
-            const password = document.getElementById("password").value;
-            const fileName = window.currentFileName;
+        .getElementById("confirmPassword")
+        .addEventListener("click", function () {
+          const password = document.getElementById("password").value;
+          const fileName = window.currentFileName;
 
-            if (password.trim() === "") {
-              alert("Please enter a password.");
-              return;
-            }
+          if (password.trim() === "") {
+            alert("Please enter a password.");
+            return;
+          }
 
-            // Send the password to the server via AJAX
-            fetch("process_downloadFiles.php", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ password: password, fileName: fileName }),
+          fetch("process_downloadFiles.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password: password, fileName: fileName }),
+          })
+            .then((response) => {
+              const contentType = response.headers.get("Content-Type");
+
+              if (contentType && contentType.includes("application/json")) {
+                return response.json(); // Parse as JSON if Content-Type is JSON
+              } else if (contentType && contentType.includes("application/")) {
+                return response.blob(); // Handle binary file download
+              } else {
+                throw new Error("Unexpected response format.");
+              }
             })
-              .then((response) => {
-                // Check if the response is OK (status 200)
-                if (!response.ok) {
-                  return response.json().then((error) => {
-                    throw new Error(error.message);
-                  });
-                }
-
-                document.getElementById("password").value = "";
-                // If the response is OK, handle the file download
-                return response.blob(); // Get the binary file content
-              })
-              .then((blob) => {
-                // Create a temporary download link
-                const url = window.URL.createObjectURL(blob);
+            .then((dataOrBlob) => {
+              if (dataOrBlob instanceof Blob) {
+                // Handle file download
+                const url = window.URL.createObjectURL(dataOrBlob);
                 const a = document.createElement("a");
                 a.style.display = "none";
                 a.href = url;
-                a.download = fileName; // Set the suggested filename
+                a.download = fileName; // Suggested filename
                 document.body.appendChild(a);
-                a.click(); // Trigger the download
-                window.URL.revokeObjectURL(url); // Clean up the URL
-              })
-              .catch((error) => {
-                console.error("Error:", error.message);
-                alert(`Error: ${error.message}`);
-              });
+                a.click();
+                window.URL.revokeObjectURL(url);
+              } else if (dataOrBlob.status == "invalid") {
+                alert(dataOrBlob.message);
+              } else {
+                alert(dataOrBlob.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error.message);
+              alert(`Error: ${error.message}`);
+            });
 
-            // Close the modal after confirming
-            passwordModal.hide();
-          });
+          // Close the modal after confirming
+          passwordModal.hide();
+        });
+
+
       });
     </script>
     <script>
