@@ -422,7 +422,7 @@
         // Map error types to messages
         switch (error) {
           case "none":
-            message = "File successfully deleted.";
+            message = "File successfully shared.";
             break;
           default:
             message = "An unknown error occurred. Please try again.";
@@ -485,11 +485,7 @@
             row.innerHTML = `  
               <td>  
                 <a  
-                  href="#"  
-                  title="View"  
-                  class="nav-link nav-icon-hover text-primary hover:text-primary viewButton"
-                  data-file-id="${file.filename}" data-action="view">   
-                  <strong>${file.filename}</strong>  
+                  data-file-id="${file.filename}"> ${file.filename} 
                 </a>  
               </td>  
               <td>${file.file_size}</td>  
@@ -510,7 +506,7 @@
                     class="btn btn-primary m-1 btn-sm"
                     onclick="window.location.href='share-file?file=${
                       file.filename
-                    }'" 
+                    }&id=${file.file_id}'" 
                   >
                     <i class="ti ti-send"></i>  
                   </button>   
@@ -604,20 +600,20 @@
           document.getElementById("passwordModal")
         );
         const passwordInput = document.getElementById("password");
-        const confirmPasswordButton = document.getElementById("confirmPassword");
+        const confirmPasswordButton =
+          document.getElementById("confirmPassword");
         const cancelButton = document.getElementById("cancelButton"); // Assuming a cancel button exists in the modal
-    
+
         // Clear the password field function
         function clearPasswordInput() {
           passwordInput.value = "";
         }
-    
-        // Add event listener to dynamically created download and view buttons
+
+        // Add event listener to dynamically created download
         document
           .getElementById("tableBody")
           .addEventListener("click", function (event) {
             const downloadButton = event.target.closest(".downloadButton");
-            const viewButton = event.target.closest(".viewButton");
 
             if (downloadButton) {
               event.preventDefault();
@@ -627,44 +623,41 @@
               console.log("File ID to download:", fileName);
               passwordModal.show();
             }
-
-            if (viewButton) {
-              event.preventDefault();
-              const fileName = viewButton.getAttribute("data-file-id");
-              window.currentFileName = fileName;
-              window.currentAction = "view"; // Set the action to "view"
-              console.log("File ID to download:", fileName);
-              passwordModal.show();
-            }
           });
-    
+
         document
           .getElementById("confirmPassword")
           .addEventListener("click", function () {
             const passwordInput = document.getElementById("password");
             const password = passwordInput.value;
             const fileName = window.currentFileName;
-            const action = window.currentAction; 
-    
-          if (password.trim() === "") {
-            alert("Please enter a password.");
-            return;
-          }
-    
+            const action = window.currentAction;
+
+            if (password.trim() === "") {
+              alert("Please enter a password.");
+              return;
+            }
+
             if (action === "download") {
               fetch("process_downloadFiles.php", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ password: password, fileName: fileName}),
+                body: JSON.stringify({
+                  password: password,
+                  fileName: fileName,
+                }),
               })
                 .then((response) => {
                   const contentType = response.headers.get("Content-Type");
-      
+
                   if (contentType && contentType.includes("application/json")) {
                     return response.json(); // Parse as JSON if Content-Type is JSON
-                  } else if (contentType && contentType.includes("application/")) {
+                  } else if (
+                    contentType &&
+                    contentType.includes("application/")
+                  ) {
                     return response.blob(); // Handle binary file download
                   } else {
                     throw new Error("Unexpected response format.");
@@ -697,24 +690,9 @@
                   alert(`Error: ${error.message}`);
                 });
             }
-
-            if (action === "view") {
-              fetch("process_viewFiles.php", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ password: password, fileName: fileName }),
-              })
-            }
-
-            
           });
       });
     </script>
-    
-    
-    
 
     <script>
       (function () {

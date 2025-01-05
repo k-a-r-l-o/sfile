@@ -5,9 +5,11 @@ session_start();
 // Check if the session contains a user ID
 if (!isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client_user_id'])) {
     header("Location: ../../login?error=session_expired");
+    exit;
 } else {
     if ($_SESSION['client_role'] == 'Head') {
         header("Location: ../head/");
+        exit;
     }
 }
 
@@ -44,18 +46,30 @@ function encryptFile(string $filePath, string $aesKey, string $iv): string
     return $encryptedData;
 }
 
-function getUniqueFileName(string $directory, string $fileName): string
+function getUniqueFileName(PDO $pdo, string $userId, string $fileName): string
 {
     $fileInfo = pathinfo($fileName);
     $baseName = $fileInfo['filename'];
     $extension = isset($fileInfo['extension']) ? '.' . $fileInfo['extension'] : '';
+    $uniqueName = $baseName . $extension;
+
     $counter = 1;
 
-    do {
-        $uniqueName = $baseName . ($counter > 1 ? " ($counter)" : '') . $extension;
-        $filePath = $directory . $uniqueName;
+    // Check for existing files with the same name in the database
+    while (true) {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM tb_files WHERE owner_id = :owner_id AND name = :name");
+        $stmt->bindParam(':owner_id', $userId);
+        $stmt->bindParam(':name', $uniqueName);
+        $stmt->execute();
+
+        if ($stmt->fetchColumn() == 0) {
+            break; // No duplicate found, use this name
+        }
+
+        // Append a counter to the file name
+        $uniqueName = $baseName . " ($counter)" . $extension;
         $counter++;
-    } while (file_exists($filePath));
+    }
 
     return $uniqueName;
 }
@@ -96,18 +110,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         die(json_encode(['status' => 'error', 'message' => "Failed to create folder '$folderPath'."]));
     }
 
-    // Ensure the uploaded file has a unique name
-    $uniqueFileName = getUniqueFileName($folderPath . '/', $file['name']);
-    $filePath = $folderPath . '/' . $uniqueFileName;
-
-    // Move the uploaded file to a temporary location for processing
-    $tempFilePath = $file['tmp_name'];
-
     // Calculate SHA-256 hash for file integrity
+    $tempFilePath = $file['tmp_name'];
     $fileHash = hash_file('sha256', $tempFilePath);
     if ($fileHash === false) {
         die(json_encode(['status' => 'error', 'message' => 'Failed to calculate file hash.']));
     }
+
+    // Ensure the uploaded file has a unique name
+    $uniqueFileName = getUniqueFileName($pdo, $userId, $file['name']);
+    $filePath = $folderPath . '/' . $uniqueFileName;
 
     // Generate AES key and IV
     $aesKey = generateAESKey();
@@ -173,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         'encrypted_file_path' => $encryptedFilePath,
         'metadata_path' => $metadataFilePath,
         'formatted_size' => $formattedSize,
-        'sha256_hash' => $fileHash, // Return the hash in the response
+        'sha256_hash' => $fileHash,
     ]);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
