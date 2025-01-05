@@ -5,9 +5,11 @@ session_start();
 // Check if the session contains a user ID
 if (!isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client_user_id'])) {
     header("Location: ../../login?error=session_expired");
+    exit;
 } else {
     if ($_SESSION['client_role'] == 'Head') {
         header("Location: ../head/");
+        exit;
     }
 }
 
@@ -33,7 +35,7 @@ if (isset($input['password'])) {
 
     // Fetch file details from the database using file ID
     $stmt = $pdo->prepare("SELECT * FROM tb_files WHERE `name` = :name AND owner_id = :owner_id");
-    $stmt->bindParam(':name', $fileName, PDO::PARAM_INT);
+    $stmt->bindParam(':name', $fileName, PDO::PARAM_STR);
     $stmt->bindParam(':owner_id', $userId, PDO::PARAM_INT);
     $stmt->execute();
 
@@ -53,24 +55,19 @@ if (isset($input['password'])) {
 
             // Verify the entered password against the hashed password
             if (password_verify($enteredPassword, $hashedPassword)) {
-                // Password is correct
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Password verified successfully.'
-                ];
+                // Password is correct - Show success alert
+                echo "<script>alert('Password is correct. The file will now download.');</script>";
 
                 // Path to the user's folder where the private key is stored
-                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee/$userId"; 
+                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee/$userId";
 
                 // Path to the encrypted private key
                 $encryptedPrivateKeyPath = "$privateKeyPath/private_key.enc";
 
                 // Check if the file exists
                 if (!file_exists($encryptedPrivateKeyPath)) {
-                    $response = [
-                        'status' => 'error',
-                        'message' => 'File not exists'
-                    ];
+                    echo "<script>alert('Error: File does not exist.');</script>";
+                    exit;
                 }
 
                 // Read the encrypted private key from the file
@@ -82,31 +79,24 @@ if (isset($input['password'])) {
                 $res = openssl_pkey_get_private($encryptedPrivateKey, $passphrase);
 
                 if (!$res) {
-                    //die("1Failed to decrypt private key: " . openssl_error_string());
-                    $response = [
-                        'status' => 'error',
-                        'message' => 'Decryption failed'
-                    ];
+                    echo "<script>alert('Decryption failed.');</script>";
+                    exit;
                 }
 
-                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId"; 
+                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId";
                 $metadataFilePath = "$folderPath/{$file['name']}.enc.meta";
 
                 // Check if the metadata file exists
                 if (!file_exists($metadataFilePath)) {
-                    $response = [
-                        'status' => 'error',
-                        'message' => 'Metadata file does not exist.'
-                    ];
+                    echo "<script>alert('Error: Metadata file does not exist.');</script>";
+                    exit;
                 }
 
                 // Read the metadata from the file
                 $metadata = json_decode(file_get_contents($metadataFilePath), true);
                 if ($metadata === null) {
-                    $response = [
-                        'status' => 'error',
-                        'message' => 'Failed to read metadata.'
-                    ];
+                    echo "<script>alert('Error: Failed to read metadata.');</script>";
+                    exit;
                 }
 
                 // Decrypt the AES key using the private key
@@ -115,10 +105,8 @@ if (isset($input['password'])) {
                 $decryptionSuccess = openssl_private_decrypt($encryptedAESKey, $decryptedAESKey, $res);
 
                 if (!$decryptionSuccess) {
-                    $response = [
-                        'status' => 'error',
-                        'message' => 'Failed to decrypt AES key.'
-                    ];
+                    echo "<script>alert('Error: Failed to decrypt AES key.');</script>";
+                    exit;
                 }
 
                 // Decrypt the file using the decrypted AES key and IV
@@ -132,11 +120,9 @@ if (isset($input['password'])) {
                 $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', $decryptedAESKey, OPENSSL_RAW_DATA, $iv);
 
                 if ($decryptedData === false) {
-                    $response = [
-                        'status' => 'error',
-                        'message' => 'Failed to decrypt the file.'
-                    ];
-                }   
+                    echo "<script>alert('Error: Failed to decrypt the file.');</script>";
+                    exit;
+                }
 
                 // Determine the MIME type based on the file extension
                 $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -164,40 +150,24 @@ if (isset($input['password'])) {
                 echo $decryptedData;
                 exit;
 
-                // Return success message
-                $response = [
-                    'status' => 'success',
-                    'message' => 'File decrypted successfully.',
-                    'decrypted_file_path' => $decryptedFilePath
-                ];
-
             } else {
-                $response = [
-                    'status' => 'error',
-                    'message' => 'Invalid password.'
-                ];
+                // Password is incorrect - Show error alert
+                echo "<script>alert('Incorrect password. Please try again.');</script>";
+                exit;
             }
-
         } else {
             // User not found or password not set
-            $response = [
-                'status' => 'error',
-                'message' => 'User not found or password not set.'
-            ];
+            echo "<script>alert('Error: User not found or password not set.');</script>";
+            exit;
         }
     } else {
-        $response = [
-            'status' => 'error',
-            'message' => 'File not found or invalid file ID.'
-        ];
+        echo "<script>alert('Error: File not found or invalid file ID.');</script>";
+        exit;
     }
-    
 } else {
     // Password field is missing
-    $response = [
-        'status' => 'error',
-        'message' => 'Password field is missing.'
-    ];
+    echo "<script>alert('Error: Password field is missing.');</script>";
+    exit;
 }
 
 ?>
