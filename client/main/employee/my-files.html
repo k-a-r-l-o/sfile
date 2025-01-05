@@ -603,6 +603,14 @@
         const passwordModal = new bootstrap.Modal(
           document.getElementById("passwordModal")
         );
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordButton = document.getElementById("confirmPassword");
+        const cancelButton = document.getElementById("cancelButton"); // Assuming a cancel button exists in the modal
+    
+        // Clear the password field function
+        function clearPasswordInput() {
+          passwordInput.value = "";
+        }
     
         // Add event listener to dynamically created download and view buttons
         document
@@ -638,10 +646,10 @@
             const fileName = window.currentFileName;
             const action = window.currentAction; 
     
-            if (password.trim() === "") {
-              alert("Please enter a password.");
-              return;
-            }
+          if (password.trim() === "") {
+            alert("Please enter a password.");
+            return;
+          }
     
             if (action === "download") {
               fetch("process_downloadFiles.php", {
@@ -704,6 +712,7 @@
           });
       });
     </script>
+    
     
     
 
