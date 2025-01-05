@@ -342,8 +342,8 @@
                 />
                 <div class="card-body">
                   <h5 class="card-title">${user.user_fname} ${user.user_lname}</h5>
-                  <p class="card-text">No. of Files: ${user.user_id}</p>
-                  <a href="./go-to?id=${user.user_id}" class="btn btn-primary">Go to Files</a>
+                  <p class="card-text">${user.user_email}</p>
+                  <a href="./go-to?id=${user.user_id}&fname=${user.user_fname}&lname=${user.user_lname}&email=${user.user_email}" class="btn btn-primary">Go to Files</a>
                </div>
               </div>
             `;

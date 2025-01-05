@@ -149,12 +149,14 @@
           <div class="card">
             <div class="card-body">
               <div class="row">
-                <h3 class="col-lg-12">Manage Files</h3>
+                <h3 class="col-lg-12">
+                  Files Submitted by <span id="name"></span>
+                </h3>
                 <div class="col-sm-8 text-start">
                   <button
                     onclick="window.location.href='./employee-files'"
                     type="button"
-                    class="btn btn-success my-2 fs-3"
+                    class="btn btn-dark my-2 fs-3"
                   >
                     Back
                   </button>
@@ -199,25 +201,7 @@
                 </div>
                 <div class="col-sm-4 text-end">
                   <div class="row">
-                    <div class="col-lg-6 text-end">
-                      <form method="get" onsubmit="return false;" class="my-2">
-                        <select
-                          title="Sort By"
-                          name="sort-by"
-                          id="sort-by"
-                          class="form-select text-start"
-                          onchange="applyFilters()"
-                        >
-                          <option value="">Sort By</option>
-                          <option value="Ascending">Filename (A-Z)</option>
-                          <option value="Descending">Filename (Z-A)</option>
-                          <option value="Oldest">Date (Oldest)</option>
-                          <option value="Newest">Date (Newest)</option>
-                          <option value="Smallest">File Size (Smallest)</option>
-                          <option value="Largest">File Size (Largest)</option>
-                        </select>
-                      </form>
-                    </div>
+                    <div class="col-lg-6 text-end"></div>
                     <div class="col-lg-6 text-end">
                       <form method="get" onsubmit="return false;" class="my-2">
                         <select
@@ -238,6 +222,10 @@
                 </div>
               </div>
 
+              <div class="alert my-2 d-none" id="error" role="alert">
+                An unknown error occurred. Please try again.
+              </div>
+
               <!-- Table -->
               <div class="col-lg-12">
                 <div class="table-responsive my-2">
@@ -248,12 +236,54 @@
                       >
                         <th scope="col" class="ps-0">Filename</th>
                         <th scope="col" class="ps-0">File Size</th>
-                        <th scope="col" class="ps-0">Date & Time Upload</th>
+                        <th scope="col" class="ps-0">Uploaded</th>
+                        <th scope="col" class="ps-0">Shared</th>
                         <th scope="col" class="ps-0">Actions</th>
                       </tr>
                     </thead>
                     <tbody class="table-group-divider" id="tableBody">
-                      <!-- Table rows will be populated dynamically -->
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
+                      <tr>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                        <td><div class="skeleton-loader"></div></td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -325,6 +355,321 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal for password input -->
+    <div
+      class="modal fade"
+      id="passwordModal"
+      tabindex="-1"
+      aria-labelledby="passwordModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="passwordModalLabel">Enter Password</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="passwordForm">
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-primary" id="confirmPassword">
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Parse query parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+      const ownerId = urlParams.get("id");
+      const fname = urlParams.get("fname");
+      const lname = urlParams.get("lname");
+      const fullname = `${fname} ${lname}`;
+      const nametext = document.getElementById("name");
+      nametext.textContent = fullname;
+
+      if (error) {
+        const messagetext = document.getElementById("error");
+        let message = "";
+
+        // Map error types to messages
+        switch (error) {
+          case "none":
+            message = "None";
+            break;
+          default:
+            message = "An unknown error occurred. Please try again.";
+        }
+
+        // Update the alert with the message and show it
+        messagetext.textContent = message;
+        messagetext.classList.remove("d-none");
+
+        // Remove previous alert classes and apply the correct one
+        if (error === "none") {
+          messagetext.classList.add("alert-success");
+        } else {
+          messagetext.classList.add("alert-danger");
+        }
+
+        setTimeout(() => {
+          messagetext.classList.add("d-none");
+        }, 5000);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const tableBody = document.getElementById("tableBody");
+        const currentPageElementshow =
+          document.getElementById("currentPageshow");
+        const currentPageElement = document.getElementById("currentPage");
+        const totalPagesElement = document.getElementById("totalPages");
+
+        const limitFilter = document.getElementById("limit-filter");
+        const byTimeFilter = document.getElementById("time-filter"); // Filter by Time
+        const searchFilter = document.getElementById("search");
+
+        let currentPage = 1;
+        let limit = parseInt(limitFilter.value);
+        let timeFilter = byTimeFilter.value; // Filter by Time dropdown
+        let search = searchFilter.value;
+
+        // Fetch data and populate table
+        function fetchData() {
+          const url = new URL("./go-to.php", window.location.href);
+          url.searchParams.append("page", currentPage);
+          url.searchParams.append("limit", limit);
+          if (timeFilter) url.searchParams.append("time-filter", timeFilter);
+          if (search) url.searchParams.append("search", search);
+          if (ownerId) url.searchParams.append("id", ownerId);
+
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              populateTable(data.data);
+              updatePagination(data.pagination);
+            })
+            .catch((error) => console.error("Error fetching data:", error));
+        }
+
+        // Populate table rows
+        function populateTable(files) {
+          tableBody.innerHTML = ""; // Clear existing rows
+          files.forEach((file) => {
+            const row = document.createElement("tr");
+
+            const sharedAt = file.shared_at
+              ? formatDateTime(file.shared_at)
+              : "N/A"; // Check if shared
+            const isOwned = file.owner_id === ownerId ? "Yes" : "No"; // Determine ownership
+
+            row.innerHTML = `
+        <td>
+          <a
+            href="#"
+            title="View"
+            class="nav-link nav-icon-hover text-primary hover:text-primary viewButton">
+            <strong>${file.name}</strong>
+          </a>
+        </td>
+        <td>${file.size}</td>
+        <td>${formatDateTime(file.created_at)}</td>
+        <td>${sharedAt}</td>
+        <td>
+          <button
+            type="button"
+            title="Download"
+            class="btn btn-success m-1 btn-sm downloadButton"
+            data-file-id="${file.file_id}">
+            <i class="ti ti-download"></i>
+          </button>
+        </td>
+      `;
+            tableBody.appendChild(row);
+          });
+        }
+
+        function formatDateTime(dateTime) {
+          const date = new Date(dateTime);
+          const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          };
+          return date.toLocaleString("en-US", options);
+        }
+
+        // Update pagination
+        function updatePagination(pagination) {
+          currentPageElementshow.textContent = pagination.current_page;
+          currentPageElement.value = pagination.current_page;
+          totalPagesElement.textContent = pagination.total_pages;
+          currentPageElement.max = pagination.total_pages;
+
+          document.getElementById("prevButton").disabled =
+            pagination.current_page <= 1;
+          document.getElementById("nextButton").disabled =
+            pagination.current_page >= pagination.total_pages;
+        }
+
+        // Apply filters
+        function applyFilters() {
+          limit = parseInt(limitFilter.value);
+          timeFilter = byTimeFilter.value; // Filter by Time dropdown
+          search = searchFilter.value.trim(); // Search input
+          currentPage = 1; // Reset to first page on filter change
+          fetchData();
+        }
+
+        // Navigate pages
+        function navigatePage(direction) {
+          if (direction === "prev" && currentPage > 1) {
+            currentPage--;
+          } else if (direction === "next") {
+            currentPage++;
+          } else if (direction === "custom") {
+            currentPage = parseInt(currentPageElement.value);
+            if (currentPage > parseInt(totalPagesElement.textContent)) {
+              return;
+            }
+          }
+          fetchData();
+        }
+
+        // Event listeners for filters and pagination
+        limitFilter.addEventListener("change", applyFilters);
+        byTimeFilter.addEventListener("change", applyFilters);
+        searchFilter.addEventListener("input", applyFilters); // Trigger search on input
+        document
+          .getElementById("prevButton")
+          .addEventListener("click", () => navigatePage("prev"));
+        document
+          .getElementById("nextButton")
+          .addEventListener("click", () => navigatePage("next"));
+        document
+          .getElementById("goButton")
+          .addEventListener("click", () => navigatePage("custom"));
+
+        // Initial fetch
+        fetchData();
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const passwordModal = new bootstrap.Modal(
+          document.getElementById("passwordModal")
+        );
+
+        // Add event listener to dynamically created download and view buttons
+        document
+          .getElementById("tableBody")
+          .addEventListener("click", function (event) {
+            // Check if the clicked element is a download button
+            if (event.target.closest(".downloadButton")) {
+              event.preventDefault(); // Prevent default action
+
+              // Get the file ID from the data-file-id attribute
+              const fileName = event.target
+                .closest(".downloadButton")
+                .getAttribute("data-file-id");
+
+              window.currentFileName = fileName;
+              // Store the file ID for later use (e.g., sending it to the server)
+              console.log("File ID to download:", fileName);
+
+              passwordModal.show(); // Show the modal for password input
+            }
+
+            // Check if the clicked element is a view button
+            if (event.target.closest(".viewButton")) {
+              event.preventDefault(); // Prevent default action
+              passwordModal.show(); // Show the modal for password input
+            }
+          });
+
+        document
+          .getElementById("confirmPassword")
+          .addEventListener("click", function () {
+            const password = document.getElementById("password").value;
+            const fileName = window.currentFileName;
+
+            if (password.trim() === "") {
+              alert("Please enter a password.");
+              return;
+            }
+
+            // Send the password to the server via AJAX
+            fetch("process_password.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ password: password, fileName: fileName }),
+            })
+              .then((response) => {
+                // Check if the response is OK (status 200)
+                if (!response.ok) {
+                  return response.json().then((error) => {
+                    throw new Error(error.message);
+                  });
+                }
+
+                document.getElementById("password").value = "";
+                // If the response is OK, handle the file download
+                return response.blob(); // Get the binary file content
+              })
+              .then((blob) => {
+                // Create a temporary download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.style.display = "none";
+                a.href = url;
+                a.download = fileName; // Set the suggested filename
+                document.body.appendChild(a);
+                a.click(); // Trigger the download
+                window.URL.revokeObjectURL(url); // Clean up the URL
+              })
+              .catch((error) => {
+                console.error("Error:", error.message);
+                alert(`Error: ${error.message}`);
+              });
+
+            // Close the modal after confirming
+            passwordModal.hide();
+          });
+      });
+    </script>
     <script>
       (function () {
         const checkSession = () => {
@@ -337,11 +682,6 @@
               if (!data.sessionValid) {
                 // Redirect to the logout script if the session is invalid
                 window.location.href = "../../login?error=session_expired";
-              } else {
-                if (data.role == "Employee") {
-                  // Redirect to the employee dashboard if the user is an employee
-                  window.location.href = "../../employee/";
-                }
               }
             })
             .catch((err) => {
