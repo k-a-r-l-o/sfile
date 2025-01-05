@@ -510,14 +510,16 @@
                   >
                     <i class="ti ti-send"></i>  
                   </button>   
-                  <button  
-                    type="button"  
-                    title="Delete"  
-                    class="btn btn-danger m-1 btn-sm"  
-                    id="submitButton"  
-                  >  
-                    <i class="ti ti-trash"></i>  
-                  </button>  
+                <button  
+                  type="button"  
+                  title="Delete"  
+                  class="btn btn-danger m-1 btn-sm"  
+                  onclick="window.location.href='delete-file.php?file_name=${file.filename}&file_id=${file.file_id}'" 
+                >
+                  <i class="ti ti-trash"></i>  
+                </button>
+
+
               </td>  
             `;
             tableBody.appendChild(row);
@@ -692,6 +694,30 @@
             }
           });
       });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+      const deleteButtons = document.querySelectorAll(".delete-file-btn");
+
+      deleteButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+          const fileId = button.getAttribute("data-file-id");
+          const fileName = button.getAttribute("data-file-name");
+
+          if (fileId && fileName) {
+            // Redirect to delete-file.php with query parameters
+            const deleteUrl = `delete-file.php?id=${encodeURIComponent(
+              fileId
+            )}&file=${encodeURIComponent(fileName)}`;
+            window.location.href = deleteUrl;
+          } else {
+            console.error("File ID or File Name missing");
+          }
+        });
+      });
+    });
+
     </script>
 
     <script>
