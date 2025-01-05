@@ -99,7 +99,7 @@ try {
     $countSql = "
         SELECT COUNT(*) as total
         FROM tb_files f
-        LEFT JOIN tb_shared_files fs ON f.file_id = fs.file_id AND fs.shared_to = :session_user_id
+        INNER JOIN tb_shared_files fs ON f.file_id = fs.file_id AND fs.shared_to = :session_user_id
         WHERE f.status = 1
     ";
 
