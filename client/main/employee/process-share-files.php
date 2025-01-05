@@ -68,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'message' => 'File not exists'
                         ];
                         echo json_encode($response);
+                        header("Location: my-files?error=invalid_request");
                         exit;
                     }
 

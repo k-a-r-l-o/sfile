@@ -60,7 +60,7 @@ if (isset($input['password'])) {
                 ];
 
                 // Path to the user's folder where the private key is stored
-                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee/$userId"; 
+                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee/$userId";
 
                 // Path to the encrypted private key
                 $encryptedPrivateKeyPath = "$privateKeyPath/private_key.enc";
@@ -89,7 +89,7 @@ if (isset($input['password'])) {
                     ];
                 }
 
-                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId"; 
+                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId";
                 $metadataFilePath = "$folderPath/{$file['name']}.enc.meta";
 
                 // Check if the metadata file exists
@@ -144,7 +144,7 @@ if (isset($input['password'])) {
                         'jpg', 'jpeg' => 'image/jpeg',
                         default => 'application/octet-stream', // Fallback for unknown types
                     };
-                
+
                     // Set headers for file download
                     header('Content-Type: ' . $mimeType);
                     header('Content-Disposition: attachment; filename="' . basename($file['name']) . '"');
@@ -156,7 +156,7 @@ if (isset($input['password'])) {
                     if (ob_get_length()) {
                         ob_end_clean();
                     }
-            
+
                     echo $decryptedData;
                     exit;
                 } else {
@@ -167,7 +167,7 @@ if (isset($input['password'])) {
                         'message' => 'Failed to decrypt the file.'
                     ]);
                     exit;
-                }                
+                }
 
                 // Return success message
                 $response = [
@@ -175,14 +175,12 @@ if (isset($input['password'])) {
                     'message' => 'File decrypted successfully.',
                     'decrypted_file_path' => $decryptedFilePath
                 ];
-
             } else {
                 $response = [
                     'status' => 'invalid',
                     'message' => 'Invalid password.'
                 ];
             }
-
         } else {
             // User not found or password not set
             $response = [
@@ -196,7 +194,6 @@ if (isset($input['password'])) {
             'message' => 'File not found or invalid file ID.'
         ];
     }
-    
 } else {
     // Password field is missing
     $response = [
@@ -217,5 +214,3 @@ if (!isset($response)) {
 
 echo json_encode($response);
 exit;
-
-?>

@@ -178,18 +178,45 @@
                       <form action="share-file.php" method="POST">
                         <div class="mb-3">
                           <label for="email" class="form-label">Share to</label>
-                          <input type="email" class="form-control" name="email" id="email" placeholder="Enter head's email address" required>
+                          <input
+                            type="email"
+                            class="form-control"
+                            name="email"
+                            id="email"
+                            placeholder="Enter head's email address"
+                            required
+                          />
                         </div>
                         <div class="mb-3">
-                          <input type="hidden" class="form-control" name="fileid" id="fileid" readonly>
+                          <input
+                            type="hidden"
+                            class="form-control"
+                            name="fileid"
+                            id="fileid"
+                            readonly
+                          />
                         </div>
                         <div class="mb-3">
-                          <input type="hidden" class="form-control" name="filenameInput" id="filenameInput" readonly>
+                          <input
+                            type="hidden"
+                            class="form-control"
+                            name="filenameInput"
+                            id="filenameInput"
+                            readonly
+                          />
                         </div>
-                        <button type="button" onclick="window.location.href='./my-files'" class="btn btn-dark">
+                        <button
+                          type="button"
+                          onclick="window.location.href='./my-files'"
+                          class="btn btn-dark"
+                        >
                           Back
                         </button>
-                        <button type="submit" class="btn btn-primary" id="submitButton">
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          id="submitButton"
+                        >
                           Send
                         </button>
                       </form>
@@ -255,7 +282,7 @@
 
         const filenameInput = document.getElementById("filenameInput");
         filenameInput.value = filename;
-      }else{
+      } else {
         window.location.href = "./my-files";
       }
     </script>

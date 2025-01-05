@@ -60,7 +60,7 @@ if (isset($input['password'])) {
                 ];
 
                 // Path to the user's folder where the private key is stored
-                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee/$userId"; 
+                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee/$userId";
 
                 // Path to the encrypted private key
                 $encryptedPrivateKeyPath = "$privateKeyPath/private_key.enc";
@@ -89,7 +89,7 @@ if (isset($input['password'])) {
                     ];
                 }
 
-                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId"; 
+                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId";
                 $metadataFilePath = "$folderPath/{$file['name']}.enc.meta";
 
                 // Check if the metadata file exists
@@ -132,13 +132,12 @@ if (isset($input['password'])) {
                 $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', $decryptedAESKey, OPENSSL_RAW_DATA, $iv);
 
                 if ($decryptedData === false) {
-                   
+
                     echo json_encode([
                         'status' => 'error',
                         'message' => 'File decryption failed.',
                     ]);
                     exit;
-                
                 }
                 // Return success message
                 $response = [
@@ -146,14 +145,12 @@ if (isset($input['password'])) {
                     'message' => 'File decrypted successfully.',
                     'decrypted_file_path' => $decryptedFilePath
                 ];
-
             } else {
                 $response = [
                     'status' => 'error',
                     'message' => 'Invalid password.'
                 ];
             }
-
         } else {
             // User not found or password not set
             $response = [
@@ -167,7 +164,6 @@ if (isset($input['password'])) {
             'message' => 'File not found or invalid file ID.'
         ];
     }
-    
 } else {
     // Password field is missing
     $response = [
@@ -175,5 +171,3 @@ if (isset($input['password'])) {
         'message' => 'Password field is missing.'
     ];
 }
-
-?>
