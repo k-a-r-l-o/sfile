@@ -487,18 +487,20 @@
                 <a  
                   href="#"  
                   title="View"  
-                  class="nav-link nav-icon-hover text-primary hover:text-primary viewButton">   
-                  <strong>${file.name}</strong>  
+                  class="nav-link nav-icon-hover text-primary hover:text-primary viewButton"
+                  data-file-id="${file.filename}" data-action="view">   
+                  <strong>${file.filename}</strong>  
                 </a>  
               </td>  
-              <td>${file.size}</td>  
-              <td>${formatDateTime(file.created_at)}</td>  
+              <td>${file.file_size}</td>  
+              <td>${formatDateTime(file.uploaded_at)}</td>  
               <td>  
                   <button  
                     type="button"  
                     title="Download"  
                     class="btn btn-success m-1 btn-sm downloadButton"
-                    data-file-id="${file.name}"  
+                    data-file-id="${file.filename}"
+                    data-action="download"  
                   >  
                       <i class="ti ti-download"></i>  
                   </button>  
@@ -507,7 +509,7 @@
                     title="Share"  
                     class="btn btn-primary m-1 btn-sm"
                     onclick="window.location.href='share-file?file=${
-                      file.name
+                      file.filename
                     }'" 
                   >
                     <i class="ti ti-send"></i>  
@@ -596,102 +598,6 @@
       });
     </script>
 
-
-
-
-
-    <!-- <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const passwordModal = new bootstrap.Modal(
-          document.getElementById("passwordModal")
-        );
-
-        // Add event listener to dynamically created download and view buttons
-        document
-          .getElementById("tableBody")
-          .addEventListener("click", function (event) {
-            // Check if the clicked element is a download button
-            if (event.target.closest(".downloadButton")) {
-              event.preventDefault(); // Prevent default action
-
-              // Get the file ID from the data-file-id attribute
-              const fileName = event.target
-                .closest(".downloadButton")
-                .getAttribute("data-file-id");
-
-              window.currentFileName = fileName;
-              // Store the file ID for later use (e.g., sending it to the server)
-              console.log("File ID to download:", fileName);
-
-              passwordModal.show(); // Show the modal for password input
-            }
-
-            // Check if the clicked element is a view button
-            if (event.target.closest(".viewButton")) {
-              event.preventDefault(); // Prevent default action
-              passwordModal.show(); // Show the modal for password input
-            }
-          });
-
-        document
-        .getElementById("confirmPassword")
-        .addEventListener("click", function () {
-          const password = document.getElementById("password").value;
-          const fileName = window.currentFileName;
-
-          if (password.trim() === "") {
-            alert("Please enter a password.");
-            return;
-          }
-
-          fetch("process_downloadFiles.php", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ password: password, fileName: fileName }),
-          })
-            .then((response) => {
-              const contentType = response.headers.get("Content-Type");
-
-              if (contentType && contentType.includes("application/json")) {
-                return response.json(); // Parse as JSON if Content-Type is JSON
-              } else if (contentType && contentType.includes("application/")) {
-                return response.blob(); // Handle binary file download
-              } else {
-                throw new Error("Unexpected response format.");
-              }
-            })
-            .then((dataOrBlob) => {
-              if (dataOrBlob instanceof Blob) {
-                // Handle file download
-                const url = window.URL.createObjectURL(dataOrBlob);
-                const a = document.createElement("a");
-                a.style.display = "none";
-                a.href = url;
-                a.download = fileName; // Suggested filename
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-              } else if (dataOrBlob.status == "invalid") {
-                alert(dataOrBlob.message);
-              } else {
-                alert(dataOrBlob.message);
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error.message);
-              alert(`Error: ${error.message}`);
-            });
-
-          // Close the modal after confirming
-          passwordModal.hide();
-        });
-
-
-      });
-    </script> -->
-
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const passwordModal = new bootstrap.Modal(
@@ -702,26 +608,25 @@
         document
           .getElementById("tableBody")
           .addEventListener("click", function (event) {
-            // Check if the clicked element is a download button
-            if (event.target.closest(".downloadButton")) {
-              event.preventDefault(); // Prevent default action
-    
-              // Get the file ID from the data-file-id attribute
-              const fileName = event.target
-                .closest(".downloadButton")
-                .getAttribute("data-file-id");
-    
+            const downloadButton = event.target.closest(".downloadButton");
+            const viewButton = event.target.closest(".viewButton");
+
+            if (downloadButton) {
+              event.preventDefault();
+              const fileName = downloadButton.getAttribute("data-file-id");
               window.currentFileName = fileName;
-              // Store the file ID for later use (e.g., sending it to the server)
+              window.currentAction = "download"; // Set the action to "download"
               console.log("File ID to download:", fileName);
-    
-              passwordModal.show(); // Show the modal for password input
+              passwordModal.show();
             }
-    
-            // Check if the clicked element is a view button
-            if (event.target.closest(".viewButton")) {
-              event.preventDefault(); // Prevent default action
-              passwordModal.show(); // Show the modal for password input
+
+            if (viewButton) {
+              event.preventDefault();
+              const fileName = viewButton.getAttribute("data-file-id");
+              window.currentFileName = fileName;
+              window.currentAction = "view"; // Set the action to "view"
+              console.log("File ID to download:", fileName);
+              passwordModal.show();
             }
           });
     
@@ -731,58 +636,71 @@
             const passwordInput = document.getElementById("password");
             const password = passwordInput.value;
             const fileName = window.currentFileName;
+            const action = window.currentAction; 
     
             if (password.trim() === "") {
               alert("Please enter a password.");
               return;
             }
     
-            fetch("process_downloadFiles.php", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ password: password, fileName: fileName }),
-            })
-              .then((response) => {
-                const contentType = response.headers.get("Content-Type");
-    
-                if (contentType && contentType.includes("application/json")) {
-                  return response.json(); // Parse as JSON if Content-Type is JSON
-                } else if (contentType && contentType.includes("application/")) {
-                  return response.blob(); // Handle binary file download
-                } else {
-                  throw new Error("Unexpected response format.");
-                }
+            if (action === "download") {
+              fetch("process_downloadFiles.php", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ password: password, fileName: fileName}),
               })
-              .then((dataOrBlob) => {
-                if (dataOrBlob instanceof Blob) {
-                  // Handle file download
-                  const url = window.URL.createObjectURL(dataOrBlob);
-                  const a = document.createElement("a");
-                  a.style.display = "none";
-                  a.href = url;
-                  a.download = fileName; // Suggested filename
-                  document.body.appendChild(a);
-                  a.click();
-                  window.URL.revokeObjectURL(url);
-    
-                  // Prompt success message
-                  alert("File downloaded successfully!");
-                  passwordModal.hide(); // Close the modal after successful download
-                } else if (dataOrBlob.status === "error") {
-                  // Handle incorrect password or other errors
-                  alert("Incorrect password, please try again.");
-                  passwordInput.value = ""; // Clear the input field
-                  passwordInput.focus(); // Focus back to the input field
-                } else {
-                  alert(dataOrBlob.message);
-                }
+                .then((response) => {
+                  const contentType = response.headers.get("Content-Type");
+      
+                  if (contentType && contentType.includes("application/json")) {
+                    return response.json(); // Parse as JSON if Content-Type is JSON
+                  } else if (contentType && contentType.includes("application/")) {
+                    return response.blob(); // Handle binary file download
+                  } else {
+                    throw new Error("Unexpected response format.");
+                  }
+                })
+                .then((dataOrBlob) => {
+                  if (dataOrBlob instanceof Blob) {
+                    // Handle file download
+                    const url = window.URL.createObjectURL(dataOrBlob);
+                    const a = document.createElement("a");
+                    a.style.display = "none";
+                    a.href = url;
+                    a.download = fileName; // Suggested filename
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    alert("File downloaded successfully!");
+                    passwordModal.hide(); // Close the modal after successful download
+                  } else if (dataOrBlob.status === "error") {
+                    // Handle incorrect password or other errors
+                    alert("Incorrect password, please try again.");
+                    passwordInput.value = ""; // Clear the input field
+                    passwordInput.focus(); // Focus back to the input field
+                  } else {
+                    alert(dataOrBlob.message);
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error:", error.message);
+                  alert(`Error: ${error.message}`);
+                });
+            }
+
+            if (action === "view") {
+              fetch("process_viewFiles.php", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ password: password, fileName: fileName }),
               })
-              .catch((error) => {
-                console.error("Error:", error.message);
-                alert(`Error: ${error.message}`);
-              });
+            }
+
+            
           });
       });
     </script>

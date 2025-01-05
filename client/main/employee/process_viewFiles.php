@@ -132,14 +132,14 @@ if (isset($input['password'])) {
                 $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', $decryptedAESKey, OPENSSL_RAW_DATA, $iv);
 
                 if ($decryptedData === false) {
-                    $response = [
+                   
+                    echo json_encode([
                         'status' => 'error',
-                        'message' => 'Failed to decrypt the file.'
-                    ];
-                }   
-
-                //How to open the file?
-
+                        'message' => 'File decryption failed.',
+                    ]);
+                    exit;
+                
+                }
                 // Return success message
                 $response = [
                     'status' => 'success',
