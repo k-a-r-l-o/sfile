@@ -416,6 +416,10 @@
       const nametext = document.getElementById("name");
       nametext.textContent = fullname;
 
+      sessionStorage.setItem("ownerId", ownerId);
+      sessionStorage.setItem("fname", fname);
+      sessionStorage.setItem("lname", lname);
+
       if (error) {
         const messagetext = document.getElementById("error");
         let message = "";
@@ -423,7 +427,7 @@
         // Map error types to messages
         switch (error) {
           case "none":
-            message = "None";
+            message = "File successfully downloaded.";
             break;
           default:
             message = "An unknown error occurred. Please try again.";
@@ -499,9 +503,12 @@
         <td>${sharedAt}</td>
         <td>
           <button
+            onclick="window.location.href='./verify-password?owner=${ownerId}&file=${
+              file.name
+            }&id=${file.file_id}'"
             type="button"
             title="Download"
-            class="btn btn-success m-1 btn-sm downloadButton"
+            class="btn btn-success m-1 btn-sm"
             data-file-id="${file.file_id}">
             <i class="ti ti-download"></i>
           </button>
@@ -585,83 +592,98 @@
         const passwordModal = new bootstrap.Modal(
           document.getElementById("passwordModal")
         );
+        const passwordInput = document.getElementById("password");
+        const confirmPasswordButton =
+          document.getElementById("confirmPassword");
+        const cancelButton = document.getElementById("cancelButton"); // Assuming a cancel button exists in the modal
 
-        // Add event listener to dynamically created download and view buttons
+        // Clear the password field function
+        function clearPasswordInput() {
+          passwordInput.value = "";
+        }
+
+        // Add event listener to dynamically created download
         document
           .getElementById("tableBody")
           .addEventListener("click", function (event) {
-            // Check if the clicked element is a download button
-            if (event.target.closest(".downloadButton")) {
-              event.preventDefault(); // Prevent default action
+            const downloadButton = event.target.closest(".downloadButton");
 
-              // Get the file ID from the data-file-id attribute
-              const fileName = event.target
-                .closest(".downloadButton")
-                .getAttribute("data-file-id");
-
+            if (downloadButton) {
+              event.preventDefault();
+              const fileName = downloadButton.getAttribute("data-file-id");
               window.currentFileName = fileName;
-              // Store the file ID for later use (e.g., sending it to the server)
+              window.currentAction = "download"; // Set the action to "download"
               console.log("File ID to download:", fileName);
-
-              passwordModal.show(); // Show the modal for password input
-            }
-
-            // Check if the clicked element is a view button
-            if (event.target.closest(".viewButton")) {
-              event.preventDefault(); // Prevent default action
-              passwordModal.show(); // Show the modal for password input
+              passwordModal.show();
             }
           });
 
         document
           .getElementById("confirmPassword")
           .addEventListener("click", function () {
-            const password = document.getElementById("password").value;
+            const passwordInput = document.getElementById("password");
+            const password = passwordInput.value;
             const fileName = window.currentFileName;
+            const action = window.currentAction;
 
             if (password.trim() === "") {
               alert("Please enter a password.");
               return;
             }
 
-            // Send the password to the server via AJAX
-            fetch("process_password.php", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ password: password, fileName: fileName }),
-            })
-              .then((response) => {
-                // Check if the response is OK (status 200)
-                if (!response.ok) {
-                  return response.json().then((error) => {
-                    throw new Error(error.message);
-                  });
-                }
-
-                document.getElementById("password").value = "";
-                // If the response is OK, handle the file download
-                return response.blob(); // Get the binary file content
+            if (action === "download") {
+              fetch("process_downloadFiles.php?user_id=" + ownerId, "POST", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  password: password,
+                  fileName: fileName,
+                }),
               })
-              .then((blob) => {
-                // Create a temporary download link
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.style.display = "none";
-                a.href = url;
-                a.download = fileName; // Set the suggested filename
-                document.body.appendChild(a);
-                a.click(); // Trigger the download
-                window.URL.revokeObjectURL(url); // Clean up the URL
-              })
-              .catch((error) => {
-                console.error("Error:", error.message);
-                alert(`Error: ${error.message}`);
-              });
+                .then((response) => {
+                  const contentType = response.headers.get("Content-Type");
 
-            // Close the modal after confirming
-            passwordModal.hide();
+                  if (contentType && contentType.includes("application/json")) {
+                    return response.json(); // Parse as JSON if Content-Type is JSON
+                  } else if (
+                    contentType &&
+                    contentType.includes("application/")
+                  ) {
+                    return response.blob(); // Handle binary file download
+                  } else {
+                    throw new Error("Unexpected response format.");
+                  }
+                })
+                .then((dataOrBlob) => {
+                  if (dataOrBlob instanceof Blob) {
+                    // Handle file download
+                    const url = window.URL.createObjectURL(dataOrBlob);
+                    const a = document.createElement("a");
+                    a.style.display = "none";
+                    a.href = url;
+                    a.download = fileName; // Suggested filename
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    alert("File downloaded successfully!");
+                    passwordModal.hide(); // Close the modal after successful download
+                  } else if (dataOrBlob.status === "error") {
+                    // Handle incorrect password or other errors
+                    //alert("Incorrect password, please try again.");
+                    alert(dataOrBlob.message);
+                    passwordInput.value = ""; // Clear the input field
+                    passwordInput.focus(); // Focus back to the input field
+                  } else {
+                    alert(dataOrBlob.message);
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error:", error.message);
+                  alert(`Error: ${error.message}`);
+                });
+            }
           });
       });
     </script>

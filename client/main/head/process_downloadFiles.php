@@ -6,14 +6,15 @@ session_start();
 if (!isset($_SESSION['client_role'], $_SESSION['client_token'], $_SESSION['client_user_id'])) {
     header("Location: ../../login?error=session_expired");
 } else {
-    if ($_SESSION['client_role'] == 'Head') {
-        header("Location: ../head/");
+    if ($_SESSION['client_role'] == 'Employee') {
+        header("Location: ../employee/");
     }
 }
 
 require_once __DIR__ . '/../../../config/config.php';
 
 $userId = $_SESSION['client_user_id'];
+$ownerId = $_POST['user_id'];
 
 try {
     // Initialize PDO connection
@@ -33,7 +34,7 @@ if (isset($input['password'])) {
     // Fetch file details from the database using file ID
     $stmt = $pdo->prepare("SELECT * FROM tb_files WHERE `name` = :name AND owner_id = :owner_id");
     $stmt->bindParam(':name', $fileName, PDO::PARAM_INT);
-    $stmt->bindParam(':owner_id', $userId, PDO::PARAM_INT);
+    $stmt->bindParam(':owner_id', $ownerId, PDO::PARAM_INT);
     $stmt->execute();
 
     $file = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -60,7 +61,7 @@ if (isset($input['password'])) {
                 ];
 
                 // Path to the user's folder where the private key is stored
-                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/employee/$userId";
+                $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/head/$userId";
 
                 // Path to the encrypted private key
                 $encryptedPrivateKeyPath = "$privateKeyPath/private_key.enc";
@@ -89,7 +90,7 @@ if (isset($input['password'])) {
                     ];
                 }
 
-                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$userId";
+                $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$ownerId";
                 $metadataFilePath = "$folderPath/{$file['name']}.enc.meta";
 
                 // Check if the metadata file exists
@@ -108,9 +109,16 @@ if (isset($input['password'])) {
                         'message' => 'Failed to read metadata.'
                     ];
                 }
+                // Prepare and execute the SQL statement to fetch the hashed password
+                $stmt = $pdo->prepare("SELECT encrypted_key FROM tb_shared_files WHERE file_id = :file_id");
+                $stmt->bindParam(':file_id', $file['file_id'], PDO::PARAM_INT);
+                $stmt->execute();
+
+                // Fetch the hashed password from the database
+                $eKey = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 // Decrypt the AES key using the private key
-                $encryptedAESKey = base64_decode($metadata['encrypted_key']);
+                $encryptedAESKey = $eKey['encrypted_key'];
                 $decryptedAESKey = '';
                 $decryptionSuccess = openssl_private_decrypt($encryptedAESKey, $decryptedAESKey, $res);
 
