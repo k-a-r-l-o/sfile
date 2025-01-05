@@ -245,17 +245,16 @@
                     </div>
                     <div class="col-lg-6 text-end">
                       <form method="get" onsubmit="return false;" class="my-2">
-                        <select
-                          title="Filter by Time"
+                        <select title="Filter by Time"
                           name="time-filter"
                           id="time-filter"
                           class="form-select text-start"
                           onchange="applyFilters()"
                         >
                           <option value="">All Time</option>
-                          <option value="Week">This Week</option>
-                          <option value="Month">This Month</option>
-                          <option value="Year">This Year</option>
+                          <option value="thisWeek">This Week</option>
+                          <option value="thisMonth">This Month</option>
+                          <option value="thisYear">This Year</option>
                         </select>
                       </form>
                     </div>
@@ -419,20 +418,20 @@
 
         // Fetch data and populate table
         function fetchData() {
-          const url = new URL("./logs.php", window.location.href);
-          url.searchParams.append("page", currentPage);
-          url.searchParams.append("limit", limit);
-          if (role) url.searchParams.append("role", role);
-          if (time) url.searchParams.append("time", time);
-          if (search) url.searchParams.append("search", search);
+            const url = new URL("./logs.php", window.location.href);
+            url.searchParams.append("page", currentPage);
+            url.searchParams.append("limit", limit);
+            if (role) url.searchParams.append("role", role);
+            if (time) url.searchParams.append("time-filter", time); // Ensure correct parameter name
+            if (search) url.searchParams.append("search", search);
 
-          fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-              populateTable(data.data);
-              updatePagination(data.pagination);
-            })
-            .catch((error) => console.error("Error fetching data:", error));
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                    populateTable(data.data);
+                    updatePagination(data.pagination);
+                })
+                .catch((error) => console.error("Error fetching data:", error));
         }
 
         // Populate table rows
@@ -481,12 +480,12 @@
 
         // Apply filters
         function applyFilters() {
-          limit = parseInt(limitFilter.value);
-          role = roleFilter.value;
-          time = timeFilter.value;
-          search = searchFilter.value;
-          currentPage = 1; // Reset to first page on filter change
-          fetchData();
+            limit = parseInt(limitFilter.value);
+            role = roleFilter.value;
+            time = timeFilter.value; // Get the selected time filter value
+            search = searchFilter.value;
+            currentPage = 1; // Reset to first page on filter change
+            fetchData();
         }
 
         // Navigate pages

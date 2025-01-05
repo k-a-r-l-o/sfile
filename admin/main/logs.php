@@ -34,12 +34,12 @@ try {
 
     if (isset($_GET['time-filter']) && !empty($_GET['time-filter'])) {
         $filters = $_GET['time-filter'];
-        if ($filters === "Week") {
+        if ($filters === "thisWeek") {
             $sql .= " AND `date_time` >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
-        } elseif ($filters === "Month") {
+        } elseif ($filters === "thisMonth") {
             $sql .= " AND `date_time` >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
-        } elseif ($filters === "Year") {
-            $sql .= " AND `date_time` >= DATE_SUB(NOW(), INTERVAL 1 YEAR)";
+        } elseif ($filters === "thisYear") {
+            $sql .= " AND YEAR(`date_time`) = YEAR(NOW())";
         }
     }
 
