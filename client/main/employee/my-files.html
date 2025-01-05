@@ -607,7 +607,7 @@
 
 
 
-    <script>
+    <!-- <script>
       document.addEventListener("DOMContentLoaded", function () {
         const passwordModal = new bootstrap.Modal(
           document.getElementById("passwordModal")
@@ -697,9 +697,103 @@
 
 
       });
+    </script> -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const passwordModal = new bootstrap.Modal(
+          document.getElementById("passwordModal")
+        );
+    
+        // Add event listener to dynamically created download and view buttons
+        document
+          .getElementById("tableBody")
+          .addEventListener("click", function (event) {
+            // Check if the clicked element is a download button
+            if (event.target.closest(".downloadButton")) {
+              event.preventDefault(); // Prevent default action
+    
+              // Get the file ID from the data-file-id attribute
+              const fileName = event.target
+                .closest(".downloadButton")
+                .getAttribute("data-file-id");
+    
+              window.currentFileName = fileName;
+              // Store the file ID for later use (e.g., sending it to the server)
+              console.log("File ID to download:", fileName);
+    
+              passwordModal.show(); // Show the modal for password input
+            }
+    
+            // Check if the clicked element is a view button
+            if (event.target.closest(".viewButton")) {
+              event.preventDefault(); // Prevent default action
+              passwordModal.show(); // Show the modal for password input
+            }
+          });
+    
+        document
+          .getElementById("confirmPassword")
+          .addEventListener("click", function () {
+            const passwordInput = document.getElementById("password");
+            const password = passwordInput.value;
+            const fileName = window.currentFileName;
+    
+            if (password.trim() === "") {
+              alert("Please enter a password.");
+              return;
+            }
+    
+            fetch("process_downloadFiles.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ password: password, fileName: fileName }),
+            })
+              .then((response) => {
+                const contentType = response.headers.get("Content-Type");
+    
+                if (contentType && contentType.includes("application/json")) {
+                  return response.json(); // Parse as JSON if Content-Type is JSON
+                } else if (contentType && contentType.includes("application/")) {
+                  return response.blob(); // Handle binary file download
+                } else {
+                  throw new Error("Unexpected response format.");
+                }
+              })
+              .then((dataOrBlob) => {
+                if (dataOrBlob instanceof Blob) {
+                  // Handle file download
+                  const url = window.URL.createObjectURL(dataOrBlob);
+                  const a = document.createElement("a");
+                  a.style.display = "none";
+                  a.href = url;
+                  a.download = fileName; // Suggested filename
+                  document.body.appendChild(a);
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+    
+                  // Prompt success message
+                  alert("File downloaded successfully!");
+                  passwordModal.hide(); // Close the modal after successful download
+                } else if (dataOrBlob.status === "error") {
+                  // Handle incorrect password or other errors
+                  alert("Incorrect password, please try again.");
+                  passwordInput.value = ""; // Clear the input field
+                  passwordInput.focus(); // Focus back to the input field
+                } else {
+                  alert(dataOrBlob.message);
+                }
+              })
+              .catch((error) => {
+                console.error("Error:", error.message);
+                alert(`Error: ${error.message}`);
+              });
+          });
+      });
     </script>
-
-
+    
     
 
     <script>
