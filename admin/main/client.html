@@ -475,8 +475,8 @@
             const row = document.createElement("tr");
             row.innerHTML = `
               <td>${user.user_id}</td>
-              <td>${aesDecrypt(user.user_fname)} ${aesDecrypt(user.user_lname)}</td>
-              <td>${aesDecrypt(user.user_email)}</td>
+              <td>${user.user_fname} ${user.user_lname}</td>  
+              <td>${user.user_email}</td>  
               <td>${user.user_role}</td>
               <td>${user.user_status}</td>
               <td>
@@ -543,72 +543,6 @@
         // Initial fetch
         fetchData();
       });
-
-      const fs = require('fs');
-      const crypto = require('crypto');
-
-      // Load the key and IV from the .meta file
-      const metaFilePath = "../../security/key.meta";
-
-      // Check if the file exists
-      if (!fs.existsSync(metaFilePath)) {
-          throw new Error("Key meta file does not exist at ${metaFilePath}");
-      }
-
-      // Decode the JSON data from the file
-      const keys = JSON.parse(fs.readFileSync(metaFilePath, 'utf8'));
-
-      // Check if both the 'key' and 'iv' fields are present
-      if (!keys.key || !keys.iv) {
-          throw new Error("Key or IV missing in the meta file");
-      }
-
-      // Decode the base64-encoded key and IV
-      const key = Buffer.from(keys.key, 'base64');
-      const iv = Buffer.from(keys.iv, 'base64');
-
-      // Validate the decoded key and IV lengths
-      if (key.length !== 32) {
-          throw new Error("Invalid AES key. Ensure it is 256 bits (32 bytes) base64 encoded.");
-      }
-
-      if (iv.length !== 16) {
-          throw new Error("Invalid AES IV. Ensure it is 128 bits (16 bytes) base64 encoded.");
-      }
-
-      // Encryption function
-      function aesEncrypt(input) {
-          // Add random padding to make the plaintext longer
-          const padding = crypto.randomBytes(32).toString('hex'); // 64 characters of padding
-          const paddedInput = `${input}::${padding}`;
-
-
-          // Create cipher
-          const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
-
-          // Encrypt the padded input
-          let encrypted = cipher.update(paddedInput, 'utf8', 'base64');
-          encrypted += cipher.final('base64');
-
-          return encrypted;
-      }
-
-      // Decryption function
-      function aesDecrypt(input) {
-          // Decode and decrypt the input
-          const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-
-          let decrypted = decipher.update(input, 'base64', 'utf8');
-          decrypted += decipher.final('utf8');
-
-          // Remove the padding if it exists
-          if (decrypted.includes('::')) {
-              const [originalData] = decrypted.split('::');
-              return originalData;
-          }
-
-          return decrypted;
-      }
     </script>
     <script>
       (function () {

@@ -46,6 +46,26 @@ define('AES_KEY', $key);
 define('AES_IV', $iv);
 
 
+
+function aesEncrypt($input)
+{
+    // Add random padding to make the plaintext longer
+    $padding = bin2hex(random_bytes(32)); // 64 characters of padding
+    $paddedInput = $input . "::" . $padding;
+
+    // Encrypt the padded input
+    $encrypted = openssl_encrypt(
+        $paddedInput,
+        'AES-256-CBC',
+        AES_KEY,
+        0,
+        AES_IV
+    );
+
+    // Base64-encode the encrypted string
+    return base64_encode($encrypted);
+}
+
 function aesDecrypt($input)
 {
     // Decode and decrypt the input
@@ -66,8 +86,6 @@ function aesDecrypt($input)
     return $decrypted;
 }
 // End of encrypt and decrypt functions
-
-
 // Include the configuration file
 require_once __DIR__ . '/../../config/config.php';
 
@@ -96,26 +114,26 @@ try {
             u.user_status = 1
     ";
 
-    // Capture the filter parameters from the query string
-    $filters = [];
-    if (isset($_GET['role']) && !empty($_GET['role'])) {
-        $filters['role'] = $_GET['role'];
-        $sql .= " AND user_role = :role";
+    // Execute the query
+    $stmt = $pdo->query($sql);
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Decrypt sensitive fields (email, fname, lname)
+    foreach ($users as &$user) {
+        $user['user_email'] = aesDecrypt($user['user_email']);
+        $user['user_fname'] = aesDecrypt($user['user_fname']);
+        $user['user_lname'] = aesDecrypt($user['user_lname']);
     }
 
-    if (isset($_GET['status']) && !empty($_GET['status'])) {
-        $filters['status'] = $_GET['status'];
-        $sql .= " AND l.user_status = :status";
-    }
-
+    // Filter results if a search query is provided
     if (isset($_GET['search']) && !empty($_GET['search'])) {
-        $filters['search'] = "%" . $_GET['search'] . "%";
-        $sql .= " AND (
-            u.user_id LIKE :search OR 
-            u.user_fname LIKE :search OR 
-            u.user_lname LIKE :search OR 
-            u.user_email LIKE :search
-        )";
+        $searchTerm = strtolower(trim($_GET['search']));
+        $users = array_filter($users, function ($user) use ($searchTerm) {
+            return stripos($user['user_id'], $searchTerm) !== false ||
+                stripos($user['user_fname'], $searchTerm) !== false ||
+                stripos($user['user_lname'], $searchTerm) !== false ||
+                stripos($user['user_email'], $searchTerm) !== false;
+        });
     }
 
     // Pagination logic
@@ -123,79 +141,18 @@ try {
     $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1; // Default page: 1
     $offset = ($page - 1) * $limit;
 
-    $sql .= " LIMIT :limit OFFSET :offset";
-
-    // Prepare the statement
-    $stmt = $pdo->prepare($sql);
-
-    // Bind parameters for filters
-    if (isset($filters['role'])) {
-        $stmt->bindParam(':role', $filters['role'], PDO::PARAM_STR);
-    }
-    if (isset($filters['status'])) {
-        $stmt->bindParam(':status', $filters['status'], PDO::PARAM_STR);
-    }
-    if (isset($filters['search'])) {
-        $stmt->bindParam(':search', $filters['search'], PDO::PARAM_STR);
-    }
-
-    // Bind pagination parameters
-    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-
-    // Execute the query
-    $stmt->execute();
-
-    // Fetch the results
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Get the total count of records for pagination metadata
-    $countSql = "
-        SELECT COUNT(*) as total 
-        FROM tb_client_userdetails u
-        LEFT JOIN tb_client_logindetails l 
-        ON u.user_id = l.user_id
-        WHERE u.user_status = 1
-    ";
-
-    if (isset($filters['role'])) {
-        $countSql .= " AND user_role = :role";
-    }
-    if (isset($filters['status'])) {
-        $countSql .= " AND l.user_status = :status";
-    }
-
-    if (isset($filters['search'])) {
-        $countSql .= " AND (
-            u.user_id LIKE :search OR 
-            u.user_fname LIKE :search OR 
-            u.user_lname LIKE :search OR 
-            u.user_email LIKE :search
-        )";
-    }
-
-    $countStmt = $pdo->prepare($countSql);
-    if (isset($filters['role'])) {
-        $countStmt->bindParam(':role', $filters['role'], PDO::PARAM_STR);
-    }
-    if (isset($filters['status'])) {
-        $countStmt->bindParam(':status', $filters['status'], PDO::PARAM_STR);
-    }
-    if (isset($filters['search'])) {
-        $countStmt->bindParam(':search', $filters['search'], PDO::PARAM_STR);
-    }
-    $countStmt->execute();
-    $total = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+    $total = count($users);
+    $users = array_slice($users, $offset, $limit);
 
     // Prepare the response with metadata
     $response = [
-        "data" => $users,
+        "data" => array_values($users), // Reset array keys for JSON consistency
         "pagination" => [
             "current_page" => $page,
             "per_page" => $limit,
             "total_records" => $total,
-            "total_pages" => ceil($total / $limit)
-        ]
+            "total_pages" => ceil($total / $limit),
+        ],
     ];
 
     // Return the result as JSON
@@ -208,6 +165,5 @@ try {
     // Log the error and return a JSON error message
     error_log("Error: " . $e->getMessage());
     echo json_encode(["error" => "An error occurred while fetching users"]);
+    exit;
 }
-
-exit;
