@@ -158,6 +158,31 @@ if (isset($input['password'])) {
                     }
 
                     echo $decryptedData;
+                    // Fetch the current user's email and role
+                    $doerUserId = $_SESSION['client_user_id'];
+                    $userStmt = $pdo->prepare("
+                        SELECT user_email, user_role 
+                        FROM tb_client_userdetails 
+                        WHERE user_id = :user_id AND user_status = 1
+                    ");
+                    $userStmt->bindParam(':user_id', $doerUserId);
+                    $userStmt->execute();
+                    $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
+                    $logRole = $userDetails['user_role'] ?? 'Unknown';
+
+                    // Log the user addition
+                    $logAction = "Downloaded file $file_name successfully";
+                    $logdate = date('Y-m-d H:i:s');
+                    $logStmt = $pdo->prepare("
+                        INSERT INTO tb_logs (doer, log_date, role, log_action) 
+                        VALUES (:doer, :log_date, :role, :action)
+                    ");
+                    $logStmt->execute([
+                        ':doer' => $doerUserId,
+                        ':log_date' => $logdate,
+                        ':role' => $logRole,
+                        ':action' => $logAction
+                    ]);
                     exit;
                 } else {
                     // Return error if decryption fails

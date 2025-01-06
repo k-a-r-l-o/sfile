@@ -197,6 +197,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'message' => 'AES key encrypted and stored in database successfully.',
                             'encrypted_key' => $encryptedAESKeyForHead
                         ];
+                        // Fetch the current user's email and role
+                        $doerUserId = $_SESSION['client_user_id'];
+                        $userStmt = $conn->prepare("
+                                SELECT user_email, user_role 
+                                FROM tb_client_userdetails 
+                                WHERE user_id = :user_id AND user_status = 1
+                            ");
+                        $userStmt->bindParam(':user_id', $doerUserId);
+                        $userStmt->execute();
+                        $userDetails = $userStmt->fetch(PDO::FETCH_ASSOC);
+                        $logRole = $userDetails['user_role'] ?? 'Unknown';
+
+                        // Log the user addition
+                        $logAction = "Shared file $filename successfully";
+                        $logdate = date('Y-m-d H:i:s');
+                        $logStmt = $conn->prepare("
+                            INSERT INTO tb_logs (doer, log_date, role, log_action) 
+                            VALUES (:doer, :log_date, :role, :action)
+                        ");
+                        $logStmt->execute([
+                            ':doer' => $doerUserId,
+                            ':log_date' => $logdate,
+                            ':role' => $logRole,
+                            ':action' => $logAction
+                        ]);
                         header("Location: my-files?error=none");
                     } else {
                         $response = [
