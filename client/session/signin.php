@@ -171,53 +171,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $db = new Database();
             $conn = $db->getConnection();
 
+            // Fetch all active users
             $stmt = $conn->prepare(
-                "SELECT l.password, u.user_id, u.user_role, l.user_status
+                "SELECT l.password, u.user_id, u.user_role, l.user_status, u.user_email
                  FROM tb_client_logindetails l
-                 JOIN tb_client_userdetails u ON l.user_id = u.user_id
-                 WHERE u.user_email = :email AND u.user_status = 1"
+                 JOIN tb_client_logindetails u ON l.user_id = u.user_id
+                 WHERE u.user_status = 1"
             );
-            $stmt->bindValue(':email', aesEncrypt(trim($_POST['email'])));
             $stmt->execute();
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if ($user) {
-                if ($user['user_status'] === "Online") {
+            $validUser = null;
+
+            // Loop through all users to find a match
+            foreach ($users as $user) {
+                if (aesDecrypt($user['user_email']) === $email && password_verify($password, $user['password'])) {
+                    $validUser = $user;
+                    break;
+                }
+            }
+
+            if ($validUser) {
+                // Check if user is already logged in
+                if ($validUser['user_status'] === "Online") {
                     header("Location: ../login?error=already_logged_in");
                     exit;
-                } elseif (password_verify($password, $user['password'])) {
-                    $tokenPlain = bin2hex(random_bytes(16));
-                    $tokenHash = password_hash($tokenPlain, PASSWORD_DEFAULT);
-                    $tokenExpiration = date('Y-m-d H:i:s', time() + 600);
+                }
 
-                    $updateTokenStmt = $conn->prepare(
-                        "UPDATE tb_client_logindetails 
-                         SET token = :token, token_expiration = :expiration 
-                         WHERE user_id = :user_id"
-                    );
-                    $updateTokenStmt->execute([
-                        ':token' => $tokenHash,
-                        ':expiration' => $tokenExpiration,
-                        ':user_id' => $user['user_id']
-                    ]);
+                // Generate and store the token for the valid user
+                $tokenPlain = bin2hex(random_bytes(16));
+                $tokenHash = password_hash($tokenPlain, PASSWORD_DEFAULT);
+                $tokenExpiration = date('Y-m-d H:i:s', time() + 600);
 
-                    if (sendLoginVerificationEmail($email, $tokenPlain)) {
-                        header("Location: ../verification-link-sent?email=$email");
-                        exit;
-                    } else {
-                        header("Location: ../login?error=email_failed");
-                        exit;
-                    }
+                $updateTokenStmt = $conn->prepare(
+                    "UPDATE tb_admin_logindetails 
+                     SET token = :token, token_expiration = :expiration 
+                     WHERE user_id = :user_id"
+                );
+                $updateTokenStmt->execute([
+                    ':token' => $tokenHash,
+                    ':expiration' => $tokenExpiration,
+                    ':user_id' => $validUser['user_id']
+                ]);
+
+                // Send verification email
+                if (sendLoginVerificationEmail($email, $tokenPlain)) {
+                    header("Location: ../verification-link-sent?email=$email");
+                    exit;
                 } else {
-                    header("Location: ../login?error=invalid_credentials");
+                    header("Location: ../login?error=email_failed");
                     exit;
                 }
             } else {
-                header("Location: ../login?error=user_not_found");
+                header("Location: ../login?error=invalid_credentials");
                 exit;
             }
         } catch (PDOException $e) {
             error_log("Login error: " . $e->getMessage());
+            echo $e->getMessage();
             header("Location: ../login?error=server_error");
             exit;
         }
