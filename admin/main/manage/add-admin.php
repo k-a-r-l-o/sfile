@@ -7,48 +7,85 @@ if (!isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_u
     exit;
 }
 
-// Caesar Cipher Shift Key
-define('SHIFT_KEY', 24); // Adjust the shift key as needed
+//Encrypt and decrypt functions
+// Load the key and IV from the .meta file
+$metaFilePath = "../../../security/key.meta";
 
-/**
- * Encrypt a string using the Caesar cipher.
- *
- * @param string $input The string to encrypt.
- * @return string The encrypted string.
- */
-function caesarEncrypt($input)
-{
-    $result = '';
-    foreach (str_split($input) as $char) {
-        if (ctype_alpha($char)) {
-            $offset = ctype_upper($char) ? 65 : 97;
-            $result .= chr(((ord($char) - $offset + SHIFT_KEY) % 26) + $offset);
-        } else {
-            $result .= $char; // Non-alphabetic characters are not shifted
-        }
-    }
-    return $result;
+// Check if the file exists
+if (!file_exists($metaFilePath)) {
+    throw new Exception("Key meta file does not exist at $metaFilePath");
 }
 
-/**
- * Decrypt a string using the Caesar cipher.
- *
- * @param string $input The string to decrypt.
- * @return string The decrypted string.
- */
-function caesarDecrypt($input)
-{
-    $result = '';
-    foreach (str_split($input) as $char) {
-        if (ctype_alpha($char)) {
-            $offset = ctype_upper($char) ? 65 : 97;
-            $result .= chr(((ord($char) - $offset - SHIFT_KEY + 26) % 26) + $offset);
-        } else {
-            $result .= $char; // Non-alphabetic characters are not shifted
-        }
-    }
-    return $result;
+// Decode the JSON data from the file
+$keys = json_decode(file_get_contents($metaFilePath), true);
+
+// Check if JSON decoding was successful
+if ($keys === null) {
+    throw new Exception("Error decoding JSON from $metaFilePath");
 }
+
+// Check if both the 'key' and 'iv' fields are present
+if (!isset($keys['key']) || !isset($keys['iv'])) {
+    throw new Exception("Key or IV missing in the meta file");
+}
+
+// Decode the base64-encoded key and IV
+$key = base64_decode($keys['key'], true);
+$iv = base64_decode($keys['iv'], true);
+
+// Validate the decoded key and IV lengths
+if ($key === false || strlen($key) !== 32) {
+    throw new Exception("Invalid AES key. Ensure it is 256 bits (32 bytes) base64 encoded.");
+}
+
+if ($iv === false || strlen($iv) !== 16) {
+    throw new Exception("Invalid AES IV. Ensure it is 128 bits (16 bytes) base64 encoded.");
+}
+
+// Define the constants for key and IV
+define('AES_KEY', $key);
+define('AES_IV', $iv);
+
+
+function aesEncrypt($input)
+{
+    // Add random padding to make the plaintext longer
+    $padding = bin2hex(random_bytes(32)); // 64 characters of padding
+    $paddedInput = $input . "::" . $padding;
+
+    // Encrypt the padded input
+    $encrypted = openssl_encrypt(
+        $paddedInput,
+        'AES-256-CBC',
+        AES_KEY,
+        0,
+        AES_IV
+    );
+
+    // Base64-encode the encrypted string
+    return base64_encode($encrypted);
+}
+
+function aesDecrypt($input)
+{
+    // Decode and decrypt the input
+    $decrypted = openssl_decrypt(
+        base64_decode($input),
+        'AES-256-CBC',
+        AES_KEY,
+        0,
+        AES_IV
+    );
+
+    // Remove the padding if it exists
+    if ($decrypted !== false && strpos($decrypted, "::") !== false) {
+        list($originalData,) = explode("::", $decrypted, 2);
+        return $originalData;
+    }
+
+    return $decrypted;
+}
+// End of encrypt and decrypt functions
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once '../../../config/config.php';
@@ -68,9 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         // Encrypt sensitive data
-        $encryptedEmail = caesarEncrypt($email);
-        $encryptedFirstname = caesarEncrypt($firstname);
-        $encryptedLastname = caesarEncrypt($lastname);
+        $encryptedEmail = aesEncrypt($email);
+        $encryptedFirstname = aesEncrypt($firstname);
+        $encryptedLastname = aesEncrypt($lastname);
 
         // Check if email already exists
         $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM tb_admin_userdetails WHERE user_email = :email AND user_status = '1'");
