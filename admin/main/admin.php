@@ -6,6 +6,67 @@ if (!isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_u
     header("Location: ../login?error=session_expired");
 }
 
+//Encrypt and decrypt functions
+// Load the key and IV from the .meta file
+$metaFilePath = "../../security/key.meta";
+
+// Check if the file exists
+if (!file_exists($metaFilePath)) {
+    throw new Exception("Key meta file does not exist at $metaFilePath");
+}
+
+// Decode the JSON data from the file
+$keys = json_decode(file_get_contents($metaFilePath), true);
+
+// Check if JSON decoding was successful
+if ($keys === null) {
+    throw new Exception("Error decoding JSON from $metaFilePath");
+}
+
+// Check if both the 'key' and 'iv' fields are present
+if (!isset($keys['key']) || !isset($keys['iv'])) {
+    throw new Exception("Key or IV missing in the meta file");
+}
+
+// Decode the base64-encoded key and IV
+$key = base64_decode($keys['key'], true);
+$iv = base64_decode($keys['iv'], true);
+
+// Validate the decoded key and IV lengths
+if ($key === false || strlen($key) !== 32) {
+    throw new Exception("Invalid AES key. Ensure it is 256 bits (32 bytes) base64 encoded.");
+}
+
+if ($iv === false || strlen($iv) !== 16) {
+    throw new Exception("Invalid AES IV. Ensure it is 128 bits (16 bytes) base64 encoded.");
+}
+
+// Define the constants for key and IV
+define('AES_KEY', $key);
+define('AES_IV', $iv);
+
+
+function aesDecrypt($input)
+{
+    // Decode and decrypt the input
+    $decrypted = openssl_decrypt(
+        base64_decode($input),
+        'AES-256-CBC',
+        AES_KEY,
+        0,
+        AES_IV
+    );
+
+    // Remove the padding if it exists
+    if ($decrypted !== false && strpos($decrypted, "::") !== false) {
+        list($originalData,) = explode("::", $decrypted, 2);
+        return $originalData;
+    }
+
+    return $decrypted;
+}
+// End of encrypt and decrypt functions
+
 // Include the configuration file
 require_once __DIR__ . '/../../config/config.php';
 
@@ -34,7 +95,7 @@ try {
             u.user_status = 1
     ";
 
-    // Capture the filter parameters from the query string
+    // Capture filter parameters from the query string
     $filters = [];
     if (isset($_GET['role']) && !empty($_GET['role'])) {
         $filters['role'] = $_GET['role'];
@@ -74,7 +135,7 @@ try {
         $stmt->bindParam(':status', $filters['status'], PDO::PARAM_STR);
     }
     if (isset($filters['search'])) {
-        $stmt->bindParam(':search', caesarEncrypt($filters['search']), PDO::PARAM_STR);
+        $stmt->bindParam(':search', $filters['search'], PDO::PARAM_STR);
     }
 
     // Bind pagination parameters
@@ -86,6 +147,13 @@ try {
 
     // Fetch the results
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Decrypt the email, first name, and last name
+    foreach ($users as &$user) {
+        $user['user_email'] = aesDecrypt($user['user_email'], AES_KEY, AES_IV);
+        $user['user_fname'] = aesDecrypt($user['user_fname'], AES_KEY, AES_IV);
+        $user['user_lname'] = aesDecrypt($user['user_lname'], AES_KEY, AES_IV);
+    }
 
     // Get the total count of records for pagination metadata
     $countSql = "
@@ -120,7 +188,7 @@ try {
         $countStmt->bindParam(':status', $filters['status'], PDO::PARAM_STR);
     }
     if (isset($filters['search'])) {
-        $countStmt->bindParam(':search', caesarEncrypt($filters['search']), PDO::PARAM_STR);
+        $countStmt->bindParam(':search', $filters['search'], PDO::PARAM_STR);
     }
     $countStmt->execute();
     $total = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];

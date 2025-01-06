@@ -347,47 +347,14 @@
         }
       }
 
-      const SHIFT_KEY = 24; // Same shift key used for encryption
-
-      /**
-       * Decrypt a string using the Caesar cipher.
-       *
-       * @param {string} input - The string to decrypt.
-       * @returns {string} - The decrypted string.
-       */
-      function caesarDecrypt(input) {
-        let result = "";
-        for (let char of input) {
-          if (/[a-zA-Z]/.test(char)) {
-            const offset = char === char.toUpperCase() ? 65 : 97; // ASCII offset for uppercase/lowercase
-            result += String.fromCharCode(
-              ((char.charCodeAt(0) - offset - SHIFT_KEY + 26) % 26) + offset
-            );
-          } else {
-            result += char; // Non-alphabetic characters are not shifted
-          }
-        }
-        return result;
-      }
-
       // Retrieve URL parameters
-      const encryptedId = urlParams.get("id");
-      const encryptedEmail = urlParams.get("email");
-      const encryptedFirstname = urlParams.get("fname");
-      const encryptedLastname = urlParams.get("lname");
+      const id = urlParams.get("id");
+      const email = urlParams.get("email");
+      const firstname = urlParams.get("fname");
+      const lastname = urlParams.get("lname");
 
       // Decrypt the parameters
-      if (
-        encryptedId &&
-        encryptedEmail &&
-        encryptedFirstname &&
-        encryptedLastname
-      ) {
-        const id = caesarDecrypt(encryptedId);
-        const email = caesarDecrypt(encryptedEmail);
-        const firstname = caesarDecrypt(encryptedFirstname);
-        const lastname = caesarDecrypt(encryptedLastname);
-
+      if (id && email && firstname && lastname) {
         // Populate the form fields
         const user_id = document.getElementById("user_id");
         const user_email = document.getElementById("email");
@@ -402,7 +369,6 @@
         // Redirect if parameters are missing
         window.location.href = "../admin";
       }
-
     </script>
     <script>
       (function () {
