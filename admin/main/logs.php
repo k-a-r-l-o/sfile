@@ -160,8 +160,18 @@ try {
 
     // Decrypt the relevant fields
     foreach ($logs as &$log) {
-        $log['name'] = aesDecrypt($log['name']);
-        $log['email_address'] = aesDecrypt($log['email_address']);
+        if ($log['fname'] == $log['lname']) {
+            $log['fname'] = aesDecrypt($log['fname']);
+            $log['lname'] = " ";
+        } else {
+            $log['fname'] = aesDecrypt($log['fname']);
+            $log['lname'] = aesDecrypt($log['lname']);
+        }
+        if ($log['fname'] == "System") {
+            $log['email_address'] = " N/A";
+        } else {
+            $log['email_address'] = aesDecrypt($log['email_address']);
+        }
     }
 
     // Count total records

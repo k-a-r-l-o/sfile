@@ -73,7 +73,7 @@ function aesDecrypt($input)
 
     // Remove the padding if it exists
     if ($decrypted !== false && strpos($decrypted, "::") !== false) {
-        list($originalData, ) = explode("::", $decrypted, 2);
+        list($originalData,) = explode("::", $decrypted, 2);
         return $originalData;
     }
 
@@ -371,10 +371,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         CREATE VIEW view_admin_activity_logs AS
         SELECT 
             tb_logs.log_id AS `log_id`,
-            CONCAT(
-                COALESCE(tb_admin_userdetails.user_fname, ''), ' ', 
-                COALESCE(tb_admin_userdetails.user_lname, '')
-            ) AS `name`,
+            tb_admin_userdetails.user_fname AS `lname`,
+            tb_admin_userdetails.user_lname AS `fname`,
             tb_admin_userdetails.user_email AS `email_address`,
             tb_logs.log_date AS `date_time`,
             tb_logs.role AS `role`,
@@ -403,10 +401,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         CREATE VIEW view_client_activity_logs AS
         SELECT 
             tb_logs.log_id AS `log_id`,
-            CONCAT(
-                COALESCE(tb_client_userdetails.user_fname, ''), ' ', 
-                COALESCE(tb_client_userdetails.user_lname, '')
-            ) AS `name`,
+            tb_client_userdetails.user_fname AS `lname`,
+            tb_client_userdetails.user_lname AS `fname`,
             tb_client_userdetails.user_email AS `email_address`,
             tb_logs.log_date AS `date_time`,
             tb_logs.role AS `role`,
@@ -436,7 +432,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         CREATE VIEW view_system_generated_logs AS
         SELECT 
             tb_logs.log_id AS `log_id`,
-            tb_logs.doer AS `name`,
+            tb_logs.doer AS `fname`,
+            tb_logs.doer AS `lname`,
             tb_logs.doer AS `email_address`,
             tb_logs.log_date AS `date_time`,
             tb_logs.role AS `role`,
