@@ -81,6 +81,55 @@ try {
         exit;
     }
 
+    // Path to the user's folder where the private key is stored
+    $privateKeyPath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/head/$userId"; 
+
+    // Path to the encrypted private key
+    $encryptedPrivateKeyPath = "$privateKeyPath/private_key.enc";
+
+    // Check if the file exists
+    if (!file_exists($encryptedPrivateKeyPath)) {
+        $response = [
+            'status' => 'error',
+            'message' => 'File not exists'
+        ];
+    }
+
+    // Read the encrypted private key from the file
+    $encryptedPrivateKey = file_get_contents($encryptedPrivateKeyPath);
+
+    $passphrase = $currentPassword; // The entered password used as the passphrase
+
+    // Decrypt the private key using the passphrase
+    $res = openssl_pkey_get_private($encryptedPrivateKey, $passphrase);
+
+    if (!$res) {
+        //die("1Failed to decrypt private key: " . openssl_error_string());
+        $response = [
+            'status' => 'error',
+            'message' => 'Decryption failed'
+        ];
+    }
+
+    unlink($encryptedPrivateKeyPath);
+    $newPassphrase = $newPassword;  // Use the confirm/new password to encrypt the private key
+    $configargs = array(
+        "config" => __DIR__ . '/../../../../security/openssl.cnf'
+    );
+    $newEncryptedPrivateKey = null;
+
+    // Encrypt the private key with the password (passphrase)
+    if (!openssl_pkey_export($res, $newEncryptedPrivateKey, $newPassphrase,$configargs)) {
+        $response = [
+            'status' => 'error',
+            'message' => 'Failed to export encrypted private key: ' . openssl_error_string()
+        ];
+        echo json_encode($response);
+        exit;
+    }
+
+    file_put_contents("$privateKeyPath/private_key.enc", $newEncryptedPrivateKey);
+
     // Hash the new password
     $newPasswordHash = password_hash($newPassword, PASSWORD_BCRYPT);
 
