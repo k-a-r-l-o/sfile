@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ];
                     }
                     // Prepare and execute the SQL statement to fetch the hashed password
-                    $stmt = $pdo->prepare("SELECT encrypted_key FROM tb_shared_files WHERE file_id = :file_id");
+                    $stmt = $pdo->prepare("SELECT * FROM tb_shared_files WHERE file_id = :file_id");
                     $stmt->bindParam(':file_id', $id, PDO::PARAM_INT);
                     $stmt->execute();
 
@@ -127,7 +127,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     // Decrypt the file using the decrypted AES key and IV
-                    $iv = base64_decode($metadata['iv']);
+                    //$iv = base64_decode($metadata['iv']);
+                    $iv = base64_decode($eKey['iv']);
                     $encryptedFilePath = "$folderPath/$fileName.enc";
 
                     // Read the encrypted file
@@ -163,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
 
                         echo $decryptedData;
-                        echo "<script>alert('File downloaded successfully.');</script>";
+
                         exit;
                     } else {
                         // Return error if decryption fails
@@ -172,6 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'status' => 'error',
                             'message' => 'Failed to decrypt the file.'
                         ]);
+
                         exit;
                     }
 
@@ -181,6 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'message' => 'File decrypted successfully.',
                         'decrypted_file_path' => $decryptedFilePath
                     ];
+                    header('window.location.href = "employee-files?error=none";');
                 } else {
                     $response = [
                         'status' => 'invalid',

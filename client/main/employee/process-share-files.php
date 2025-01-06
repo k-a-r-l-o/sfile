@@ -184,10 +184,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     // Insert the data into the database (tb_shared_files table)
                     $currentDateTime = date('Y-m-d H:i:s');
-                    $stmt = $conn->prepare("INSERT INTO tb_shared_files (file_id, shared_to, encrypted_key, shared_at) VALUES (:file_id, :shared_to, :encrypted_key, :shared_at)");
+                    $stmt = $conn->prepare("INSERT INTO tb_shared_files (file_id, shared_to, encrypted_key, iv, shared_at) VALUES (:file_id, :shared_to, :encrypted_key, :iv, :shared_at)");
                     $stmt->bindParam(':file_id', $fileid, PDO::PARAM_INT);
                     $stmt->bindParam(':shared_to', $headUserId, PDO::PARAM_STR);
                     $stmt->bindParam(':encrypted_key', $encryptedAESKeyForHead, PDO::PARAM_STR);
+                    $stmt->bindParam(':iv', $metadata['iv'], PDO::PARAM_STR);
                     $stmt->bindParam(':shared_at', $currentDateTime, PDO::PARAM_STR);
 
                     if ($stmt->execute()) {

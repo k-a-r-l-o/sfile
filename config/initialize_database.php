@@ -272,6 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         file_id INT NOT NULL,
         shared_to INT NOT NULL,
         encrypted_key VARCHAR(255) NOT NULL,
+        iv VARCHAR(255) NOT NULL,
         shared_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (file_id, shared_to),
         FOREIGN KEY (file_id) REFERENCES tb_files(file_id) ON DELETE CASCADE,
