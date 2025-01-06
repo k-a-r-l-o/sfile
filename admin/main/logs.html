@@ -442,8 +442,8 @@
             const row = document.createElement("tr");
             row.innerHTML = `
               <td>${log.log_id}</td>
-              <td>${caesarDecrypt(log.name)}</td>
-              <td>${caesarDecrypt(log.email_address)}</td>
+              <td>${aesDecrypt(log.name)}</td>
+              <td>${aesDecrypt(log.email_address)}</td>
               <td>${formatDateTime(log.date_time)}</td>
               <td>${log.role}</td>
               <td>${log.activity}</td>
@@ -526,7 +526,7 @@
       const crypto = require('crypto');
 
       // Load the key and IV from the .meta file
-      const metaFilePath = "../security/key.meta";
+      const metaFilePath = "../../security/key.meta";
 
       // Check if the file exists
       if (!fs.existsSync(metaFilePath)) {
