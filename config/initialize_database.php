@@ -2,6 +2,37 @@
 
 require_once __DIR__ . '/config.php';
 
+// Caesar Cipher Shift Key
+define('SHIFT_KEY', 24); // Adjust the shift key as needed
+
+function caesarEncrypt($input)
+{
+    $result = '';
+    foreach (str_split($input) as $char) {
+        if (ctype_alpha($char)) {
+            $offset = ctype_upper($char) ? 65 : 97;
+            $result .= chr(((ord($char) - $offset + SHIFT_KEY) % 26) + $offset);
+        } else {
+            $result .= $char; // Non-alphabetic characters are not shifted
+        }
+    }
+    return $result;
+}
+
+function caesarDecrypt($input)
+{
+    $result = '';
+    foreach (str_split($input) as $char) {
+        if (ctype_alpha($char)) {
+            $offset = ctype_upper($char) ? 65 : 97;
+            $result .= chr(((ord($char) - $offset - SHIFT_KEY + 26) % 26) + $offset);
+        } else {
+            $result .= $char; // Non-alphabetic characters are not shifted
+        }
+    }
+    return $result;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         echo "<h2>Starting database connection...</h2>";
@@ -190,9 +221,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ON DUPLICATE KEY UPDATE user_id=user_id;");
             $stmt->execute([
                 ':user_id' => $user['user_id'],
-                ':user_fname' => $user['user_fname'],
-                ':user_lname' => $user['user_lname'],
-                ':user_email' => $user['user_email'],
+                ':user_fname' => caesarEncrypt($user['user_fname']),
+                ':user_lname' => caesarEncrypt($user['user_lname']),
+                ':user_email' => caesarEncrypt($user['user_email']),
                 ':user_role' => $user['user_role']
             ]);
             error_log("User {$user['user_fname']} {$user['user_lname']} added successfully.");
@@ -228,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "<h2>Logging action for user: {$user['user_fname']} {$user['user_lname']}...</h2>";
             $logStmt = $pdo->prepare("INSERT INTO tb_logs (doer, role, log_action) VALUES (:doer, :role, :action)");
             $logStmt->execute([
-                ':doer' => 'System',
+                ':doer' => caesarEncrypt('System'),
                 ':role' => 'System',
                 ':action' => "Administrator user {$user['user_id']} added successfully."
             ]);
@@ -356,8 +387,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         CREATE VIEW view_system_generated_logs AS
         SELECT 
             tb_logs.log_id AS `log_id`,
-            tb_logs.role AS `name`,
-            'N/A' AS `email_address`,
+            tb_logs.doer AS `name`,
+            tb_logs.doer AS `email_address`,
             tb_logs.log_date AS `date_time`,
             tb_logs.role AS `role`,
             tb_logs.log_action AS `activity`    

@@ -151,7 +151,7 @@
                   >
                     <div class="message-body">
                       <a
-                      href="profile-settings/profile-settings"
+                        href="profile-settings/profile-settings"
                         class="d-flex align-items-center gap-2 dropdown-item"
                       >
                         <i class="ti ti-user fs-6"></i>
@@ -471,12 +471,26 @@
             const row = document.createElement("tr");
             row.innerHTML = `  
                     <td>${user.user_id}</td>  
-                    <td>${user.user_fname} ${user.user_lname}</td>  
-                    <td>${user.user_email}</td>  
+                    <td>${caesarDecrypt(user.user_fname)} ${caesarDecrypt(
+              user.user_lname
+            )}</td>  
+                    <td>${caesarDecrypt(user.user_email)}</td>  
                     <td>${user.user_status}</td>  
                     <td>  
-                        <button onclick="window.location.href='manage/edit-admin?id=${user.user_id}&fname=${user.user_fname}&lname=${user.user_lname}&email=${user.user_email}'" class="btn btn-primary btn-sm">Edit</button>  
-                        <button onclick="window.location.href='manage/delete-admin?id=${user.user_id}&fname=${user.user_fname}&lname=${user.user_lname}&email=${user.user_email}'" class="btn btn-danger btn-sm">Delete</button>  
+                        <button onclick="window.location.href='manage/edit-admin?id=${
+                          user.user_id
+                        }&fname=${user.user_fname}&lname=${
+              user.user_lname
+            }&email=${
+              user.user_email
+            }'" class="btn btn-primary btn-sm">Edit</button>  
+                        <button onclick="window.location.href='manage/delete-admin?id=${
+                          user.user_id
+                        }&fname=${user.user_fname}&lname=${
+              user.user_lname
+            }&email=${
+              user.user_email
+            }'" class="btn btn-danger btn-sm">Delete</button>  
                     </td>  
                 `;
             tableBody.appendChild(row);
@@ -538,6 +552,50 @@
         // Initial fetch
         fetchData();
       });
+
+      const SHIFT_KEY = 24; // Adjust the shift key as needed
+
+      /**
+       * Encrypt a string using the Caesar cipher.
+       *
+       * @param {string} input - The string to encrypt.
+       * @returns {string} - The encrypted string.
+       */
+      function caesarEncrypt(input) {
+        let result = "";
+        for (let char of input) {
+          if (/[a-zA-Z]/.test(char)) {
+            const offset = char === char.toUpperCase() ? 65 : 97; // ASCII offset for uppercase/lowercase
+            result += String.fromCharCode(
+              ((char.charCodeAt(0) - offset + SHIFT_KEY) % 26) + offset
+            );
+          } else {
+            result += char; // Non-alphabetic characters are not shifted
+          }
+        }
+        return result;
+      }
+
+      /**
+       * Decrypt a string using the Caesar cipher.
+       *
+       * @param {string} input - The string to decrypt.
+       * @returns {string} - The decrypted string.
+       */
+      function caesarDecrypt(input) {
+        let result = "";
+        for (let char of input) {
+          if (/[a-zA-Z]/.test(char)) {
+            const offset = char === char.toUpperCase() ? 65 : 97; // ASCII offset for uppercase/lowercase
+            result += String.fromCharCode(
+              ((char.charCodeAt(0) - offset - SHIFT_KEY + 26) % 26) + offset
+            );
+          } else {
+            result += char; // Non-alphabetic characters are not shifted
+          }
+        }
+        return result;
+      }
     </script>
 
     <script>

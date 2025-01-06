@@ -5,6 +5,49 @@ require '../../vendor/autoload.php'; // For PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+// Caesar Cipher Shift Key
+define('SHIFT_KEY', 24); // Adjust the shift key as needed
+
+/**
+ * Encrypt a string using the Caesar cipher.
+ *
+ * @param string $input The string to encrypt.
+ * @return string The encrypted string.
+ */
+function caesarEncrypt($input)
+{
+    $result = '';
+    foreach (str_split($input) as $char) {
+        if (ctype_alpha($char)) {
+            $offset = ctype_upper($char) ? 65 : 97;
+            $result .= chr(((ord($char) - $offset + SHIFT_KEY) % 26) + $offset);
+        } else {
+            $result .= $char; // Non-alphabetic characters are not shifted
+        }
+    }
+    return $result;
+}
+
+/**
+ * Decrypt a string using the Caesar cipher.
+ *
+ * @param string $input The string to decrypt.
+ * @return string The decrypted string.
+ */
+function caesarDecrypt($input)
+{
+    $result = '';
+    foreach (str_split($input) as $char) {
+        if (ctype_alpha($char)) {
+            $offset = ctype_upper($char) ? 65 : 97;
+            $result .= chr(((ord($char) - $offset - SHIFT_KEY + 26) % 26) + $offset);
+        } else {
+            $result .= $char; // Non-alphabetic characters are not shifted
+        }
+    }
+    return $result;
+}
+
 function sendLoginVerificationEmail($email, $token)
 {
     $mail = new PHPMailer(true);
@@ -97,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  JOIN tb_client_userdetails u ON l.user_id = u.user_id
                  WHERE u.user_email = :email AND u.user_status = 1"
             );
-            $stmt->bindValue(':email', $email);
+            $stmt->bindValue(':email', caesarEncrypt(trim($_POST['email'])));
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 

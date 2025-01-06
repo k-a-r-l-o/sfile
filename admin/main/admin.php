@@ -74,7 +74,7 @@ try {
         $stmt->bindParam(':status', $filters['status'], PDO::PARAM_STR);
     }
     if (isset($filters['search'])) {
-        $stmt->bindParam(':search', $filters['search'], PDO::PARAM_STR);
+        $stmt->bindParam(':search', caesarEncrypt($filters['search']), PDO::PARAM_STR);
     }
 
     // Bind pagination parameters
@@ -120,7 +120,7 @@ try {
         $countStmt->bindParam(':status', $filters['status'], PDO::PARAM_STR);
     }
     if (isset($filters['search'])) {
-        $countStmt->bindParam(':search', $filters['search'], PDO::PARAM_STR);
+        $countStmt->bindParam(':search', caesarEncrypt($filters['search']), PDO::PARAM_STR);
     }
     $countStmt->execute();
     $total = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];

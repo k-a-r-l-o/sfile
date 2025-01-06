@@ -7,6 +7,49 @@ if (!isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_u
     exit;
 }
 
+// Caesar Cipher Shift Key
+define('SHIFT_KEY', 24); // Adjust the shift key as needed
+
+/**
+ * Encrypt a string using the Caesar cipher.
+ *
+ * @param string $input The string to encrypt.
+ * @return string The encrypted string.
+ */
+function caesarEncrypt($input)
+{
+    $result = '';
+    foreach (str_split($input) as $char) {
+        if (ctype_alpha($char)) {
+            $offset = ctype_upper($char) ? 65 : 97;
+            $result .= chr(((ord($char) - $offset + SHIFT_KEY) % 26) + $offset);
+        } else {
+            $result .= $char; // Non-alphabetic characters are not shifted
+        }
+    }
+    return $result;
+}
+
+/**
+ * Decrypt a string using the Caesar cipher.
+ *
+ * @param string $input The string to decrypt.
+ * @return string The decrypted string.
+ */
+function caesarDecrypt($input)
+{
+    $result = '';
+    foreach (str_split($input) as $char) {
+        if (ctype_alpha($char)) {
+            $offset = ctype_upper($char) ? 65 : 97;
+            $result .= chr(((ord($char) - $offset - SHIFT_KEY + 26) % 26) + $offset);
+        } else {
+            $result .= $char; // Non-alphabetic characters are not shifted
+        }
+    }
+    return $result;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Include database connection
     require_once '../../../config/config.php';
@@ -27,6 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo = new PDO("mysql:host=" . DB_SERVER . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        // Encrypt sensitive data
+        $encryptedEmail = caesarEncrypt($email);
+        $encryptedFirstname = caesarEncrypt($firstname);
+        $encryptedLastname = caesarEncrypt($lastname);
+
         // Check if email already exists
         $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM tb_client_userdetails WHERE user_email = :email AND user_status = '1'");
         $checkStmt->bindParam(':email', $email);
@@ -44,9 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert into tb_client_userdetails
         $stmt = $pdo->prepare("INSERT INTO tb_client_userdetails (user_fname, user_lname, user_email, user_role) 
                                 VALUES (:fname, :lname, :email, :role)");
-        $stmt->bindParam(':fname', $firstname);
-        $stmt->bindParam(':lname', $lastname);
-        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':fname', $encryptedFirstname);
+        $stmt->bindParam(':lname', $encryptedLastname);
+        $stmt->bindParam(':email', $encryptedEmail);
         $stmt->bindParam(':role', $role);
         $stmt->execute();
 

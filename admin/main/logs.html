@@ -14,7 +14,6 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/tabler-icons@1.30.1/dist/tabler-icons.min.css"
     />
-    
   </head>
 
   <body>
@@ -152,7 +151,7 @@
                   >
                     <div class="message-body">
                       <a
-                      href="profile-settings/profile-settings"
+                        href="profile-settings/profile-settings"
                         class="d-flex align-items-center gap-2 dropdown-item"
                       >
                         <i class="ti ti-user fs-6"></i>
@@ -176,15 +175,15 @@
             <div class="card-body">
               <div class="row">
                 <h3 class="col-lg-12">Activity Logs</h3>
-                <div class="col-sm-8 text-start">  
-                  <button  
-                    onclick="exportAsPDF()"  
-                    type="button"  
-                    class="btn btn-primary my-2 fs-3"  
-                  >  
-                    Export as PDF   
-                  </button>  
-                </div>  
+                <div class="col-sm-8 text-start">
+                  <button
+                    onclick="exportAsPDF()"
+                    type="button"
+                    class="btn btn-primary my-2 fs-3"
+                  >
+                    Export as PDF
+                  </button>
+                </div>
                 <div class="col-sm-4 text-end">
                   <form method="get" onsubmit="return false;" class="mb-2">
                     <input
@@ -245,7 +244,8 @@
                     </div>
                     <div class="col-lg-6 text-end">
                       <form method="get" onsubmit="return false;" class="my-2">
-                        <select title="Filter by Time"
+                        <select
+                          title="Filter by Time"
                           name="time-filter"
                           id="time-filter"
                           class="form-select text-start"
@@ -401,7 +401,8 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const tableBody = document.getElementById("tableBody");
-        const currentPageElementshow = document.getElementById("currentPageshow");
+        const currentPageElementshow =
+          document.getElementById("currentPageshow");
         const currentPageElement = document.getElementById("currentPage");
         const totalPagesElement = document.getElementById("totalPages");
 
@@ -418,20 +419,20 @@
 
         // Fetch data and populate table
         function fetchData() {
-            const url = new URL("./logs.php", window.location.href);
-            url.searchParams.append("page", currentPage);
-            url.searchParams.append("limit", limit);
-            if (role) url.searchParams.append("role", role);
-            if (time) url.searchParams.append("time-filter", time); // Ensure correct parameter name
-            if (search) url.searchParams.append("search", search);
+          const url = new URL("./logs.php", window.location.href);
+          url.searchParams.append("page", currentPage);
+          url.searchParams.append("limit", limit);
+          if (role) url.searchParams.append("role", role);
+          if (time) url.searchParams.append("time-filter", time); // Ensure correct parameter name
+          if (search) url.searchParams.append("search", search);
 
-            fetch(url)
-                .then((response) => response.json())
-                .then((data) => {
-                    populateTable(data.data);
-                    updatePagination(data.pagination);
-                })
-                .catch((error) => console.error("Error fetching data:", error));
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              populateTable(data.data);
+              updatePagination(data.pagination);
+            })
+            .catch((error) => console.error("Error fetching data:", error));
         }
 
         // Populate table rows
@@ -441,8 +442,8 @@
             const row = document.createElement("tr");
             row.innerHTML = `
               <td>${log.log_id}</td>
-              <td>${log.name}</td>
-              <td>${log.email_address}</td>
+              <td>${caesarDecrypt(log.name)}</td>
+              <td>${caesarDecrypt(log.email_address)}</td>
               <td>${formatDateTime(log.date_time)}</td>
               <td>${log.role}</td>
               <td>${log.activity}</td>
@@ -480,12 +481,12 @@
 
         // Apply filters
         function applyFilters() {
-            limit = parseInt(limitFilter.value);
-            role = roleFilter.value;
-            time = timeFilter.value; // Get the selected time filter value
-            search = searchFilter.value;
-            currentPage = 1; // Reset to first page on filter change
-            fetchData();
+          limit = parseInt(limitFilter.value);
+          role = roleFilter.value;
+          time = timeFilter.value; // Get the selected time filter value
+          search = searchFilter.value;
+          currentPage = 1; // Reset to first page on filter change
+          fetchData();
         }
 
         // Navigate pages
@@ -520,6 +521,50 @@
         // Initial fetch
         fetchData();
       });
+
+      const SHIFT_KEY = 24; // Adjust the shift key as needed
+
+      /**
+       * Encrypt a string using the Caesar cipher.
+       *
+       * @param {string} input - The string to encrypt.
+       * @returns {string} - The encrypted string.
+       */
+      function caesarEncrypt(input) {
+        let result = "";
+        for (let char of input) {
+          if (/[a-zA-Z]/.test(char)) {
+            const offset = char === char.toUpperCase() ? 65 : 97; // ASCII offset for uppercase/lowercase
+            result += String.fromCharCode(
+              ((char.charCodeAt(0) - offset + SHIFT_KEY) % 26) + offset
+            );
+          } else {
+            result += char; // Non-alphabetic characters are not shifted
+          }
+        }
+        return result;
+      }
+
+      /**
+       * Decrypt a string using the Caesar cipher.
+       *
+       * @param {string} input - The string to decrypt.
+       * @returns {string} - The decrypted string.
+       */
+      function caesarDecrypt(input) {
+        let result = "";
+        for (let char of input) {
+          if (/[a-zA-Z]/.test(char)) {
+            const offset = char === char.toUpperCase() ? 65 : 97; // ASCII offset for uppercase/lowercase
+            result += String.fromCharCode(
+              ((char.charCodeAt(0) - offset - SHIFT_KEY + 26) % 26) + offset
+            );
+          } else {
+            result += char; // Non-alphabetic characters are not shifted
+          }
+        }
+        return result;
+      }
     </script>
     <script>
       (function () {
@@ -563,7 +608,14 @@
 
         // Define table headers
         const headers = [
-          ["Log ID", "Name", "Email Address", "Date & Time", "Role", "Activity"],
+          [
+            "Log ID",
+            "Name",
+            "Email Address",
+            "Date & Time",
+            "Role",
+            "Activity",
+          ],
         ];
 
         // Get table data from the DOM

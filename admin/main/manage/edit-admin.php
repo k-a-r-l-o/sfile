@@ -6,15 +6,58 @@ if (!isset($_SESSION['admin_role'], $_SESSION['admin_token'], $_SESSION['admin_u
     exit;
 }
 
+// Caesar Cipher Shift Key
+define('SHIFT_KEY', 24); // Adjust the shift key as needed
+
+/**
+ * Encrypt a string using the Caesar cipher.
+ *
+ * @param string $input The string to encrypt.
+ * @return string The encrypted string.
+ */
+function caesarEncrypt($input)
+{
+    $result = '';
+    foreach (str_split($input) as $char) {
+        if (ctype_alpha($char)) {
+            $offset = ctype_upper($char) ? 65 : 97;
+            $result .= chr(((ord($char) - $offset + SHIFT_KEY) % 26) + $offset);
+        } else {
+            $result .= $char; // Non-alphabetic characters are not shifted
+        }
+    }
+    return $result;
+}
+
+/**
+ * Decrypt a string using the Caesar cipher.
+ *
+ * @param string $input The string to decrypt.
+ * @return string The decrypted string.
+ */
+function caesarDecrypt($input)
+{
+    $result = '';
+    foreach (str_split($input) as $char) {
+        if (ctype_alpha($char)) {
+            $offset = ctype_upper($char) ? 65 : 97;
+            $result .= chr(((ord($char) - $offset - SHIFT_KEY + 26) % 26) + $offset);
+        } else {
+            $result .= $char; // Non-alphabetic characters are not shifted
+        }
+    }
+    return $result;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Include database connection
     require_once '../../../config/config.php';
 
     // Retrieve form data
     $Id = $_POST['user_id'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $firstname = $_POST['firstname'] ?? '';
-    $lastname = $_POST['lastname'] ?? '';
+    $email = caesarEncrypt($_POST['email']) ?? '';
+    $firstname = caesarEncrypt($_POST['firstname']) ?? '';
+    $lastname = caesarEncrypt($_POST['lastname']) ?? '';
 
     // Validate form data
     if (empty($Id) || empty($firstname) || empty($lastname)) {

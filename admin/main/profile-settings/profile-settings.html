@@ -147,7 +147,7 @@
                   >
                     <div class="message-body">
                       <a
-                        href="../employee/profile-settings/profile-settings"
+                        href="./profile-settings"
                         class="d-flex align-items-center gap-2 dropdown-item"
                       >
                         <i class="ti ti-user fs-6"></i>
@@ -377,9 +377,15 @@
             if (data.status === "success") {
               const user = data.data;
               document.getElementById("user_id").value = user.user_id;
-              document.getElementById("email").value = user.user_email;
-              document.getElementById("firstname").value = user.user_fname;
-              document.getElementById("lastname").value = user.user_lname;
+              document.getElementById("email").value = caesarDecrypt(
+                user.user_email
+              );
+              document.getElementById("firstname").value = caesarDecrypt(
+                user.user_fname
+              );
+              document.getElementById("lastname").value = caesarDecrypt(
+                user.user_lname
+              );
               document.getElementById("role").value = user.user_role;
             } else {
               alert(data.message || "Failed to fetch user details.");
@@ -417,6 +423,50 @@
             document.querySelector("form").submit();
           });
       });
+
+      const SHIFT_KEY = 24; // Adjust the shift key as needed
+
+      /**
+       * Encrypt a string using the Caesar cipher.
+       *
+       * @param {string} input - The string to encrypt.
+       * @returns {string} - The encrypted string.
+       */
+      function caesarEncrypt(input) {
+        let result = "";
+        for (let char of input) {
+          if (/[a-zA-Z]/.test(char)) {
+            const offset = char === char.toUpperCase() ? 65 : 97; // ASCII offset for uppercase/lowercase
+            result += String.fromCharCode(
+              ((char.charCodeAt(0) - offset + SHIFT_KEY) % 26) + offset
+            );
+          } else {
+            result += char; // Non-alphabetic characters are not shifted
+          }
+        }
+        return result;
+      }
+
+      /**
+       * Decrypt a string using the Caesar cipher.
+       *
+       * @param {string} input - The string to decrypt.
+       * @returns {string} - The decrypted string.
+       */
+      function caesarDecrypt(input) {
+        let result = "";
+        for (let char of input) {
+          if (/[a-zA-Z]/.test(char)) {
+            const offset = char === char.toUpperCase() ? 65 : 97; // ASCII offset for uppercase/lowercase
+            result += String.fromCharCode(
+              ((char.charCodeAt(0) - offset - SHIFT_KEY + 26) % 26) + offset
+            );
+          } else {
+            result += char; // Non-alphabetic characters are not shifted
+          }
+        }
+        return result;
+      }
     </script>
     <script>
       (function () {
