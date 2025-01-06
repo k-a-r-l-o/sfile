@@ -190,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
 
     // Fetch the current user's email and role
     $doerUserId = $_SESSION['client_user_id'];
-    $userStmt = $conn->prepare("
+    $userStmt = $pdo->prepare("
             SELECT user_email, user_role 
             FROM tb_client_userdetails 
             WHERE user_id = :user_id AND user_status = 1
@@ -203,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     // Log the user addition
     $logAction = "Uploaded file/s successfully";
     $logdate = date('Y-m-d H:i:s');
-    $logStmt = $conn->prepare("
+    $logStmt = $pdo->prepare("
         INSERT INTO tb_logs (doer, log_date, role, log_action) 
         VALUES (:doer, :log_date, :role, :action)
     ");
