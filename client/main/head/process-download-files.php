@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $encryptedData = file_get_contents($encryptedFilePath);
 
                     // Decrypt the file using AES-256-CBC
-                    $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', $decryptedAESKey, OPENSSL_RAW_DATA, $iv);
+                    $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', $decryptedAESKey, OPENSSL_NO_PADDING, $iv);
 
                     if ($decryptedData !== false) {
                         // Determine the MIME type based on the file extension
