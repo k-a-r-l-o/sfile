@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare(
                 "SELECT l.password, u.user_id, u.user_role, l.user_status, u.user_email
                  FROM tb_client_logindetails l
-                 JOIN tb_client_logindetails u ON l.user_id = u.user_id
+                 JOIN tb_client_userdetails u ON l.user_id = u.user_id
                  WHERE u.user_status = 1"
             );
             $stmt->execute();
@@ -229,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             error_log("Login error: " . $e->getMessage());
             echo $e->getMessage();
-            header("Location: ../login?error=server_error");
+            //header("Location: ../login?error=server_error");
             exit;
         }
     } else {
