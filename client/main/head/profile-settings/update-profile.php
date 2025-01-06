@@ -50,6 +50,47 @@ if ($iv === false || strlen($iv) !== 16) {
 define('AES_KEY', $key);
 define('AES_IV', $iv);
 
+
+function aesEncrypt($input)
+{
+    // Add random padding to make the plaintext longer
+    $padding = bin2hex(random_bytes(32)); // 64 characters of padding
+    $paddedInput = $input . "::" . $padding;
+
+    // Encrypt the padded input
+    $encrypted = openssl_encrypt(
+        $paddedInput,
+        'AES-256-CBC',
+        AES_KEY,
+        0,
+        AES_IV
+    );
+
+    // Base64-encode the encrypted string
+    return base64_encode($encrypted);
+}
+
+function aesDecrypt($input)
+{
+    // Decode and decrypt the input
+    $decrypted = openssl_decrypt(
+        base64_decode($input),
+        'AES-256-CBC',
+        AES_KEY,
+        0,
+        AES_IV
+    );
+
+    // Remove the padding if it exists
+    if ($decrypted !== false && strpos($decrypted, "::") !== false) {
+        list($originalData,) = explode("::", $decrypted, 2);
+        return $originalData;
+    }
+
+    return $decrypted;
+}
+// End of encrypt and decrypt functions
+
 $userId = $_SESSION['client_user_id'];
 
 // Validate POST data
