@@ -62,17 +62,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     // Path to the encrypted private key
                     $encryptedPrivateKeyPath = "$privateKeyPath/private_key.enc";
+                    $publicKeyPath = "$privateKeyPath/public_key.pem";
 
                     // Check if the file exists
                     if (!file_exists($encryptedPrivateKeyPath)) {
-                        $response = [
+                        header('Content-Type: application/json');
+                        echo $response = [
                             'status' => 'error',
                             'message' => 'File not exists'
                         ];
+                        exit;
                     }
 
                     // Read the encrypted private key from the file
                     $encryptedPrivateKey = file_get_contents($encryptedPrivateKeyPath);
+                    $publickey = file_get_contents($publicKeyPath);
 
                     $passphrase = $enteredPassword; // The entered password used as the passphrase
 
@@ -81,10 +85,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if (!$res) {
                         //die("1Failed to decrypt private key: " . openssl_error_string());
-                        $response = [
+                        header('Content-Type: application/json');
+                        echo $response = [
                             'status' => 'error',
                             'message' => 'Decryption failed'
                         ];
+                        exit;
                     }
 
                     $folderPath = $_SERVER['DOCUMENT_ROOT'] . "/client/main/employee/uploads/$ownerId";
@@ -92,19 +98,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     // Check if the metadata file exists
                     if (!file_exists($metadataFilePath)) {
-                        $response = [
+                        header('Content-Type: application/json');
+                        echo $response = [
                             'status' => 'error',
                             'message' => 'Metadata file does not exist.'
                         ];
+                        exit;
                     }
 
                     // Read the metadata from the file
                     $metadata = json_decode(file_get_contents($metadataFilePath), true);
                     if ($metadata === null) {
-                        $response = [
+                        header('Content-Type: application/json');
+                        echo json_encode([
                             'status' => 'error',
                             'message' => 'Failed to read metadata.'
-                        ];
+                        ]);
+                        exit;
                     }
                     // Prepare and execute the SQL statement to fetch the hashed password
                     $stmt = $pdo->prepare("SELECT * FROM tb_shared_files WHERE file_id = :file_id");
@@ -115,15 +125,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $eKey = $stmt->fetch(PDO::FETCH_ASSOC);
 
                     // Decrypt the AES key using the private key
-                    $encryptedAESKey = $eKey['encrypted_key'];
+                    $encryptedAESKey = base64_decode($eKey['encrypted_key']);
                     $decryptedAESKey = '';
-                    $decryptionSuccess = openssl_private_decrypt($encryptedAESKey, $decryptedAESKey, $res);
+                    $decryptionSuccess = openssl_private_decrypt($encryptedAESKey, $decryptedAESKey, $res, OPENSSL_NO_PADDING);
 
                     if (!$decryptionSuccess) {
-                        $response = [
+                        header('Content-Type: application/json');
+                        echo openssl_error_string();
+                        echo "\n";
+                        echo json_encode([
                             'status' => 'error',
                             'message' => 'Failed to decrypt AES key.'
-                        ];
+                        ]);
+                        exit;
                     }
 
                     // Decrypt the file using the decrypted AES key and IV
@@ -189,10 +203,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             ':role' => $logRole,
                             ':action' => $logAction
                         ]);
+                        // Return success message
+                        $response = [
+                            'status' => 'success',
+                            'message' => 'File decrypted successfully.',
+                            'decrypted_file_path' => $decryptedFilePath
+                        ];
+                        header('window.location.href = "employee-files?error=none";');
                         exit;
                     } else {
                         // Return error if decryption fails
                         header('Content-Type: application/json');
+                        echo openssl_error_string();
                         echo json_encode([
                             'status' => 'error',
                             'message' => 'Failed to decrypt the file.'
@@ -200,20 +222,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         exit;
                     }
-
-                    // Return success message
-                    $response = [
-                        'status' => 'success',
-                        'message' => 'File decrypted successfully.',
-                        'decrypted_file_path' => $decryptedFilePath
-                    ];
-                    header('window.location.href = "employee-files?error=none";');
                 } else {
+                    header('Content-Type: application/json');
                     $response = [
                         'status' => 'invalid',
                         'message' => 'Invalid password.'
                     ];
                     header('window.location.href = "verify-password?id=' . $_POST['fileid'] . '&file=' . $_POST['filenameInput'] . '&email=' . $_POST['email'] . '&error=password_not_match";');
+                    exit;
                 }
             } else {
                 // User not found or password not set
@@ -221,12 +237,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'status' => 'error',
                     'message' => 'User not found or password not set.'
                 ];
+                header('window.location.href = "employee-files?error=1";');
+                exit;
             }
         } else {
             $response = [
                 'status' => 'error',
                 'message' => 'File not found or invalid file ID.'
             ];
+            header('window.location.href = "employee-files?error=2";');
+            exit;
         }
     } else {
         // Password field is missing
@@ -234,6 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'status' => 'error',
             'message' => 'Password field is missing.'
         ];
+        exit;
     }
 
     header('Content-Type: application/json');

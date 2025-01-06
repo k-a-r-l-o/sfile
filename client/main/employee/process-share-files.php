@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!$encryptionSuccess) {
                         $response = [
                             'status' => 'error',
-                            'message' => 'Failed to encrypt AES key with Head\'s public key.'
+                            'message' => 'Failed to encrypt AES key with Heads public key.'
                         ];
                         echo json_encode($response);
                         exit;
