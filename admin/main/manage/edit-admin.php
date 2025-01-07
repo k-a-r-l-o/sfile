@@ -155,12 +155,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':action' => $logAction
         ]);
 
+        $email = aesDecrypt($email) ?? '';
+        $firstname = aesDecrypt($firstname) ?? '';
+        $lastname = aesDecrypt($lastname) ?? '';
+
         // Return success response
         echo json_encode(["success" => true]);
         header("Location: edit-admin?error=none&id=$Id&email=$email&fname=$firstname&lname=$lastname");
         exit;
     } catch (PDOException $e) {
         // Rollback the transaction on error
+        $email = aesDecrypt($email) ?? '';
+        $firstname = aesDecrypt($firstname) ?? '';
+        $lastname = aesDecrypt($lastname) ?? '';
         $pdo->rollBack();
         echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
         header("Location: edit-admin?error=server_error&id=$Id&email=$email&fname=$firstname&lname=$lastname");

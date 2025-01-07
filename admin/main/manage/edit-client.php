@@ -183,13 +183,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Optionally, log or create a new file in the folder for verification
         file_put_contents("$newFolderPath", "Folder moved successfully for user ID $Id.");
 
-
+        $email = aesDecrypt($email) ?? '';
+        $firstname = aesDecrypt($firstname) ?? '';
+        $lastname = aesDecrypt($lastname) ?? '';
         // Return success response
         echo json_encode(["success" => true]);
         header("Location: edit-client?error=none&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
         exit;
     } catch (PDOException $e) {
         // Rollback the transaction on error
+        $email = aesDecrypt($email) ?? '';
+        $firstname = aesDecrypt($firstname) ?? '';
+        $lastname = aesDecrypt($lastname) ?? '';
         $pdo->rollBack();
         echo json_encode(["error" => "An error occurred: " . $e->getMessage()]);
         header("Location: edit-client?error=server_error&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
