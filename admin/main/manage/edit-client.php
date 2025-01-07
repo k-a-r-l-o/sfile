@@ -158,6 +158,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':action' => $logAction
         ]);
 
+        // Folder management
+        $basePath = $_SERVER['DOCUMENT_ROOT'] . "/security/keys/";
+        $oldRoleFolder = ($role === 'Head') ? 'employee' : 'head'; // Previous role folder
+        $newRoleFolder = ($role === 'Head') ? 'head' : 'employee'; // New role folder
+        $oldFolderPath = $basePath . "$oldRoleFolder/$Id"; // Old folder path
+        $newFolderPath = $basePath . "$newRoleFolder/$Id"; // New folder path
+
+        // Check if the old folder exists
+        if (file_exists($oldFolderPath) && is_dir($oldFolderPath)) {
+            // Move the entire folder to the new location
+            if (!rename($oldFolderPath, $newFolderPath)) {
+                die("Failed to move folder from '$oldFolderPath' to '$newFolderPath'.");
+            }
+        } else {
+            // If the folder doesn't exist, create the new folder
+            if (!file_exists($newFolderPath)) {
+                if (!mkdir($newFolderPath, 0755, true)) {
+                    die("Failed to create folder '$newFolderPath'.");
+                }
+            }
+        }
+
+        // Optionally, log or create a new file in the folder for verification
+        file_put_contents("$newFolderPath", "Folder moved successfully for user ID $Id.");
+
+
         // Return success response
         echo json_encode(["success" => true]);
         header("Location: edit-client?error=none&id=$Id&email=$email&fname=$firstname&lname=$lastname&role=$role");
