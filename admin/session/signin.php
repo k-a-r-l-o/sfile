@@ -217,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Send verification email
                 if (sendLoginVerificationEmail($email, $tokenPlain)) {
                     //header("Location: ../verification-link-sent?email=$email");
-                    header("Location: ../verify-login.php?token=$tokenPlain");
+                    header("Location: ./verify-login.php?token=$tokenPlain");
                     exit;
                 } else {
                     header("Location: ../login?error=email_failed");
